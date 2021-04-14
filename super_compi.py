@@ -140,7 +140,7 @@ def t_CCHAR(t):
     t.value = str(t.value)
     return t
 
-def t_CSTR(t):
+def t_CSTRING(t):
     r'"([^\"|^\'])*"'
     t.value = str(t.value)
     return t
@@ -186,16 +186,16 @@ def p_inicial(p):
 
 def p_program(p):
     '''
-    program : PROGRAM id SCOL
+    program : PROGRAM ID SCOL
             | PROGRAM ID SCOL bloque_g bloque
     '''
     p[0] = None
 
 def p_bloque_g(p): 
     '''
-    bloqueg : var bloque_g
-            | func bloque_g
-            | empty
+    bloque_g : var bloque_g
+             | func bloque_g
+             | empty
     '''
     p[0] = None
 
@@ -229,14 +229,14 @@ def p_func1(p):
 def p_tipo_func(p):
     '''
     tipo_func : tipo
-              | void
+              | VOID
     '''
     p[0] = None
 
 def p_tipo_var(p):
     '''
     tipo_var  : tipo
-              | personaje
+              | PLAYER
     '''
     p[0] = None
 
@@ -245,21 +245,21 @@ def p_tipo(p):
     tipo : INT
          | FLT
          | BOOL
-         | CHAR
+         | CCHAR
          | STR
     '''
     p[0] = None
 
 def p_bloque(p):
     '''
-    bloque : OB bloque1
+    bloque : OCB bloque1
     '''
     p[0] = None
 
 def p_bloque1(p):
     '''
     bloque1 : estatuto bloque1 
-            | CB
+            | CCB
     '''
     p[0] = None
 
@@ -303,7 +303,7 @@ def p_escritura(p):
 
 def p_escritura1(p):
     '''
-    escritura1 : CSTR escritura2
+    escritura1 : CSTRING escritura2
                | expresion escritura2
     '''
     p[0] = None
@@ -323,8 +323,8 @@ def p_lectura(p):
 
 def p_ciclo(p):
     '''
-    lectura  : while 
-             | for
+    ciclo : while 
+          | for
     '''
     p[0] = None
 
@@ -350,7 +350,7 @@ def p_for1(p):
 def p_for_simple(p):
     '''
     for_simple  : id_var TIMES 
-                | CINT times
+                | CINT TIMES
     '''
     p[0] = None
 
@@ -399,7 +399,7 @@ def p_expresion1(p):
 
 def p_op_logical(p):
     '''
-    op_compass : AND
+    op_logical : AND
                | OR
     '''
     p[0] = None
@@ -413,8 +413,8 @@ def p_expresion2(p):
 
 def p_op_equality(p):
     '''
-    op_compass : BEQ
-               | BNEQ
+    op_equality : BEQ
+                | BNEQ
     '''
     p[0] = None
 
@@ -485,7 +485,7 @@ def p_var_cte(p):
             | CINT
             | CFLT
             | CCHAR
-            | CSTR
+            | CSTRING
             | bool_cte
             | NULL
     '''
@@ -589,4 +589,4 @@ def parser_file(file_name):
         else:
             break
 
-parser_file("works_1.txt")
+parser_file("tests/works_1.txt")
