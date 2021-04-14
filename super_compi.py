@@ -47,7 +47,6 @@ tokens = [
     'COMMA',                  # ,
     'DOT',                    # .
     'COL',                    # :
-    #'TYPE',                  # TODO: Este no sé que pedo
     'OCB',                    # {
     'CCB',                    # }
     'OP',                     # (
@@ -173,7 +172,6 @@ def lexer_test():
 # lexer_test()
 
 # =================================================== PARSER ===================================================
-
 
 def p_inicial(p):
     '''
@@ -557,7 +555,7 @@ parser = yacc.yacc()
 def run(p):
     return p
 
-def parser_comands():
+def parser():
 
     while True:
 
