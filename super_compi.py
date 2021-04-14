@@ -76,10 +76,10 @@ tokens = [
     'MODEQ',                  # %=
     'ID',                     # [A-Za-z]* | ([A-Za-z]* && [0-9]*)
     'CINT',                   # [0-9]*
-    'CFLT',                 # [0-9]* | ([0-9]* . [0-9]*)
+    'CFLT',                   # [0-9]* | ([0-9]* . [0-9]*)
     'CSTRING',                # "([ ^ " | ^' ])*"
-    'CCHAR'                   # "([ ^ " | ^' ])"
-    'CBOOL',                 # (true | false | [0-9]*) TODO: ¿Tambien es un int?
+    'CCHAR',                  # "([ ^ " | ^' ])"
+    'CBOOL',                  # (true | false | [0-9]*) TODO: ¿Tambien es un int?
 ] + list(reserved.values())
 
 t_SCOL = r'\;'
@@ -120,10 +120,10 @@ def t_NL(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-def t_CBOOL(t):
-    r'(true | false | [0-9]*)'
-    t.value = float(t.value)
-    return t
+# def t_CBOOL(t):
+#     r'(true | false | [0-9]*)'
+#     t.value = float(t.value)
+#     return t
 
 def t_CINT(t):
     r'\d+'
@@ -170,7 +170,7 @@ def lexer_test():
 
         print(tok)
 
-lexer_test()
+# lexer_test()
 
 # =================================================== PARSER ===================================================
 
@@ -194,8 +194,8 @@ def p_program(p):
 def p_bloque_g(p): 
     '''
     bloqueg : var bloque_g
-             | func bloque_g
-             | empty
+            | func bloque_g
+            | empty
     '''
     p[0] = None
 
@@ -317,7 +317,7 @@ def p_escritura2(p):
 
 def p_lectura(p):
     '''
-    lectura  : READ OP CP
+    lectura : READ OP CP
     '''
     p[0] = None
 
@@ -330,13 +330,13 @@ def p_ciclo(p):
 
 def p_while(p):
     '''
-    while  : WHILE OP expresion CP bloque
+    while : WHILE OP expresion CP bloque
     '''
     p[0] = None
 
 def p_for(p):
     '''
-    for  : FOR OP for1 CP bloque
+    for : FOR OP for1 CP bloque
     '''
     p[0] = None
 
@@ -522,7 +522,7 @@ def p_cte_atr_obj(p):
 
 def p_llamada_obj(p):
     '''
-    llamada_obj: ID DOT cte_mtd_obj OP CP
+    llamada_obj : ID DOT cte_mtd_obj OP CP
     '''
     p[0] = None
 
@@ -552,24 +552,41 @@ def p_empty(p):
     '''
     p[0] = None
 
+parser = yacc.yacc()
 
 def run(p):
     return p
 
-def parser():
-    parser = yacc.yacc()
+def parser_comands():
 
     while True:
+
         try:
-          reading = input('Test File > ')
-          correct = reading
-          correctFile = open(correct, 'r')
-          curr = correctFile.read()
-          correctFile.close()
-          if parser.parse(curr) == 'correct':
-             print("Compiled Correctly!")
-          
-     
+            reading = input('Test File > ')
+            correct = reading
+            correctFile = open(correct, 'r')
+            curr = correctFile.read()
+            correctFile.close()
+            if parser.parse(curr) == 'correct':
+                print("Compiled Correctly!")
+
         except EOFError:
-          print("Error, Compiled Incorrectly")
-        if not reading: continue
+            print("Error, Compiled Incorrectly")
+
+        if not reading:
+            continue
+
+def parser_file(file_name):
+
+    file = open(file_name)
+
+    while True:
+        line = file.readline()
+
+        if line:
+            parser.parse(line)
+
+        else:
+            break
+
+parser_file("works_1.txt")
