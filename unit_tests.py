@@ -4,6 +4,8 @@ python -m unittest unit_tests.py
 '''
 
 from symbol_table import *
+from lexer import *
+from yacc import *
 
 import unittest
 
@@ -32,4 +34,31 @@ class TestFuncTable(unittest.TestCase):
 
         ft.push_function("calculate_something", "float")
         self.assertEqual(ft.functions["calculate_something"], "float")
- 
+
+class TestLexer(unittest.TestCase):
+    def test_lexer(self):
+        lexer = lex.lex()
+        lexer.input("program test : { a = 1; b = true }") 
+
+        lexer_values = []
+        lexer_types = []
+
+        expected_values = [
+            'program', 'test', ':', '{', 'a', '=', 1, ';', 'b', '=', 'true', '}'
+        ]
+
+        expected_types = [
+            'PROGRAM', 'ID', 'COL', 'CCB', 'ID', 'EQ', 'CINT', 'SCOL', 'ID', 'EQ', 'TRUE', 'OCB'
+        ]
+
+        while True: 
+            tok = lexer.token()
+
+            if not tok:
+                 break
+
+            lexer_types.append(tok.type)
+            lexer_values.append(tok.value)
+
+        self.assertEqual(lexer_values, expected_values)
+        self.assertEqual(lexer_types, expected_types)
