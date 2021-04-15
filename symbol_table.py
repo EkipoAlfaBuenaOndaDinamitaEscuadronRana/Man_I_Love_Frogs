@@ -8,33 +8,47 @@ class Symbol(object):
         print("VAR: " + self.name)
         print("TYPE: " +self.type)
 
-class SymbolTable(object):
+class VarTable(object):
     def __init__(self):
-        self.symbols = {}
+        self.variables = {}
 
-    def push_symbol(self, symbol, value):
-        self.symbols[symbol] = value
+    def push_variable(self, symbol, value):
+        self.variables[symbol] = value
 
-    def print_table(self):
+    def print_VarTable(self):
         print("NAME TYPE VALUE ")
-        for symbol in self.symbols:
-            print(symbol.name + "     " + symbol.type + "    " +  str(self.symbols[symbol]))
-            #symbol.print_symbol()
-            #print("VALUE: " + str(self.symbols[symbol]))
+        for symbol in self.variables:
+            print(symbol.name + "   " + symbol.type + "     " +  str(self.variables[symbol]))
             print()
 
+class FuncTable(object):
+    def __init__(self):
+        self.functions = {}
 
+    def push_function(self, name, type):
+        self.functions[name] = type
+
+    def print_FuncTable(self):
+        print("NAME TYPE")
+        for name in self.functions:
+            print(name + "   " + self.functions[name])
+            print()
 
 
 
 a = Symbol('a', 'int')
 b = Symbol('b', 'string')
 
-st = SymbolTable()
-st.push_symbol(a, 1)
-st.push_symbol(b, 'hola')
+vt = VarTable()
+vt.push_variable(a, 1)
+vt.push_variable(b, 'hola')
+
+ft = FuncTable()
+ft.push_function('square', 'int')
+ft.push_function('validate', 'void')
 
 #a.print_symbol()
 
-st.print_table()
+vt.print_VarTable()
+ft.print_FuncTable()
 
