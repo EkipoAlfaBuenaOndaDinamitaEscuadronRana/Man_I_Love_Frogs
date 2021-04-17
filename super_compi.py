@@ -3,10 +3,13 @@ import ply.yacc as yacc
 import sys
 
 # =================================================== SCANNER ===================================================
+
 reserved = {
+
     #DECLARACIONES 
     'program' : 'PROGRAM',  #program
     'func' : 'FUNC',        #func
+
     #ESTATUTOS
     'if' : 'IF',            #if
     'else' : 'ELSE',        #else
@@ -14,6 +17,7 @@ reserved = {
     'write' : 'WRITE',      #write
     'for' : 'FOR',          #for
     'while' : 'WHILE',      #while
+
     #TIPOS         
     'int' : 'INT',          #int 
     'float' : 'FLT',        #float
@@ -21,6 +25,7 @@ reserved = {
     'bool' : 'BOOL',        #bool
     'player' : 'PLAYER',    #player
     'void' : 'VOID',        #void
+
     #OBJ ATRs & MTDs
     'color' : 'COLOR',      #color
     'hat'   : 'HAT',        #hat
@@ -29,18 +34,19 @@ reserved = {
     'moveRight' : 'MR',     #moveRight
     'moveUp' : 'MU',        #moveUp
     'moveDown' : 'MD',      #moveDown
+
     #OTRAS RESERVED WORDS
     'times' : 'TIMES',      #times
     'null' : 'NULL',        #null
     'true' : 'TRUE',        #true 
     'false' : 'FALSE'       #false  
 }
+
 tokens = [
     'SCOL',                   # ;
     'COMMA',                  # ,
     'DOT',                    # .
     'COL',                    # :
-    #'TYPE',                  # TODO: Este no sé que pedo
     'OCB',                    # {
     'CCB',                    # }
     'OP',                     # (
@@ -69,10 +75,10 @@ tokens = [
     'MODEQ',                  # %=
     'ID',                     # [A-Za-z]* | ([A-Za-z]* && [0-9]*)
     'CINT',                   # [0-9]*
-    'CFLT',                 # [0-9]* | ([0-9]* . [0-9]*)
+    'CFLT',                   # [0-9]* | ([0-9]* . [0-9]*)
     'CSTRING',                # "([ ^ " | ^' ])*"
-    'CCHAR'                   # "([ ^ " | ^' ])"
-    #'CBOOL',                 # (true | false | [0-9]*) TODO: ¿Tambien es un int?
+    'CCHAR',                  # "([ ^ " | ^' ])"
+    'CBOOL',                  # (true | false | [0-9]*) TODO: ¿Tambien es un int?
 ] + list(reserved.values())
 
 t_SCOL = r'\;'
@@ -113,10 +119,10 @@ def t_NL(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-#def t_CBOOL(t):
-    #r'(true | false | [0-9]*)'
-    #t.value = float(t.value)
-    #return t
+# def t_CBOOL(t):
+#     r'(true | false | [0-9]*)'
+#     t.value = float(t.value)
+#     return t
 
 def t_CINT(t):
     r'\d+'
@@ -133,7 +139,7 @@ def t_CCHAR(t):
     t.value = str(t.value)
     return t
 
-def t_CSTR(t):
+def t_CSTRING(t):
     r'"([^\"|^\'])*"'
     t.value = str(t.value)
     return t
@@ -151,96 +157,109 @@ def t_error(t):
 
 lexer = lex.lex()
 
-# =================================================== PARSER ===================================================
+def lexer_test():
+    lexer.input("program test : { a = 1; b = true }") 
 
+    while True: 
+
+        tok = lexer.token()
+
+        if not tok:
+             break
+
+        print(tok)
+
+# lexer_test()
+
+# =================================================== PARSER ===================================================
 
 def p_inicial(p):
     '''
     inicial : program empty
             | empty
     '''
-    #print(run(p[1]))
-    p[0] = "correct" # esto no funcionaba acuerdate de checarlo
+    print(run(p[1]))
+    p[0] = None
 
 
 def p_program(p):
     '''
-    program : PROGRAM id SCOL
+    program : PROGRAM ID SCOL
             | PROGRAM ID SCOL bloque_g bloque
-    
     '''
+    p[0] = None
 
 def p_bloque_g(p): 
     '''
-    bloqueg : var bloque_g
+    bloque_g : var bloque_g
              | func bloque_g
              | empty
-
     '''
+    p[0] = None
 
 def p_var(p):
     '''
     var : tipo_var var1
-
     '''
+    p[0] = None
 
 def p_var1(p):
     '''
     var1 : id_var COMMA var1 
          | asignatura
          | id_var SCOL
-        
     '''
+    p[0] = None
 
 def p_func(p):
     '''
     func : FUNC tipo_func id_func OP func1 CP bloque
-        
     '''
+    p[0] = None
 
 def p_func1(p):
     '''
     func1 : tipo_var id_var 
           | tipo_var id_var COMMA func1
-        
     '''
+    p[0] = None
 
 def p_tipo_func(p):
     '''
     tipo_func : tipo
-              | void
-
+              | VOID
     '''
+    p[0] = None
 
 def p_tipo_var(p):
     '''
     tipo_var  : tipo
-              | personaje
-
+              | PLAYER
     '''
+    p[0] = None
 
 def p_tipo(p):
     '''
     tipo : INT
          | FLT
          | BOOL
-         | CHAR
+         | CCHAR
          | STR
-
     '''
+    p[0] = None
 
 def p_bloque(p):
     '''
-    bloque : OB bloque1
-
+    bloque : OCB bloque1
     '''
+    p[0] = None
 
 def p_bloque1(p):
     '''
     bloque1 : estatuto bloque1 
-            | CB
-    
+            | CCB
     '''
+    p[0] = None
 
 def p_estatuto(p):
     '''
@@ -251,113 +270,113 @@ def p_estatuto(p):
              | ciclo 
              | llamada SCOL
              | llamada_obj SCOL
-    
     '''
+    p[0] = None
 
 def p_asignatura(p):
     '''
-    asignatura : id_var EQ expresion 
-
+    asignatura : id_var EQ expresion
     '''
+    p[0] = None
 
 def p_condicion(p):
     '''
-   condicion : IF OP expresion CP bloque condicion1 
-             
-
+    condicion : IF OP expresion CP bloque condicion1
     '''
+    p[0] = None
 
 def p_condicion1(p):
     '''
-   condicion1 : ELSE condicion 
-              | ELSE bloque
-              | empty
-
+    condicion1 : ELSE condicion 
+               | ELSE bloque
+               | empty
     '''
+    p[0] = None
 
 def p_escritura(p):
     '''
-   escritura  : WRITE OP escritura1
-
+    escritura : WRITE OP escritura1
     '''
+    p[0] = None
 
 def p_escritura1(p):
     '''
-    escritura1 : CSTR escritura2
-                | expresion escritura2 
-               
+    escritura1 : CSTRING escritura2
+               | expresion escritura2
     '''
+    p[0] = None
 
 def p_escritura2(p):
     '''
     escritura2 : COMMA escritura1 
-               | CP 
-    
+               | CP
     '''
+    p[0] = None
 
 def p_lectura(p):
     '''
-    lectura  : READ OP CP
-
+    lectura : READ OP CP
     '''
+    p[0] = None
 
 def p_ciclo(p):
     '''
-    lectura  : while 
-             | for
-
+    ciclo : while 
+          | for
     '''
+    p[0] = None
 
 def p_while(p):
     '''
-    while  : WHILE OP expresion CP bloque
-
+    while : WHILE OP expresion CP bloque
     '''
+    p[0] = None
 
 def p_for(p):
     '''
-    for  : FOR OP for1 CP bloque
-
+    for : FOR OP for1 CP bloque
     '''
+    p[0] = None
 
 def p_for1(p):
     '''
     for1  : for_simple 
           | for_complex
-
     '''
+    p[0] = None
+
 def p_for_simple(p):
     '''
     for_simple  : id_var TIMES 
-                | CINT times 
-
+                | CINT TIMES
     '''
+    p[0] = None
 
 def p_for_complex(p):
     '''
     for_complex : asignatura SCOL expresion SCOL expresion
-
     '''
-
+    p[0] = None
 
 def p_llamada(p):
     '''
     llamada : id_func OP expresion llamada1
-
     '''
+    p[0] = None
 
 def p_llamada1(p):
     '''
     llamada1 : CP
              | COMMA expresion llamada1
-
     '''
+    p[0] = None
 
 def p_expresion(p):
     '''
     expresion : expresion1 
               | id_var op_compass expresion1
     '''
+    p[0] = None
 
 def p_op_compass(p):
     '''
@@ -367,76 +386,80 @@ def p_op_compass(p):
                | DIVEQ
                | MODEQ 
     '''
+    p[0] = None
 
 def p_expresion1(p):
     '''
     expresion1 : expresion2 
                | expresion2 op_logical expresion2
     '''
+    p[0] = None
 
 def p_op_logical(p):
     '''
-    op_compass : AND
+    op_logical : AND
                | OR
-               
     '''
+    p[0] = None
 
 def p_expresion2(p):
     '''
     expresion2 : expresion3 
                | expresion3 op_equality expresion3
     '''
+    p[0] = None
 
 def p_op_equality(p):
     '''
-    op_compass : BEQ
-               | BNEQ
-               
+    op_equality : BEQ
+                | BNEQ
     '''
+    p[0] = None
 
 def p_expresion3(p):
     '''
     expresion3 : exp 
                | exp op_relation exp
     '''
+    p[0] = None
     
 def p_op_relation(p):
     '''
     op_relation : GTE
                 | LTE
                 | GT
-                | LT
-                
+                | LT 
     '''
+    p[0] = None
 
 def p_exp(p):
     '''
     exp : termino 
-        | termino op_as exp 
-
+        | termino op_as exp
     '''
+    p[0] = None
 
 def p_op_as(p):
     '''
     op_as : ADD
-          | SUB
-                
+          | SUB 
     '''
+    p[0] = None
 
 def p_termino(p):
     '''
     termino : factor 
-            | factor op_mdr termino 
-    
+            | factor op_mdr termino
     '''
+    p[0] = None
 
 def p_op_mdr(p):
     '''
     op_mdr : MUL
            | DIV
-           | MOD
-                
+           | MOD 
     '''
+    p[0] = None
 
 def p_factor(p):
     '''
@@ -444,13 +467,14 @@ def p_factor(p):
            | op_as op_not
            | op_not
     '''
+    p[0] = None
 
 def p_op_not(p):
     '''
     op_not : var_cte
-           | NOT var_cte
-                
+           | NOT var_cte 
     '''
+    p[0] = None
 
 def p_var_cte(p):
     '''
@@ -459,32 +483,32 @@ def p_var_cte(p):
             | CINT
             | CFLT
             | CCHAR
-            | CSTR
+            | CSTRING
             | bool_cte
             | NULL
-
     '''
+    p[0] = None
 
 def p_id_var(p):
     '''
     id_var : ID
            | ID index
            | ID DOT cte_atr_obj
-            
     '''
+    p[0] = None
 
 def p_index(p):
     '''
     index : OSB var_cte CSB 
           | OSB var_cte CSB OSB var_cte CSB 
-            
     '''
+    p[0] = None
 
 def p_id_func(p):
     '''
     id_func : ID
-           
     '''
+    p[0] = None
 
 def p_cte_atr_obj(p):
     '''
@@ -492,12 +516,13 @@ def p_cte_atr_obj(p):
                 | HAT
                 | ITEMS index
     '''
+    p[0] = None
 
 def p_llamada_obj(p):
     '''
-    llamada_obj: ID DOT cte_mtd_obj OP CP
-
+    llamada_obj : ID DOT cte_mtd_obj OP CP
     '''
+    p[0] = None
 
 def p_cte_mtd_obj(p):
     '''
@@ -506,6 +531,7 @@ def p_cte_mtd_obj(p):
                 | MU
                 | MD
     '''
+    p[0] = None
 
 def p_bool_cte(p):
     '''
@@ -513,47 +539,52 @@ def p_bool_cte(p):
              | FALSE
              | CFLT
     '''
+    p[0] = None
+
 def p_error(p):
     print("Syntax error found")
-    print(p)
-    p[0] = "incorrect"
-
-
 
 def p_empty(p):
     '''
     empty :
-
     '''
-    pass
-
+    p[0] = None
 
 parser = yacc.yacc()
 
-#def run(p):
-    #return p
+def run(p):
+    return p
 
+def parser():
 
-while True:
-    try:
-      reading = input('Test File > ')
-      correct = reading
-      correctFile = open(correct, 'r')
-      curr = correctFile.read()
-      correctFile.close()
-      if parser.parse(curr) == 'correct':
-         print("Compiled Correctly!")
-      
- 
-    except EOFError:
-      print("Error, Compiled Incorrectly")
-    if not reading: continue
+    while True:
 
+        try:
+            reading = input('Test File > ')
+            correct = reading
+            correctFile = open(correct, 'r')
+            curr = correctFile.read()
+            correctFile.close()
+            if parser.parse(curr) == 'correct':
+                print("Compiled Correctly!")
 
+        except EOFError:
+            print("Error, Compiled Incorrectly")
 
-#lexer.input("program test: { a = 1; b = a}") 
-#while True: 
-    #tok = lexer.token()
-    #if not tok:
-         #break
-    #print(tok)
+        if not reading:
+            continue
+
+def parser_file(file_name):
+
+    file = open(file_name)
+
+    while True:
+        line = file.readline()
+
+        if line:
+            parser.parse(line)
+
+        else:
+            break
+
+parser_file("tests/works_1.txt")
