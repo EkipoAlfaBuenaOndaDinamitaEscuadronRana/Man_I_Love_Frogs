@@ -1,0 +1,3 @@
+class Quadruple():
+  def resolve():
+    
