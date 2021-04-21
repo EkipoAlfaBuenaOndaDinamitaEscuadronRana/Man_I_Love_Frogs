@@ -33,8 +33,8 @@ class TestFuncTable(unittest.TestCase):
         ft.push_function("print_something", "void")
         self.assertEqual(ft.functions["print_something"], "void")
 
-        ft.push_function("calculate_something", "FLT")
-        self.assertEqual(ft.functions["calculate_something"], "FLT")
+        ft.push_function("calculate_something", "float")
+        self.assertEqual(ft.functions["calculate_something"], "float")
 
 class TestLexer(unittest.TestCase):
     def test_lexer(self):
@@ -66,8 +66,8 @@ class TestLexer(unittest.TestCase):
 
 class TestSemanticTable(unittest.TestCase):
     def test_considerate(self):
-        self.assertEqual(SemanticTable.considerate('FLT', '+', 'INT'), 'FLT')
-        self.assertEqual(SemanticTable.considerate('FLT', '-', 'NULL'), 'error')
-        self.assertEqual(SemanticTable.considerate('CHAR', '>', 'STR'), 'BOOL')
-        self.assertEqual(SemanticTable.considerate('NULL', '==', 'BOOL'), 'BOOL')
-        self.assertEqual(SemanticTable.considerate('DOUBLE', '+', 'CHAR'), 'error')
+        self.assertEqual(SemanticTable.considerate('FLT', 'ADD', 'INT'), 'FLT')
+        self.assertEqual(SemanticTable.considerate('FLT', 'SUB', 'NULL'), 'error')
+        self.assertEqual(SemanticTable.considerate('CHAR', 'LT', 'STR'), 'BOOL')
+        self.assertEqual(SemanticTable.considerate('NULL', 'BIN_EQ', 'BOOL'), 'BOOL')
+        self.assertEqual(SemanticTable.considerate('DOUBLE', 'ADD', 'CHAR'), 'error')

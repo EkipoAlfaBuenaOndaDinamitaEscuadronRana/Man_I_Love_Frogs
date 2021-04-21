@@ -1,8 +1,8 @@
 class SemanticTable:
     __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
-    __comparison_op = { '<', '>', '<=', '>=' }
-    __operations_op = { '+', '-', '+=', '-=', '*', '/', '%', '*=', '/=', '%=' }
-    __matching_op = { '==', '||', '&&' }
+    __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
+    __operations_op = { 'ADD', 'SUB', 'ADDEQ', 'SUBEQ', 'MUL', 'DIV', 'MOD', 'MULEQ', 'DIVEQ', 'MODEQ' }
+    __matching_op = { 'BIN_EQ', 'BIN_NOT_EQ', 'OR', 'AND' }
 
     __operations = {
         'INT' : {
