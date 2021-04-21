@@ -19,6 +19,7 @@ reserved = {
     'int' : 'INT',          #int 
     'float' : 'FLT',        #float
     'string' : 'STR',       #string
+    'char' : 'CHAR',        #char
     'bool' : 'BOOL',        #bool
     'player' : 'PLAYER',    #player
     'void' : 'VOID',        #void

@@ -1,5 +1,5 @@
 class SemanticTable:
-    __types = { 'INT', 'FLOAT', 'CHAR', 'STRING', 'BOOL', 'NULL' }
+    __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
     __comparison_op = { '<', '>', '<=', '>=' }
     __operations_op = { '+', '-', '+=', '-=', '*', '/', '%', '*=', '/=', '%=' }
     __matching_op = { '==', '||', '&&' }
@@ -7,54 +7,54 @@ class SemanticTable:
     __operations = {
         'INT' : {
             'INT': 'INT',
-            'FLOAT': 'FLOAT',
+            'FLT': 'FLT',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'error',
             'NULL': 'error'
         },
 
-        'FLOAT': {
-            'INT': 'FLOAT',
-            'FLOAT': 'FLOAT',
+        'FLT': {
+            'INT': 'FLT',
+            'FLT': 'FLT',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'error',
             'NULL': 'error'
         },
 
         'CHAR': {
             'INT': 'error',
-            'FLOAT': 'error',
-            'CHAR': 'STRING',
-            'STRING': 'STRING',
+            'FLT': 'error',
+            'CHAR': 'STR',
+            'STR': 'STR',
             'BOOL': 'error',
             'NULL': 'error'
         },
 
-        'STRING': {
+        'STR': {
             'INT': 'error',
-            'FLOAT': 'error',
-            'CHAR': 'STRING',
-            'STRING': 'STRING',
+            'FLT': 'error',
+            'CHAR': 'STR',
+            'STR': 'STR',
             'BOOL': 'error',
             'NULL': 'error'
         },
 
         'BOOL': {
             'INT': 'error',
-            'FLOAT': 'error',
+            'FLT': 'error',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'BOOL',
             'NULL': 'error'
         },
 
         'NULL': {
             'INT': 'error',
-            'FLOAT': 'error',
+            'FLT': 'error',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'error',
             'NULL': 'error'
         },
@@ -63,54 +63,54 @@ class SemanticTable:
     __comparison = {
         'INT': {
             'INT': 'BOOL',
-            'FLOAT': 'BOOL',
+            'FLT': 'BOOL',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'BOOL',
             'NULL': 'error'
         },
 
-        'FLOAT': {
+        'FLT': {
             'INT': 'BOOL',
-            'FLOAT': 'BOOL',
+            'FLT': 'BOOL',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'BOOL',
             'NULL': 'BOOL'
         },
 
         'CHAR': {
             'INT': 'error',
-            'FLOAT': 'error',
+            'FLT': 'error',
             'CHAR': 'BOOL',
-            'STRING': 'BOOL',
+            'STR': 'BOOL',
             'BOOL': 'error',
             'NULL': 'error'
         },
 
-        'STRING': {
+        'STR': {
             'INT': 'error',
-            'FLOAT': 'error',
+            'FLT': 'error',
             'CHAR': 'BOOL',
-            'STRING': 'BOOL',
+            'STR': 'BOOL',
             'BOOL': 'error',
             'NULL': 'error'
         },
 
         'BOOL': {
             'INT': 'error',
-            'FLOAT': 'error',
+            'FLT': 'error',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'BOOL',
             'NULL': 'BOOL'
         },
 
         'NULL': {
             'INT': 'error',
-            'FLOAT': 'error',
+            'FLT': 'error',
             'CHAR': 'error',
-            'STRING': 'error',
+            'STR': 'error',
             'BOOL': 'error',
             'NULL': 'error'
         }
