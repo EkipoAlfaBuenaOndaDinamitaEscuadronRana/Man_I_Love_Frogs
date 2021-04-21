@@ -6,6 +6,7 @@ python -m unittest unit_tests.py
 from symbol_table import *
 from lexer import *
 from yacc import *
+from semantic_table import *
 
 import unittest
 
@@ -62,3 +63,11 @@ class TestLexer(unittest.TestCase):
 
         self.assertEqual(lexer_values, expected_values)
         self.assertEqual(lexer_types, expected_types)
+
+class TestSemanticTable(unittest.TestCase):
+    def test_considerate(self):
+        self.assertEqual(SemanticTable.considerate('FLOAT', '+', 'INT'), 'FLOAT')
+        self.assertEqual(SemanticTable.considerate('FLOAT', '-', 'NULL'), 'error')
+        self.assertEqual(SemanticTable.considerate('CHAR', '>', 'STRING'), 'BOOL')
+        self.assertEqual(SemanticTable.considerate('NULL', '==', 'BOOL'), 'BOOL')
+        self.assertEqual(SemanticTable.considerate('DOUBLE', '+', 'CHAR'), 'error')
