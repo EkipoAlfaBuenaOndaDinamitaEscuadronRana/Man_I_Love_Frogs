@@ -4,7 +4,7 @@ class SemanticTable:
     __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
     __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
     __operations_op = { 'ADD', 'SUB', 'ADDEQ', 'SUBEQ', 'MUL', 'DIV', 'MOD', 'MULEQ', 'DIVEQ', 'MODEQ' }
-    __matching_op = { 'BIN_EQ', 'BIN_NOT_EQ', 'OR', 'AND' }
+    __matching_op = { 'BEQ', 'BNEQ', 'OR', 'AND' }
 
     __operations = {
         'INT' : {
@@ -118,17 +118,17 @@ class SemanticTable:
         }
     }
 
-    def considerate(exp_1, op, exp_2):
-        if not(exp_1 in SemanticTable.__types) or not(exp_2 in SemanticTable.__types):
+    def considerate(symbol_1, symbol_op, symbol_2):
+        if not(symbol_1.type in SemanticTable.__types) or not(symbol_2.type in SemanticTable.__types):
             return 'error'
 
-        elif op in SemanticTable.__operations_op:
-            return SemanticTable.__operations[exp_1][exp_2]
+        elif symbol_op.type == 'operation':
+            return SemanticTable.__operations[symbol_1.type][symbol_2.type]
 
-        elif op in SemanticTable.__comparison_op:
-            return SemanticTable.__comparison[exp_1][exp_2]
+        elif symbol_op.type == 'comparison':
+            return SemanticTable.__comparison[symbol_1.type][symbol_2.type]
 
-        elif op in SemanticTable.__matching_op: 
+        elif symbol_op.type == 'matching': 
             return 'BOOL'
 
         else:
