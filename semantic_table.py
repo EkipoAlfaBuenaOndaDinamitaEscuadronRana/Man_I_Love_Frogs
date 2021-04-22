@@ -144,10 +144,10 @@ class SemanticTable:
         # A * ( B + C * D - E) > B + (C * D - E)
 
         for symbol in expression:
-            if type(symbol) == Symbol:
-                stack_values.append(symbol)
-            elif type(symbol) == str:
-                poper.append(symbol)
+            if symbol.type in SemanticTable.__types:
+                stack_values.append(symbol.name)
+            elif symbol.type in ['operation', 'comparison', 'matching']:
+                poper.append(symbol.name)
             else:
                 return "No baila mi hija con el señor"
 
