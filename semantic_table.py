@@ -1,3 +1,5 @@
+from symbol_table import *
+
 class SemanticTable:
     __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
     __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
@@ -131,3 +133,22 @@ class SemanticTable:
 
         else:
             return 'error'
+
+    def arithmetic_expression(expression):
+        poper = []
+        stack_values = []
+        stack_types = []
+        final_ops = []
+
+        # i     i   f   i   f    i    f   i   f
+        # A * ( B + C * D - E) > B + (C * D - E)
+
+        for symbol in expression:
+            if type(symbol) == Symbol:
+                stack_values.append(symbol)
+            elif type(symbol) == str:
+                poper.append(symbol)
+            else:
+                return "No baila mi hija con el señor"
+
+        return final_ops
