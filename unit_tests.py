@@ -3,7 +3,7 @@ Para correr el archivo, usar este comando
 python -m unittest unit_tests.py
 '''
 
-from symbol_table import *
+from symbol_tables import *
 from lexer import *
 from yacc import *
 
@@ -17,24 +17,24 @@ class TestSymbol(unittest.TestCase):
 
 class TestVarTable(unittest.TestCase):
     def test_push_variable(self):
-        vt = VarTable()
+        vt = VariableTable()
 
         s = Symbol("variable", "int")
-        vt.push_variable(s, 12)
-        self.assertEqual(vt.variables[s], 12)
+        vt.set_variable(s, 12)
+        self.assertEqual(vt.variables[s.name], ["int", 12])
 
         s = Symbol("variable", "int")
-        vt.push_variable(s, 12)
-        self.assertEqual(vt.variables[s], 12)
+        vt.set_variable(s, 23)
+        self.assertEqual(vt.variables[s.name], ["int", 23])
 
 class TestFuncTable(unittest.TestCase):
     def test_push_function(self):
-        ft = FuncTable()
+        ft = FunctionTable()
 
-        ft.push_function("print_something", "void")
+        ft.set_function("print_something", "void")
         self.assertEqual(ft.functions["print_something"], "void")
 
-        ft.push_function("calculate_something", "float")
+        ft.set_function("calculate_something", "float")
         self.assertEqual(ft.functions["calculate_something"], "float")
 
 class TestLexer(unittest.TestCase):
@@ -50,7 +50,7 @@ class TestLexer(unittest.TestCase):
         ]
 
         expected_types = [
-            'PROGRAM', 'ID', 'COL', 'CCB', 'ID', 'EQ', 'CINT', 'SCOL', 'ID', 'EQ', 'TRUE', 'OCB'
+            'PROGRAM', 'ID', 'COL', 'OCB', 'ID', 'EQ', 'CINT', 'SCOL', 'ID', 'EQ', 'TRUE', 'CCB'
         ]
 
         while True: 

@@ -1,21 +1,30 @@
 from lexer import *
+from symbol_tables import *
 import ply.yacc as yacc
+
 
 def p_inicial(p):
     '''
     inicial : program empty
             | empty
     '''
-    print(run(p[1]))
+    #print(run(p[1]))
     p[0] = None
 
 
 def p_program(p):
     '''
-    program : PROGRAM ID SCOL
-            | PROGRAM ID SCOL bloque_g bloque
+    program : PROGRAM ID SCOL bloque_g bloque
+            | PROGRAM ID SCOL 
     '''
-    p[0] = None
+    #p[0] = None
+    #print(len(p))
+    print("p_program")
+    for i in range(len(p)):
+        print("p[" + str(i) + "]: " + str(p[i]))
+
+
+
 
 def p_bloque_g(p): 
     '''
@@ -23,7 +32,13 @@ def p_bloque_g(p):
              | func bloque_g
              | empty
     '''
-    p[0] = None
+    #p[0] = None
+    print("p_bloque_g")
+    for i in range(len(p)):
+        print("p[" + str(i) + "]: " + str(p[i]))
+
+    
+
 
 def p_var(p):
     '''
@@ -80,7 +95,12 @@ def p_bloque(p):
     '''
     bloque : OCB bloque1
     '''
-    p[0] = None
+    #p[0] = None
+    print("p_bloque")
+    for i in range(len(p)):
+        print("p[" + str(i) + "]: " + str(p[i]))
+
+    
 
 def p_bloque1(p):
     '''
@@ -88,6 +108,11 @@ def p_bloque1(p):
             | CCB
     '''
     p[0] = None
+
+    print("p_bloque1")
+    for i in range(len(p)):
+        print("p[" + str(i) + "]: " + str(p[i]))
+
 
 def p_estatuto(p):
     '''
@@ -101,11 +126,21 @@ def p_estatuto(p):
     '''
     p[0] = None
 
+    print("p_estatuto")
+    for i in range(len(p)):
+        print("p[" + str(i) + "]: " + str(p[i]))
+
+
 def p_asignatura(p):
     '''
     asignatura : id_var EQ expresion
     '''
     p[0] = None
+
+    print("p_asignatura")
+    for i in range(len(p)):
+        print("p[" + str(i) + "]: " + str(p[i]))
+
 
 def p_condicion(p):
     '''
@@ -371,6 +406,7 @@ def p_bool_cte(p):
 
 def p_error(p):
     print("Syntax error found")
+    print(p)
 
 def p_empty(p):
     '''

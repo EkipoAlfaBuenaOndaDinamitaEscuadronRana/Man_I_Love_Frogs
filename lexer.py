@@ -82,8 +82,8 @@ t_SCOL = r'\;'
 t_COMMA = r'\,'
 t_DOT = r'\.'
 t_COL = r'\:'
-t_OCB = r'\}'
-t_CCB = r'\{'
+t_OCB = r'\{'
+t_CCB = r'\}'
 t_OP = r'\('
 t_CP = r'\)'
 t_OSB = r'\['
@@ -111,9 +111,15 @@ t_MODEQ = r'\%\='
 
 t_ignore = r' '
 
+def t_tab(t):
+    r'\t+'
+    #print("tab found!")
+
+    t.lexer.lineno += len(t.value)
 
 def t_NL(t):
     r'\n+'
+    #print("newline found!")
     t.lexer.lineno += len(t.value)
 
 # def t_CBOOL(t):
