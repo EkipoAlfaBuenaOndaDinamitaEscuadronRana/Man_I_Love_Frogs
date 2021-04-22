@@ -12,6 +12,8 @@ import unittest
 class TestSymbol(unittest.TestCase):
     def test_symbol(self):
         s = Symbol("variable", "int")
+        self.assertEqual(s.name, "variable")
+        self.assertEqual(s.type, "int")
 
 class TestVarTable(unittest.TestCase):
     def test_push_variable(self):
