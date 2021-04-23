@@ -90,3 +90,31 @@ class TestSemanticTable(unittest.TestCase):
         self.assertEqual(SemanticTable.considerate(s_char, s_lt, s_str), 'BOOL')
         self.assertEqual(SemanticTable.considerate(s_null, s_beq, s_bool), 'BOOL')
         self.assertEqual(SemanticTable.considerate(s_doub, s_add, s_char), 'error')
+
+class TestSemanticTable(unittest.TestCase):
+    def test_arithmetic_expression(self):
+        expression = [ # A + B * C / D - E * F
+            Symbol("A", "INT"),
+            Symbol("ADD", "operation"),
+            Symbol("B", "FLT"),
+            Symbol("MUL", "operation"),
+            Symbol("C", "FLT"),
+            Symbol("DIV", "operation"),
+            Symbol("D", "FLT"),
+            Symbol("SUB", "operation"),
+            Symbol("E", "FLT"),
+            Symbol("MUL", "operation"),
+            Symbol("F", "FLT")
+        ]
+
+        expected_response = [
+            Cuadruple("MUL", "B", "C", "T1"),
+            Cuadruple("DIV", "T1", "D", "T2"),
+            Cuadruple("SUM", "A", "T2", "T3"),
+            Cuadruple("MUL", "E", "F", "T4"),
+            Cuadruple("SUB", "T3", "T4", "T5")
+        ]
+
+        response = SemanticTable.arithmetic_expression(expression)
+
+        self.assertEqual(response, expected_response)

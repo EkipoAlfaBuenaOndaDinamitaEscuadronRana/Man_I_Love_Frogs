@@ -1,4 +1,5 @@
 from symbol_table import *
+from cuadruple import *
 
 class SemanticTable:
     __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
@@ -134,21 +135,35 @@ class SemanticTable:
         else:
             return 'error'
 
+    '''
+    A list of Symbols must be provided
+    example = [Symbol("A", "INT"), Symbol("ADD", "operation"), Symbol("B", "FLT")]
+    '''
     def arithmetic_expression(expression):
-        poper = []
-        stack_values = []
-        stack_types = []
+                                # Examples:
+        stack_operands = []     # ["A", "B"]
+        stack_operators = []    # ["ADD"]
+        stack_types = []        # ["INT", "FLT"]
+
         final_ops = []
 
-        # i     i   f   i   f    i    f   i   f
-        # A * ( B + C * D - E) > B + (C * D - E)
+        result_cuadruple_id = 1
 
         for symbol in expression:
             if symbol.type in SemanticTable.__types:
-                stack_values.append(symbol.name)
+                stack_operands.append(symbol.name)
+                stack_types.append(symbol.type)
             elif symbol.type in ['operation', 'comparison', 'matching']:
-                poper.append(symbol.name)
+                stack_operators.append(symbol.name)
             else:
-                return "No baila mi hija con el señor"
+                return "error: type {} not found".format(symbol.type)
+
+        for operand in stack_operators:
+            if len(final_ops) == 0:
+                final_ops.append(Cuadruple(operand, stack_operands.pop(), stack_operands.pop(), "T" + str(result_cuadruple_id)))
+            else:
+                final_ops.append(Cuadruple(operand, stack_operands.pop(), final_ops[len(final_ops) - 1].result_id, "T" + str(result_cuadruple_id)))
+
+            result_cuadruple_id += 1
 
         return final_ops
