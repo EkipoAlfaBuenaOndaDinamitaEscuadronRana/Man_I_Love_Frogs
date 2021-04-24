@@ -5,5 +5,5 @@ class Cuadruple(object):
         self.operand_2 = operand_2
         self.result_id = result_id
 
-    def print_cuadruple(self):
-        print("{} {} {} {}".format(self.operator, self.operand_1, self.operand_2, self.result_id))
+    def format_cuadruple(self):
+        return "{} {} {} {}".format(self.operator, self.operand_1, self.operand_2, self.result_id)

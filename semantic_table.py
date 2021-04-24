@@ -155,6 +155,8 @@ class SemanticTable:
                 stack_types.append(symbol.type)
             elif symbol.type in ['operation', 'comparison', 'matching']:
                 stack_operators.append(symbol.name)
+            elif symbol.type == "parentheses":
+                pass
             else:
                 return "error: type {} not found".format(symbol.type)
 
