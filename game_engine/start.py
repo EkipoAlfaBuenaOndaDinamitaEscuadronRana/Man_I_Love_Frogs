@@ -9,21 +9,24 @@ speed = 30
 display_width = 500
 display_height = 300
 
-#                     x  y  width height speed
-character = Character(0, 0, 30,   30,    10)
+characters = [
+    #         x  y   width height speed
+    Character(0, 0,  30,   30,    10),
+    Character(0, 50, 30,   30,    10)
+]
 
-def userMoves(pressed_key):
+def userMoves(character, pressed_key):
     if pressed_key[pygame.K_DOWN] or pressed_key[pygame.K_s]:
-        character.moversePaAbajito(display_height)
+        character.move_down(display_height)
 
     if pressed_key[pygame.K_UP] or pressed_key[pygame.K_w]:
-        character.moversePaRribita()
+        character.move_up()
 
     if pressed_key[pygame.K_RIGHT] or pressed_key[pygame.K_d]:
-        character.moversePaLaDerecha(display_width)
+        character.move_right(display_width)
 
     if pressed_key[pygame.K_LEFT] or pressed_key[pygame.K_a]:
-        character.moversePaLaIzquierda()
+        character.move_left()
 
 def checkIfUserQuit(pressed_key):
     for event in pygame.event.get():
@@ -39,12 +42,15 @@ pygame.display.set_caption("Super compi que no tiene nombre todavia")
 while True:
     clock.tick(speed)
     pressed_key = pygame.key.get_pressed()
+    
+    checkIfUserQuit(pressed_key)
 
-    userMoves(pressed_key)
-    checkIfUserQuit(pressed_key)   
+    for character in characters:
+        userMoves(character, pressed_key)
 
     display.fill((0, 0, 0))
-    # pygame.draw.rect(display, (255, 255, 255), (character_x, character_y, character_width, character_height))
-    pygame.draw.rect(display, (255, 255, 255), (character.x, character.y, character.width, character.height))
+
+    for character in characters:
+        pygame.draw.rect(display, (255, 255, 255), (character.x, character.y, character.width, character.height))
 
     pygame.display.update()
