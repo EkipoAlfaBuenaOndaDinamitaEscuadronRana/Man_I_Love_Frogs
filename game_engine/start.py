@@ -37,6 +37,7 @@ instructions = [
     Instruction('Dino Adrian',    'right')
 ]
 
+# TODO: This method is only used for testing. Remove if necesary
 def userMoves(character, pressed_key):
     if pressed_key[pygame.K_DOWN] or pressed_key[pygame.K_s]:
         character.move_down(display_height)
