@@ -120,4 +120,5 @@ class TestSemanticTable(unittest.TestCase):
         ]
 
         response = SemanticTable.arithmetic_expression(expression)
-        # self.assertEqual(response, expected_response)
+
+        self.assertEqual(response, expected_response)

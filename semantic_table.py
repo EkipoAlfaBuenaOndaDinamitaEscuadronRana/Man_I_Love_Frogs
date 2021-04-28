@@ -2,11 +2,16 @@ from symbol_table import *
 from cuadruple import *
 
 class SemanticTable:
-    __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
+    #                    <     >     <=     >=
     __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
+
+    #                    +      -      +=       -=       *=     /=     %      *=       /=       %=
     __operations_op = { 'ADD', 'SUB', 'ADDEQ', 'SUBEQ', 'MUL', 'DIV', 'MOD', 'MULEQ', 'DIVEQ', 'MODEQ' }
+
+    #                  ==     !=      ||    &&
     __matching_op = { 'BEQ', 'BNEQ', 'OR', 'AND' }
 
+    __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
     __operations = {
         'INT' : {
             'INT': 'INT',
@@ -119,6 +124,23 @@ class SemanticTable:
         }
     }
 
+    def __another_op_mdr_in_stack(stack_operands):
+        any(item in ['MUL', 'DIV', 'MOD'] for item in stack_operands)
+
+    def __another_op_as_in_stack(stack_operands):
+        any(item in ['ADD', 'SUB'] for item in stack_operands)
+
+    def __generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops):
+        result_id = "T" + str(result_cuadruple_id)
+        
+        q = Cuadruple(stack_operators.pop(), stack_operands[-2], stack_operands[-1], result_id)
+        final_ops.append(q)
+
+        del stack_operands[-2:]
+
+        stack_operands.append(result_id)
+        return result_cuadruple_id + 1
+
     def considerate(symbol_1, symbol_op, symbol_2):
         if not(symbol_1.type in SemanticTable.__types) or not(symbol_2.type in SemanticTable.__types):
             return 'error'
@@ -146,26 +168,75 @@ class SemanticTable:
         stack_types = []        # ["INT", "FLT"]
 
         final_ops = []
-
         result_cuadruple_id = 1
 
         for symbol in expression:
-            if symbol.type in SemanticTable.__types:
+
+            s_type = symbol.type
+            s_name = symbol.name
+
+            # is a constant or an ID
+            if s_type in SemanticTable.__types:
                 stack_operands.append(symbol.name)
                 stack_types.append(symbol.type)
-            elif symbol.type in ['operation', 'comparison', 'matching']:
-                stack_operators.append(symbol.name)
-            elif symbol.type == "parentheses":
+
+            # is an operator
+            elif s_type in ['operation', 'comparison', 'matching']:
+
+                # Multiplication and division case
+                if s_name in ['MUL', 'DIV']:
+
+                    if SemanticTable.__another_op_mdr_in_stack(stack_operands):
+                        result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+
+                # Addition and substraction case
+                elif s_name in ['ADD', 'SUB']:
+
+                    # There is another multiplication  
+                    if SemanticTable.__another_op_mdr_in_stack(stack_operands) or \
+                       SemanticTable.__another_op_as_in_stack(stack_operands):
+                        result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+
+                        if SemanticTable.__another_op_as_in_stack(stack_operands):
+                            result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+
+                stack_operators.append(s_name)
+
+            # is a parenthesis
+            elif s_type == "parentheses":
                 pass
+
+            # is an unknown character
             else:
                 return "error: type {} not found".format(symbol.type)
 
-        for operand in stack_operators:
-            if len(final_ops) == 0:
-                final_ops.append(Cuadruple(operand, stack_operands.pop(), stack_operands.pop(), "T" + str(result_cuadruple_id)))
-            else:
-                final_ops.append(Cuadruple(operand, stack_operands.pop(), final_ops[len(final_ops) - 1].result_id, "T" + str(result_cuadruple_id)))
-
-            result_cuadruple_id += 1
+        while len(stack_operators):
+            result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
 
         return final_ops
+
+expression = [ # A + B * C / D - E * F
+    Symbol("A", "INT"),
+    Symbol("ADD", "operation"),
+    Symbol("B", "FLT"),
+    Symbol("MUL", "operation"),
+    Symbol("C", "FLT"),
+    Symbol("DIV", "operation"),
+    Symbol("D", "FLT"),
+    Symbol("SUB", "operation"),
+    Symbol("E", "FLT"),
+    Symbol("MUL", "operation"),
+    Symbol("F", "FLT")
+]
+
+test = SemanticTable.arithmetic_expression(expression)
+
+for i in test:
+    print(i.format_cuadruple())
+
+
+print()
+print()
+print()
+print()
+print(test[0].operator)
