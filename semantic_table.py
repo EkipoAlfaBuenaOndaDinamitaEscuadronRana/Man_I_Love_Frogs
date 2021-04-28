@@ -2,6 +2,8 @@ from symbol_table import *
 from cuadruple import *
 
 class SemanticTable:
+    __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
+
     #                    <     >     <=     >=
     __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
 
@@ -11,7 +13,6 @@ class SemanticTable:
     #                  ==     !=      ||    &&
     __matching_op = { 'BEQ', 'BNEQ', 'OR', 'AND' }
 
-    __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
     __operations = {
         'INT' : {
             'INT': 'INT',
@@ -170,35 +171,54 @@ class SemanticTable:
         final_ops = []
         result_cuadruple_id = 1
 
+        '''
+            Solo se calcula cuando hay un * o dos + en el poper
+        '''
+
+        # A + B * C / D - E * F
+
+        # operators = + 
+        # operands  = A T2
+
+        '''
+            * B  C  T1
+            / T1 D  T2
+        '''
+
+        '''
+
+        '''
+
         for symbol in expression:
 
             s_type = symbol.type
             s_name = symbol.name
 
-            # is a constant or an ID
+            # is an operand
             if s_type in SemanticTable.__types:
                 stack_operands.append(s_name)
-                stack_types.append(symbol.type)
+                stack_types.append(s_type)
 
             # is an operator
             elif s_type in ['operation', 'comparison', 'matching']:
 
-                # Multiplication and division case
-                if s_name in ['MUL', 'DIV']:
+                if s_name in ['MUL', 'DIV', 'MOD']:
 
+                    # There is another operator of multiplication, division or residue
                     if SemanticTable.__another_op_mdr_in_stack(stack_operators):
                         result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
 
                 # Addition and substraction case
                 elif s_name in ['ADD', 'SUB']:
 
-                    # There is another multiplication  
+                    # There is another operator on the stack
                     if SemanticTable.__another_op_mdr_in_stack(stack_operators) or \
                        SemanticTable.__another_op_as_in_stack(stack_operators):
                         result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
 
-                        if SemanticTable.__another_op_as_in_stack(stack_operands):
-                            result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+                    # There is another operator of sum or addition
+                    if SemanticTable.__another_op_as_in_stack(stack_operands):
+                        result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
 
                 stack_operators.append(s_name)
 
@@ -208,7 +228,7 @@ class SemanticTable:
 
             # is an unknown character
             else:
-                return "error: type {} not found".format(symbol.type)
+                return "error: type {} not found".format(s_type)
 
         while len(stack_operators):
             result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
@@ -230,9 +250,6 @@ expression = [ # A + B * C / D - E * F
 ]
 
 test = SemanticTable.arithmetic_expression(expression)
-
-print()
-print()
 
 for i in test:
     print(i.format_cuadruple())

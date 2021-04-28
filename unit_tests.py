@@ -114,7 +114,7 @@ class TestSemanticTable(unittest.TestCase):
         expected_response = [
             Cuadruple("MUL", "B", "C", "T1"),
             Cuadruple("DIV", "T1", "D", "T2"),
-            Cuadruple("SUM", "A", "T2", "T3"),
+            Cuadruple("ADD", "A", "T2", "T3"),
             Cuadruple("MUL", "E", "F", "T4"),
             Cuadruple("SUB", "T3", "T4", "T5")
         ]
