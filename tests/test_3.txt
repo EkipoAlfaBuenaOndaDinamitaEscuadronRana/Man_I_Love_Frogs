@@ -1,0 +1,5 @@
+program test_no; 
+string a = "hola";
+{
+    int a = b;
+}
