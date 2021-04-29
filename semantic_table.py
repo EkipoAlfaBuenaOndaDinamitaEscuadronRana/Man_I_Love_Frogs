@@ -1,8 +1,7 @@
 from symbol_table import *
-from quadruple import *
 
 class SemanticTable:
-    __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
+    types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
 
     #                    <     >     <=     >=
     __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
@@ -125,25 +124,8 @@ class SemanticTable:
         }
     }
 
-    def __another_op_mdr_in_stack(stack_operators):
-        return any(item in ['MUL', 'DIV', 'MOD'] for item in stack_operators)
-
-    def __another_op_as_in_stack(stack_operators):
-        return any(item in ['ADD', 'SUB'] for item in stack_operators)
-
-    def __generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops):
-        result_id = "T" + str(result_quadruple_id)
-        
-        q = Quadruple(stack_operators.pop(), stack_operands[-2], stack_operands[-1], result_id)
-        final_ops.append(q)
-
-        del stack_operands[-2:]
-
-        stack_operands.append(result_id)
-        return result_quadruple_id + 1
-
     def considerate(symbol_1, symbol_op, symbol_2):
-        if not(symbol_1.type in SemanticTable.__types) or not(symbol_2.type in SemanticTable.__types):
+        if not(symbol_1.type in SemanticTable.types) or not(symbol_2.type in SemanticTable.types):
             return 'error'
 
         elif symbol_op.type == 'operation':
@@ -157,62 +139,3 @@ class SemanticTable:
 
         else:
             return 'error'
-
-    '''
-    A list of Symbols must be provided
-    example = [Symbol("A", "INT"), Symbol("ADD", "operation"), Symbol("B", "FLT")]
-    '''
-    def arithmetic_expression(expression):
-                                # Examples:
-        stack_operands = []     # ["A", "B"]
-        stack_operators = []    # ["ADD"]
-        stack_types = []        # ["INT", "FLT"]
-
-        final_ops = []
-        result_quadruple_id = 1
-
-        for symbol in expression:
-
-            s_type = symbol.type # operation
-            s_name = symbol.name # +
-
-            # is an operand
-            if s_type in SemanticTable.__types:
-                stack_operands.append(s_name)
-                stack_types.append(s_type)
-
-            # is an operator
-            elif s_type in ['operation', 'comparison', 'matching']:
-
-                if s_name in ['MUL', 'DIV', 'MOD']:
-
-                    # There is another operator of multiplication, division or residue
-                    if SemanticTable.__another_op_mdr_in_stack(stack_operators):
-                        result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
-
-                # Addition and substraction case
-                elif s_name in ['ADD', 'SUB']:
-
-                    # There is another operator on the stack
-                    if SemanticTable.__another_op_mdr_in_stack(stack_operators) or \
-                       SemanticTable.__another_op_as_in_stack(stack_operators):
-                        result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
-
-                        # There is another operator of sum or addition
-                        if SemanticTable.__another_op_as_in_stack(stack_operators):
-                            result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
-
-                stack_operators.append(s_name)
-
-            # is a parenthesis
-            elif s_type == "parentheses":
-                pass
-
-            # is an unknown character
-            else:
-                return "error: type {} not found".format(s_type)
-
-        while len(stack_operators):
-            result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
-
-        return final_ops
