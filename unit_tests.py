@@ -92,7 +92,8 @@ class TestSemanticTable(unittest.TestCase):
 
 class TestQuadruple(unittest.TestCase):
     def test_arithmetic_expression(self):
-        expression = [ # A + B * C / D - E * F
+        expression_in_string = 'A + B * C / D - E * F'
+        expression_in_symbols = [ 
             Symbol("A", "INT"),
             Symbol("ADD", "operation"),
             Symbol("B", "FLT"),
@@ -115,18 +116,35 @@ class TestQuadruple(unittest.TestCase):
         ]
 
         response = []
-
-        for quad in Quadruple.arithmetic_expression(expression):
+        for quad in Quadruple.arithmetic_expression(expression_in_symbols):
             response.append(quad.format_quadruple())
+        self.assertEqual(response, expected_response)
 
+        response = []
+        for quad in Quadruple.arithmetic_expression(expression_in_string):
+            response.append(quad.format_quadruple())
         self.assertEqual(response, expected_response)
 
     def test_format_expression(self):
-        in_string_with_spaces = "A + B * C / D - E * F"
-        in_string_without_spaces = "A+B*C/D-E*F"
-        in_list_of_strings = list(in_string_without_spaces)
+        in_string_with_spaces = "Ab + B * C / D - E * F"
+        in_string_without_spaces = "Ab+B*C/D-E*F"
+
+        in_list_of_strings = [
+            'Ab',
+            '+',
+            'B',
+            '*',
+            'C',
+            '/',
+            'D',
+            '-',
+            'E',
+            '*',
+            'F',
+        ]
+
         in_list_of_symbols = [
-            Symbol("A", "FLT"),
+            Symbol("Ab", "FLT"),
             Symbol("ADD", "operation"),
             Symbol("B", "FLT"),
             Symbol("MUL", "operation"),
@@ -139,10 +157,10 @@ class TestQuadruple(unittest.TestCase):
             Symbol("F", "FLT")
         ]
 
-        # self.assertEqual(Quadruple.format_expression(in_string_with_spaces), in_list_of_symbols)
-        # self.assertEqual(Quadruple.format_expression(in_string_without_spaces), in_list_of_symbols)
-        # self.assertEqual(Quadruple.format_expression(in_list_of_strings), in_list_of_symbols)
-        # self.assertEqual(Quadruple.format_expression(in_list_of_symbols), in_list_of_symbols)
+        self.assertEqual(Quadruple.format_expression(in_string_with_spaces), in_list_of_symbols)
+        self.assertEqual(Quadruple.format_expression(in_string_without_spaces), in_list_of_symbols)
+        self.assertEqual(Quadruple.format_expression(in_list_of_strings), in_list_of_symbols)
+        self.assertEqual(Quadruple.format_expression(in_list_of_symbols), in_list_of_symbols)
 
     def test_format_quadruple(self):
         q = Quadruple("MUL", "B", "C", "T1")

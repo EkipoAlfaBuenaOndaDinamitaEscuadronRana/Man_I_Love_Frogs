@@ -8,6 +8,24 @@ class Quadruple(object):
         self.operand_2 = operand_2
         self.result_id = result_id
 
+    def __divide_expression(expression):
+        exp = []
+        operand = ""
+
+        for symbol in expression:
+            if symbol in ["+", "-", "*", "/", "%"]:
+                exp.append(operand)
+                exp.append(symbol)
+                operand = ""
+
+            else:
+                operand += symbol
+
+        if len(operand):
+            exp.append(operand)
+
+        return exp
+
     def __another_op_mdr_in_stack(stack_operators):
         return any(item in ["MUL", "DIV", "MOD"] for item in stack_operators)
 
@@ -42,7 +60,7 @@ class Quadruple(object):
         result_quadruple_id = 1
 
         # for symbol in format_expression(expression):
-        for symbol in expression:
+        for symbol in Quadruple.format_expression(expression):
 
             s_type = symbol.type  # operation
             s_name = symbol.name  # +
@@ -120,16 +138,15 @@ class Quadruple(object):
 
         if type(expression) == str:
             expression = expression.replace(" ", "")
-            expression = [char for char in expression]
+            expression = Quadruple.__divide_expression(expression)
 
         for symbol in expression:
-
             s_type = type(symbol)
 
             if s_type == Symbol:
-                continue
+                response.append(symbol)
 
-            if s_type == str:
+            elif s_type == str:
                 operators = {
                     "+": Symbol("ADD", "operation"),
                     "-": Symbol("SUB", "operation"),
@@ -137,7 +154,7 @@ class Quadruple(object):
                     "/": Symbol("DIV", "operation"),
                     "%": Symbol("MOD", "operation"),
                     "<": Symbol("LT", "comparison"),
-                    ">": Symbol("gT", "comparison"),
+                    ">": Symbol("GT", "comparison"),
                     "<=": Symbol("LTE", "comparison"),
                     ">=": Symbol("GTE", "comparison"),
                     "==": Symbol("BEQ", "matching"),
@@ -147,5 +164,5 @@ class Quadruple(object):
                 }
 
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
-
+        
         return response
