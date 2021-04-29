@@ -1,9 +1,15 @@
 from symbol_table import *
 
 class SemanticTable:
-    __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
+    types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
+
+    #                    <     >     <=     >=
     __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
+
+    #                    +      -      +=       -=       *=     /=     %      *=       /=       %=
     __operations_op = { 'ADD', 'SUB', 'ADDEQ', 'SUBEQ', 'MUL', 'DIV', 'MOD', 'MULEQ', 'DIVEQ', 'MODEQ' }
+
+    #                  ==     !=      ||    &&
     __matching_op = { 'BEQ', 'BNEQ', 'OR', 'AND' }
 
     __operations = {
@@ -119,7 +125,7 @@ class SemanticTable:
     }
 
     def considerate(symbol_1, symbol_op, symbol_2):
-        if not(symbol_1.type in SemanticTable.__types) or not(symbol_2.type in SemanticTable.__types):
+        if not(symbol_1.type in SemanticTable.types) or not(symbol_2.type in SemanticTable.types):
             return 'error'
 
         elif symbol_op.type == 'operation':
