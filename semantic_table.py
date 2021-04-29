@@ -1,5 +1,5 @@
 from symbol_table import *
-from cuadruple import *
+from quadruple import *
 
 class SemanticTable:
     __types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
@@ -131,16 +131,16 @@ class SemanticTable:
     def __another_op_as_in_stack(stack_operators):
         return any(item in ['ADD', 'SUB'] for item in stack_operators)
 
-    def __generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops):
-        result_id = "T" + str(result_cuadruple_id)
+    def __generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops):
+        result_id = "T" + str(result_quadruple_id)
         
-        q = Cuadruple(stack_operators.pop(), stack_operands[-2], stack_operands[-1], result_id)
+        q = Quadruple(stack_operators.pop(), stack_operands[-2], stack_operands[-1], result_id)
         final_ops.append(q)
 
         del stack_operands[-2:]
 
         stack_operands.append(result_id)
-        return result_cuadruple_id + 1
+        return result_quadruple_id + 1
 
     def considerate(symbol_1, symbol_op, symbol_2):
         if not(symbol_1.type in SemanticTable.__types) or not(symbol_2.type in SemanticTable.__types):
@@ -169,24 +169,8 @@ class SemanticTable:
         stack_types = []        # ["INT", "FLT"]
 
         final_ops = []
-        result_cuadruple_id = 1
+        result_quadruple_id = 1
 
-        #   x
-        # A + B * C / D - E * F
-
-        # operators = 
-        # operands  = T1
-
-        # * A B T1
-
-        '''
-            * B  C  T1
-            / T1 D  T2
-            + T2 A  T3
-            * E  F  T4
-            - T3 T4 T5
-        '''
-        
         for symbol in expression:
 
             s_type = symbol.type # operation
@@ -204,7 +188,7 @@ class SemanticTable:
 
                     # There is another operator of multiplication, division or residue
                     if SemanticTable.__another_op_mdr_in_stack(stack_operators):
-                        result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+                        result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
 
                 # Addition and substraction case
                 elif s_name in ['ADD', 'SUB']:
@@ -212,11 +196,11 @@ class SemanticTable:
                     # There is another operator on the stack
                     if SemanticTable.__another_op_mdr_in_stack(stack_operators) or \
                        SemanticTable.__another_op_as_in_stack(stack_operators):
-                        result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+                        result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
 
                         # There is another operator of sum or addition
                         if SemanticTable.__another_op_as_in_stack(stack_operators):
-                            result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+                            result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
 
                 stack_operators.append(s_name)
 
@@ -229,25 +213,6 @@ class SemanticTable:
                 return "error: type {} not found".format(s_type)
 
         while len(stack_operators):
-            result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+            result_quadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_quadruple_id, final_ops)
 
         return final_ops
-
-expression = [ # A + B * C / D - E * F
-    Symbol("A", "INT"),
-    Symbol("ADD", "operation"),
-    Symbol("B", "FLT"),
-    Symbol("MUL", "operation"),
-    Symbol("C", "FLT"),
-    Symbol("DIV", "operation"),
-    Symbol("D", "FLT"),
-    Symbol("SUB", "operation"),
-    Symbol("E", "FLT"),
-    Symbol("MUL", "operation"),
-    Symbol("F", "FLT")
-]
-
-test = SemanticTable.arithmetic_expression(expression)
-
-for i in test:
-    print(i.format_cuadruple())

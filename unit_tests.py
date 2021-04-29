@@ -92,8 +92,8 @@ class TestSemanticTable(unittest.TestCase):
 
 class TestCuadruple(unittest.TestCase):
     def test_cuadruple(self):
-        c = Cuadruple("MUL", "B", "C", "T1")
-        self.assertEqual(c.format_cuadruple(), "MUL B C T1")
+        q = Quadruple("MUL", "B", "C", "T1")
+        self.assertEqual(q.format_quadruple(), "MUL B C T1")
 
 class TestSemanticTable(unittest.TestCase):
     def test_arithmetic_expression(self):
@@ -112,13 +112,16 @@ class TestSemanticTable(unittest.TestCase):
         ]
 
         expected_response = [
-            Cuadruple("MUL", "B",  "C",  "T1"),
-            Cuadruple("DIV", "T1", "D",  "T2"),
-            Cuadruple("ADD", "A",  "T2", "T3"),
-            Cuadruple("MUL", "E",  "F",  "T4"),
-            Cuadruple("SUB", "T3", "T4", "T5")
+            "MUL B C T1",
+            "DIV T1 D T2",
+            "ADD A T2 T3",
+            "MUL E F T4",
+            "SUB T3 T4 T5"
         ]
 
-        response = SemanticTable.arithmetic_expression(expression)
+        response = []
+
+        for quad in SemanticTable.arithmetic_expression(expression):
+            response.append(quad.format_quadruple())
 
         self.assertEqual(response, expected_response)
