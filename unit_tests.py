@@ -92,7 +92,14 @@ class TestSemanticTable(unittest.TestCase):
 
 class TestQuadruple(unittest.TestCase):
     def test_arithmetic_expression(self):
-        expression_in_string = 'A + B * C / D - E * F'
+        expected_response = [
+            'MUL B C T1',
+            'DIV T1 D T2',
+            'ADD A T2 T3',
+            'MUL E F T4',
+            'SUB T3 T4 T5'
+        ]
+
         expression_in_symbols = [ 
             Symbol('A', 'INT'),
             Symbol('ADD', 'operation'),
@@ -106,28 +113,32 @@ class TestQuadruple(unittest.TestCase):
             Symbol('MUL', 'operation'),
             Symbol('F', 'FLT')
         ]
-
-        expected_response = [
-            'MUL B C T1',
-            'DIV T1 D T2',
-            'ADD A T2 T3',
-            'MUL E F T4',
-            'SUB T3 T4 T5'
-        ]
-
         response = []
         for quad in Quadruple.arithmetic_expression(expression_in_symbols):
             response.append(quad.format_quadruple())
         self.assertEqual(response, expected_response)
 
+        expression_in_string = 'A + B * C / D - E * F'
         response = []
         for quad in Quadruple.arithmetic_expression(expression_in_string):
             response.append(quad.format_quadruple())
         self.assertEqual(response, expected_response)
 
+        expression_with_parentheses = 'A + B * ( C - D )'
+        expected_response_parentheses = [
+            'SUB C D T1',
+            'MUL B T1 T2',
+            'ADD A T2 T3'
+        ]
+
+        response = []
+        for quad in Quadruple.arithmetic_expression(expression_with_parentheses):
+            response.append(quad.format_quadruple())
+        self.assertEqual(response, expected_response_parentheses)
+
     def test_format_expression(self):
-        in_string_with_spaces = 'Ab + B * C / D - E * F'
-        in_string_without_spaces = 'Ab+B*C/D-E*F'
+        in_string_with_spaces = 'Ab + B * C / ( D - E ) * F'
+        in_string_without_spaces = 'Ab+B*C/(D-E)*F'
 
         in_list_of_strings = [
             'Ab',
@@ -136,9 +147,11 @@ class TestQuadruple(unittest.TestCase):
             '*',
             'C',
             '/',
+            '(',
             'D',
             '-',
             'E',
+            ')',
             '*',
             'F',
         ]
@@ -150,9 +163,11 @@ class TestQuadruple(unittest.TestCase):
             Symbol('MUL', 'operation'),
             Symbol('C', 'FLT'),
             Symbol('DIV', 'operation'),
+            Symbol('OP', 'parentheses'),
             Symbol('D', 'FLT'),
             Symbol('SUB', 'operation'),
             Symbol('E', 'FLT'),
+            Symbol('CP', 'parentheses'),
             Symbol('MUL', 'operation'),
             Symbol('F', 'FLT')
         ]
