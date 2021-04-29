@@ -160,7 +160,7 @@ class Quadruple(object):
                     "==": Symbol("BEQ", "matching"),
                     "!=": Symbol("BNEQ", "matching"),
                     "||": Symbol("OR", "matching"),
-                    "&&": Symbol("AND", "matching"),
+                    "&&": Symbol("AND", "matching")
                 }
 
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
