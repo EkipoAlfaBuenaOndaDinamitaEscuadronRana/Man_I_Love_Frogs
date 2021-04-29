@@ -171,28 +171,26 @@ class SemanticTable:
         final_ops = []
         result_cuadruple_id = 1
 
-        '''
-            Solo se calcula cuando hay un * o dos + en el poper
-        '''
-
+        #   x
         # A + B * C / D - E * F
 
-        # operators = + 
-        # operands  = A T2
+        # operators = 
+        # operands  = T1
+
+        # * A B T1
 
         '''
             * B  C  T1
             / T1 D  T2
+            + T2 A  T3
+            * E  F  T4
+            - T3 T4 T5
         '''
-
-        '''
-
-        '''
-
+        
         for symbol in expression:
 
-            s_type = symbol.type
-            s_name = symbol.name
+            s_type = symbol.type # operation
+            s_name = symbol.name # +
 
             # is an operand
             if s_type in SemanticTable.__types:
@@ -216,9 +214,9 @@ class SemanticTable:
                        SemanticTable.__another_op_as_in_stack(stack_operators):
                         result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
 
-                    # There is another operator of sum or addition
-                    if SemanticTable.__another_op_as_in_stack(stack_operands):
-                        result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
+                        # There is another operator of sum or addition
+                        if SemanticTable.__another_op_as_in_stack(stack_operators):
+                            result_cuadruple_id = SemanticTable.__generate_quadruple(stack_operands, stack_operators, result_cuadruple_id, final_ops)
 
                 stack_operators.append(s_name)
 
