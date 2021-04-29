@@ -15,25 +15,26 @@ class Quadruple(object):
         return any(item in ["ADD", "SUB"] for item in stack_operators)
 
     def __generate_quadruple(
-        stack_operands, stack_operators, result_quadruple_id, final_ops
+        stack_values, stack_operators, result_quadruple_id, final_ops
     ):
         result_id = "T" + str(result_quadruple_id)
 
         q = Quadruple(
-            stack_operators.pop(), stack_operands[-2], stack_operands[-1], result_id
+            stack_operators.pop(), stack_values[-2], stack_values[-1], result_id
         )
+
+        del stack_values[-2:]
+
         final_ops.append(q)
-
-        del stack_operands[-2:]
-
-        stack_operands.append(result_id)
+        stack_values.append(result_id)
 
     # TODO: Todavía no considera tipos basados en la tabla semantica
     # TODO: Todavía no considera tipos de comparison o matching
     # TODO: No considera parentesis
+    # TODO: No considera constantes (1, 1.5, "algo asi")
     def arithmetic_expression(expression):
         # Examples:
-        stack_operands = []  # ["A", "B"]
+        stack_values = []  # ["A", "B"]
         stack_operators = []  # ["ADD"]
         stack_types = []  # ["INT", "FLT"]
 
@@ -48,7 +49,7 @@ class Quadruple(object):
 
             # is an operand
             if s_type in SemanticTable.types:
-                stack_operands.append(s_name)
+                stack_values.append(s_name)
                 stack_types.append(s_type)
 
             # is an operator
@@ -59,7 +60,7 @@ class Quadruple(object):
                     # There is another operator of multiplication, division or residue
                     if Quadruple.__another_op_mdr_in_stack(stack_operators):
                         Quadruple.__generate_quadruple(
-                            stack_operands,
+                            stack_values,
                             stack_operators,
                             result_quadruple_id,
                             final_ops,
@@ -74,7 +75,7 @@ class Quadruple(object):
                         stack_operators
                     ) or Quadruple.__another_op_as_in_stack(stack_operators):
                         Quadruple.__generate_quadruple(
-                            stack_operands,
+                            stack_values,
                             stack_operators,
                             result_quadruple_id,
                             final_ops,
@@ -84,7 +85,7 @@ class Quadruple(object):
                         # There is another operator of sum or addition
                         if Quadruple.__another_op_as_in_stack(stack_operators):
                             Quadruple.__generate_quadruple(
-                                stack_operands,
+                                stack_values,
                                 stack_operators,
                                 result_quadruple_id,
                                 final_ops,
@@ -103,7 +104,7 @@ class Quadruple(object):
 
         while len(stack_operators):
             Quadruple.__generate_quadruple(
-                stack_operands, stack_operators, result_quadruple_id, final_ops
+                stack_values, stack_operators, result_quadruple_id, final_ops
             )
             result_quadruple_id += 1
 
