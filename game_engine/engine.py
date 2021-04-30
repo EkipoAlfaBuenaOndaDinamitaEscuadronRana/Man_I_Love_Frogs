@@ -8,21 +8,7 @@ class Engine:
     __display_height = 500
     __speed = 3
 
-    # TODO: This method is only used for testing. Remove if necesary
-    def userMoves(character, pressed_key):
-        if pressed_key[pygame.K_DOWN] or pressed_key[pygame.K_s]:
-            character.move_down(Engine.__display_height)
-
-        if pressed_key[pygame.K_UP] or pressed_key[pygame.K_w]:
-            character.move_up()
-
-        if pressed_key[pygame.K_RIGHT] or pressed_key[pygame.K_d]:
-            character.move_right(Engine.__display_width)
-
-        if pressed_key[pygame.K_LEFT] or pressed_key[pygame.K_a]:
-            character.move_left()
-
-    def instructionMoves(instruction, characters):
+    def instruction_movement(instruction, characters):
         character = characters[instruction.character_name]
         movement = instruction.movement
 
@@ -38,14 +24,17 @@ class Engine:
         if movement == "left":
             character.move_left()
 
-    def checkIfUserQuit(pressed_key):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
+    '''
+    characters = {
+        "Rosita Fresita": Character(0, 0, 30, 30, 50),
+        "Dino Adrian": Character(0, 50, 30, 30, 50),
+    }
 
-        if pressed_key[pygame.K_p]:
-            pygame.quit()
-
+    instructions = [
+        Instruction("Rosita Fresita", "right"),
+        Instruction("Dino Adrian", "down")
+    ]
+    '''
     def start(characters, instructions):
         pygame.init()
 
@@ -59,11 +48,8 @@ class Engine:
         while True:
             clock.tick(Engine.__speed)
 
-            pressed_key = pygame.key.get_pressed()
-            Engine.checkIfUserQuit(pressed_key)
-
             if len(instructions):
-                Engine.instructionMoves(instructions.pop(0), characters)
+                Engine.instruction_movement(instructions.pop(0), characters)
 
             display.fill((0, 0, 0))
 
@@ -75,28 +61,3 @@ class Engine:
                 )
 
             pygame.display.update()
-
-
-# TODO: Todas estas instrucciones y personajes son ejemplos.
-#       Debe ser borrado al momento de entrar a producción
-characters = {
-    "Rosita Fresita": Character(0, 0, 30, 30, 50),
-    "Dino Adrian": Character(0, 50, 30, 30, 50),
-}
-
-instructions = [
-    Instruction("Rosita Fresita", "right"),
-    Instruction("Rosita Fresita", "right"),
-    Instruction("Rosita Fresita", "right"),
-    Instruction("Rosita Fresita", "right"),
-    Instruction("Rosita Fresita", "right"),
-    Instruction("Rosita Fresita", "down"),
-    Instruction("Dino Adrian", "down"),
-    Instruction("Dino Adrian", "down"),
-    Instruction("Dino Adrian", "down"),
-    Instruction("Dino Adrian", "down"),
-    Instruction("Dino Adrian", "down"),
-    Instruction("Dino Adrian", "right"),
-]
-
-Engine.start(characters, instructions)
