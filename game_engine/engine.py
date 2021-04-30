@@ -22,8 +22,8 @@ class Engine:
         if pressed_key[pygame.K_LEFT] or pressed_key[pygame.K_a]:
             character.move_left()
 
-    def instructionMoves(instruction):
-        character = name_characters[instruction.character_name]
+    def instructionMoves(instruction, characters):
+        character = characters[instruction.character_name]
         movement = instruction.movement
 
         if movement == "down":
@@ -46,7 +46,7 @@ class Engine:
         if pressed_key[pygame.K_p]:
             pygame.quit()
 
-    def start(characters, name_characters, instructions):
+    def start(characters, instructions):
         pygame.init()
 
         clock = pygame.time.Clock()
@@ -58,16 +58,16 @@ class Engine:
 
         while True:
             clock.tick(Engine.__speed)
-            pressed_key = pygame.key.get_pressed()
 
+            pressed_key = pygame.key.get_pressed()
             Engine.checkIfUserQuit(pressed_key)
 
             if len(instructions):
-                Engine.instructionMoves(instructions.pop(0))
+                Engine.instructionMoves(instructions.pop(0), characters)
 
             display.fill((0, 0, 0))
 
-            for character in characters:
+            for character in characters.values():
                 pygame.draw.rect(
                     display,
                     (255, 255, 255),
@@ -77,21 +77,14 @@ class Engine:
             pygame.display.update()
 
 
-# TODO: Todas estas instrucciones y personajes son ejemplos
+# TODO: Todas estas instrucciones y personajes son ejemplos.
 #       Debe ser borrado al momento de entrar a producción
-obj_characters = [
-    #         x  y   width height speed
-    Character(0, 0, 30, 30, 50),
-    Character(0, 50, 30, 30, 50),
-]
-
-name_characters = {
-    "Rosita Fresita": obj_characters[0],
-    "Dino Adrian": obj_characters[1],
+characters = {
+    "Rosita Fresita": Character(0, 0, 30, 30, 50),
+    "Dino Adrian": Character(0, 50, 30, 30, 50),
 }
 
 instructions = [
-    #           name              movement
     Instruction("Rosita Fresita", "right"),
     Instruction("Rosita Fresita", "right"),
     Instruction("Rosita Fresita", "right"),
@@ -106,4 +99,4 @@ instructions = [
     Instruction("Dino Adrian", "right"),
 ]
 
-Engine.start(obj_characters, name_characters, instructions)
+Engine.start(characters, instructions)
