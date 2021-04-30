@@ -24,7 +24,7 @@ class Engine:
         if movement == "left":
             character.move_left()
 
-    '''
+    """
     characters = {
         "Rosita Fresita": Character(0, 0, 30, 30, 50),
         "Dino Adrian": Character(0, 50, 30, 30, 50),
@@ -34,7 +34,8 @@ class Engine:
         Instruction("Rosita Fresita", "right"),
         Instruction("Dino Adrian", "down")
     ]
-    '''
+    """
+
     def start(characters, instructions):
         pygame.init()
 
