@@ -36,7 +36,8 @@ reserved = {
     'times' : 'TIMES',      #times
     'null' : 'NULL',        #null
     'true' : 'TRUE',        #true 
-    'false' : 'FALSE'       #false  
+    'false' : 'FALSE',      #false
+    'return' : 'RETURN'     #return
 }
 
 tokens = [

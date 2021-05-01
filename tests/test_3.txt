@@ -1,5 +1,15 @@
 program test_no; 
-string a = "hola";
+
+
+int b = 2;
+
+func int square(int a){
+    a = a * a;
+}
+
 {
-    int a = b;
+    int x = 10;
+    if (x == 10){
+        int a = b;
+    }
 }

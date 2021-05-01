@@ -1,16 +1,17 @@
 from lexer import *
-from symbol_tables import *
+from helper_functions import * 
 import ply.yacc as yacc
+import sys
 
 global_func_table = FunctionTable()
-
+current_state = StateTable()
 
 
 # TERMINAL Y NO TERMINAL
 # Permite que empiece un programa pero no lo obliga a hacerlo
 def p_inicial(p):
     '''
-    inicial : program empty
+    inicial : program global_vartable_distruct
             | empty
     '''
     #print(run(p[1]))
@@ -19,66 +20,144 @@ def p_inicial(p):
     else: 
         p[0] = [p[1], p[2]]
 
+# TERMINAL
+# Crea la vartable del main
+def p_global_vartable_distruct(p):
+    '''
+    global_vartable_distruct : empty
+
+    '''
+    p[0] = p[1]
+    print("p_global_vartable_distruct: " + str(p[0]))
+
+    # BORRA GLOBAL VAR TABLE
+    # ESTADO: GLOBAL
+    # Elimina la tabla de var de global
+    
+
+    global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
+    # ESTADO: pop main
+    current_state.pop_curr_state()
+    # global_func_table.print_FuncTable()
+
+
+
 # TERMINAL Y NO TERMINAL
 # Titutla el programa y permite pero no obliga a continuarlo
 def p_program(p):
-    # global_vartable
     '''
-    program : PROGRAM ID SCOL bloque_g bloque
-            | PROGRAM ID SCOL 
+    program : PROGRAM global_vartable SCOL bloque_g main_vartable_init bloque main_vartable_distruct
+            | PROGRAM global_vartable SCOL 
     '''
-    # Declarar tabla de funciones con titulo ID? 
-    # Declarar tabla de variables globales con titulo ID?
-    # Inserta tabla de de variables a tabla de funciones
-    # Considera crear un terminal entre ellos para insertar todo? maybe desde program?
+
     if len(p) == 4:
         p[0] = [p[1], p[2], p[3]]
     else: 
-       p[0] =  [p[1], p[2], p[3], p[4], p[5]]
+       p[0] =  [p[1], p[2], p[3], p[4], p[5], p[6]]
     
     print("p_program: " + str(p[0]))
-
     #for i in range(len(p)):
         #print("p[" + str(i) + "]: " + str(p[i]))
 
 
-#def p_global_vartable(p):
-    #'''
-    #global_vartable : ID
+def p_global_vartable(p):
+    '''
+    global_vartable : ID
 
-    #'''
+    '''
+    p[0] = p[1]
+    print("p_global_vartable: " + str(p[0]))
 
+    # GLOBAL VAR TABLE INIT
+    # ESTADO: global var table
+    current_state.push_state(State(p[0]))
+    # LLAMAR FUNCION PARA METER TABLA GLOBAL A FUNCTION TABLE
+    # CREA VAR TABLE
+    global_func_table.set_function(p[0], "void", [], VariableTable())
 
 # NO TERMINAL Y TERMINAL
 # Deja que se declaren funciones y variables globales pero no obliga
 def p_bloque_g(p): 
+    # global_var_init
     '''
-    bloque_g : var bloque_g
-             | func bloque_g
+    bloque_g : var_dec var bloque_g
+             | func_declaration func bloque_g
              | empty
     '''
     
     if len(p) == 2:
         p[0] = p[1]
     else: 
-        p[0] = [p[1], p[2]]
+        p[0] = [p[1], p[2], p[3]]
 
     print("p_bloque_g: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
+
+# NO TERMINAL
+# Validación e insersion de variable a symboltable   
+def p_func_declar_init(p):
+
+    '''
+    func_declaration : empty
+    '''
+    p[0] = p[1]
+
+    print("p_func_declaration: " + str(p[0]))
+    # DECLARA ESTADO FUNCION SIENDO DECLARADA
+    # ESTADO: push FUNC DECLARATION
+    current_state.push_state(State("funcD", "varD"))
 
 # NO TERMINAL
 # Empieza declaración de variable   
-def p_var(p):
+def p_var_dec(p):
 
+    '''
+    var_dec : empty
+    '''
+    p[0] = p[1]
+
+    print("p_var_dec: " + str(p[0]))
+    # AVISA QUE SE ESTAN DECLARANDO VARIABLES
+    # ESTADO: VARDEC + TABLE
+    if current_state.get_curr_state_opt() != "noVar":
+        current_state.set_curr_state_opt("varD")
+    else: 
+        print("ERROR: Can't declare variable(s) in this scope")
+        sys.exit()
+    
+# NO TERMINAL
+# Empieza declaración de variable   
+def p_var(p):
     '''
     var : tipo_var var1
     '''
     p[0] = [p[1], p[2]]
-    
+
     print("p_var: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
+    # INSERTA VARIABLES 
+        # ESTADO: current variable table -> no sabemos cual porque no sabemos
+                                         #  cuando se declaro pero no importa
+    
+    # manda parametros tipo y var1 y lo formatea en una vartable
+    curr_vars = get_variables(p[1], p[2])
+    #current_state.print_StateTable()                                    
+    if current_state.get_curr_state_opt() == "noVar":
+        print("ERROR: Can't declare variable(s) in this scope")
+        sys.exit()
+    else:
+        for symbol in curr_vars.keys():
+            # Valida que no existan
+            if global_func_table.get_function_variable_table(current_state.get_curr_state_table()).lookup_variable(symbol.get_name()):
+                print("ERROR: Variable " + str(symbol.get_name()) + " has already been declared")
+                sys.exit()
+            else: 
+                # Inserta a vartable
+                global_func_table.get_function_variable_table(current_state.get_curr_state_table()).set_variable(symbol, curr_vars[symbol])
+                # print("VARIABLE SAVED")
+                # global_func_table.print_FuncTable()
+                # print()
+        # ESTADO: POP VAR DEC PERO NO LA VARTABLE
+        current_state.remove_curr_state_opt()
+    
 
 # NO TERMINAL
 # Permite poner asignarle el valor a una variable cuando la declaras
@@ -95,36 +174,111 @@ def p_var1(p):
         p[0] = [p[1], p[2], p[3]]
     
     print("p_var1: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
 
 # NO TERMINAL
 # Hace el header y cuerpo de una funcion 
 def p_func(p):
     '''
-    func : FUNC tipo_func id_func OP func1 CP bloque
+    func : FUNC func_init bloque func_distruct
     '''
-    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
+    p[0] = [p[1], p[2], p[3], p[4]]
 
     print("p_func: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
+
+# NO TERMINAL
+# Validación e insersion de funcion a symboltable   
+def p_func_init(p):
+
+    '''
+    func_init : func_state tipo_func id_func OP func_parameters CP
+    '''
+    p[0] =  [p[1], p[2], p[3], p[4], p[5], p[6]]
+
+    print("p_func_init: " + str(p[0]))
+    # INSERTA FUNCION A TABLA 
+    # ESTADO: func building o func dec
+    # FUNCDEC:
+    if current_state.get_curr_state_table() ==  "funcD" :
+        # Valida que no existan
+        if global_func_table.lookup_function(p[3]):
+            print("ERROR: New declaration of existing function: " + str(p[3]) )
+            sys.exit()
+        else: 
+            # Inserta a functable global
+            # manda tipo, ID y lista de parametros
+            global_func_table.set_function(p[3], p[2], get_parameters(p[5]), None)   
+        
+        # ESTADO: pop funcDeclaration
+        # current_state.pop_curr_state()
+        
+    # FUNCBUILD:
+    elif current_state.get_curr_state_table() == "funcC" :
+        # valida que exista
+        if not global_func_table.lookup_function(p[3]):
+            print("ERROR: Call of undeclaration function: " + str(p[3]) )
+            sys.exit()
+        else:
+            # inserta vartable con parameteos en la funcion con ese id
+            # manda ID 
+            global_func_table.set_function_variable_table_at(p[3])   
+        
+        # ESTADO: pop funcCall
+        current_state.pop_curr_state()
+        # ESTADO: push functable id
+        current_state.push_state(State(p[3]))
+
+
+# NO TERMINAL
+# Validación e insersion de funcion a symboltable   
+def p_func_state(p):
+
+    '''
+    func_state : empty
+    '''
+    p[0] = p[1]
+
+    print("p_func_state: " + str(p[0]))
+    # CHECA ESTADO
+    # si ESTADO != FUNC DECLARATION
+    if current_state.get_curr_state_table() != "funcD" :
+        # push FUNC BUILD -> no podemos saber como se llama sin pasar al siguiente paso so temporal
+        current_state.push_state(State("funcC"))
+
+
+def p_func_distruct(p):
+
+    '''
+    func_distruct : empty
+    '''
+    p[0] = p[1]
+
+    print("p_func_distruct: " + str(p[0]))
+
+    # ELIMINA CURR TABLA DE VAR if != state funcbuild
+    if current_state.get_curr_state_table() != "funcD" :
+        # Elimina la tabla de var de la funcion actual
+        global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
+        # pop del estado actual
+    
+    current_state.pop_curr_state()
+    
+
+
 
 # NO TERMINAL
 # Hace una decaración de los atributos de una funcion 
-def p_func1(p):
+def p_func_parameters(p):
     '''
-    func1 : tipo_var id_var 
-          | tipo_var id_var COMMA func1
+    func_parameters : tipo_var id_var 
+          | tipo_var id_var COMMA func_parameters
     '''
     if len(p) == 3:
         p[0] = [p[1], p[2]]
     else: 
-        p[0] = [p[1], p[2], p[3], p[4]]
+        p[0] = [p[1], p[2], p[4]]
     
-    print("p_func1: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
+    print("func_parameters: " + str(p[0]))
+
 
 
 # TERMINAL Y NO TERMINAL
@@ -159,6 +313,49 @@ def p_tipo(p):
     '''
     p[0] = p[1]
 
+# TERMINAL
+# Crea la vartable del main
+def p_main_vartable_init(p):
+    '''
+    main_vartable_init : empty
+
+    '''
+    p[0] = p[1]
+    print("p_main_vartable_init: " + str(p[0]))
+
+
+    # CREA MAIN VAR TABLE
+    # ESTADO: MAIN
+    # LLAMAR FUNCION PARA METER TABLA de main A  GLOBAL FUNCTION TABLE y crea su VAR TABLE
+    # print("CURR STATE")
+    # print(current_state.get_curr_state_table())
+    global_func_table.set_function("main", "void", [], VariableTable())
+    current_state.push_state(State("main"))
+    # print("CURR STATE")
+    # print(current_state.get_curr_state_table())
+    # Estado: MAIN # no se popea hasta que se acabe el programa
+
+
+#global_func_table = FunctionTable()
+#current_state = StateTable()
+
+# TERMINAL
+# Crea la vartable del main
+def p_main_vartable_distruct(p):
+    '''
+    main_vartable_distruct : empty
+
+    '''
+    p[0] = p[1]
+    print("main_vartable_distruct: " + str(p[0]))
+
+    # BORRA MAIN VAR TABLE
+    # ESTADO: MAIN
+    # Elimina la tabla de var de main
+
+    global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
+    # ESTADO: pop main
+    current_state.pop_curr_state()
 
 # NO TERMINAL
 # Empieza un bloque
@@ -169,9 +366,9 @@ def p_bloque(p):
     p[0] = [p[1], p[2]]
 
     print("p_bloque: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
 
+
+    
 # TERMINAL Y NO TERMINAL
 # Acaba un bloque o llama un estatuto (osea permita una linea)
 def p_bloque1(p):
@@ -185,25 +382,22 @@ def p_bloque1(p):
         p[0] = [p[1], p[2]]
 
     print("p_bloque1: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
+
 
 # NO TERMINAL
 # Llama estatutos
 def p_estatuto(p):
     '''
-    estatuto : asignatura SCOL
-             | condicion 
+    estatuto : estado_no_var
+             | asignatura SCOL
              | escritura SCOL
              | lectura SCOL
-             | ciclo 
              | llamada SCOL
              | llamada_obj SCOL
-             | var 
+             | var_dec var 
     '''
-    # No se si agregar lo de var aqui si no no se puden declarar
-    # variables locales pero no se si luego vaya a ser mucho trip para que
-    # no se pueda en fors/ifs etc
+
+
     if len(p) == 2:
         p[0] = p[1]
     else: 
@@ -211,8 +405,63 @@ def p_estatuto(p):
 
     print("p_estatuto: " + str(p[0]))
 
-   # for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
+# NO TERMINAL
+# cambia estado  
+def p_estado_no_var(p):
+    '''
+    estado_no_var : no_var_on estatuto_con_bloque no_var_off
+ 
+    '''
+    p[0] = [p[1], p[2], p[3]]
+    
+    print("p_estado_no_var " + str(p[0]))
+
+# TERMINAL
+# CAMBIA ESTADO
+def p_no_var_on(p):
+
+    '''
+    no_var_on : empty
+    '''
+    p[0] = p[1]
+    
+    print("p_no_var_on " + str(p[0]))
+     
+    # CAMBIA DE ESTADO
+    # ESTADO : Push no variables allowed
+    current_state.set_curr_state_opt("noVar")
+
+
+
+# TERMINAL
+# CAMBIA ESTADO
+def p_no_var_off(p):
+
+    '''
+    no_var_off : empty
+    '''
+    p[0] = p[1]
+    
+    print("no_var_off " + str(p[0]))
+     
+    # CAMBIA DE ESTADO
+    # ESTADO : POP no variables allowed
+    current_state.remove_curr_state_opt()
+
+
+
+# NO TERMINAL
+# llama a un estatuto con bloque    
+def p_estatuto_con_bloque(p):
+    '''
+    estatuto_con_bloque : ciclo
+                        | condicion 
+ 
+    '''
+    p[0] = p[1]
+    
+    print("p_estatuto_con_bloque: " + str(p[0]))
+
 
 # NO TERMINAL
 # Hace una asignacion a una variable
@@ -223,8 +472,6 @@ def p_asignatura(p):
     p[0] = [p[1], p[2], p[3]]
     
     print("p_asignatura: " + str(p[0]))
-    #for i in range(len(p)):
-        #print("p[" + str(i) + "]: " + str(p[i]))
 
 # NO TERMINAL
 # Formato de if 
@@ -254,26 +501,6 @@ def p_escritura(p):
     escritura : WRITE OP expresion CP
     '''
     p[0] = [p[1], p[2], p[3]]
-
-# NO TERMINAL
-# Agrega un string o una expresion al write
-# def p_escritura1(p):
-    #   escritura1 : CSTRING escritura2
-    #            | expresion escritura2
-
-    # p[0] = [p[1], p[2]]
-
-# TERMINAL Y NO TERMINAL
-# cierra el write o comma y otra expresion? not sure si deberia funcionar asi?
-# def p_escritura2(p):
-#     '''
-#     escritura2 : COMMA escritura1 
-#                | CP
-#     '''
-#     if len(p) == 2:
-#         p[0] = p[1]
-#     else: 
-#         p[0] = [p[1], p[2]]
 
 # TERMINAL
 # Hace una lectura 
@@ -307,9 +534,7 @@ def p_for(p):
     for : FOR OP for1 CP bloque
     '''
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
-    # Pensando en usar dos bloques uno en el que se puedan declarar variables
-    # locales como en el "main" y en funciones y otro en el que no para
-    # los ifs, fors, whiles, etc
+
 
 # NO TERMINAL
 # Manda a llamar el tipo de for que se esta llamando
@@ -546,9 +771,25 @@ def p_id_var(p):
         p[0] = [p[1], p[2]]
     else:
         p[0] = [p[1], p[2], p[3]] 
+        
+    # VALIDA ID
+    # ESTADO : CURRENT VAR TABLE
+    # Checa que no se este declarando la variable 
+    if current_state.get_curr_state_opt() != "varD":
+        # Checa que la variable exista en la current table
+        if not global_func_table.get_function_variable_table(current_state.get_curr_state_table()).lookup_variable(p[1]):
+            # Checa que exista en la global table
+            if not global_func_table.get_function_variable_table(current_state.get_global_table()).lookup_variable(p[1]):
+                # global_func_table.print_FuncTable()
+                print("ERROR: Variable " + str(p[1] + " not declared"))
+                sys.exit()
+   
+        
 
+#global_func_table = FunctionTable()
+#current_state = StateTable()
 
-#NO TERMINAL
+# NO TERMINAL
 # Regresa el formato de un index
 def p_index(p):
     '''
@@ -561,13 +802,15 @@ def p_index(p):
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
     
 
-#TERMINAL
-#Regresa IDs validas para funciones
+# TERMINAL
+# Regresa IDs validas para funciones
 def p_id_func(p):
     '''
     id_func : ID
     '''
     p[0] = p[1]
+
+    # Esto es principalmente llamadas so creo qeu todavia no
 
 # TERMINAL Y NO TERMINAL
 # Regresa atributos de objetos
@@ -592,6 +835,17 @@ def p_llamada_obj(p):
     '''
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
 
+    # VALIDA ID
+    # ESTADO : CURRENT VAR TABLE
+    # Checa que no se este declarando la variable 
+    if current_state.get_curr_state_opt() != "varD" :
+        # Checa que la variable exista en la current table
+        if not global_func_table.get_function_variable_table(current_state.get_curr_state_table()).lookup_variable(p[1]):
+            # Checa que exista en la global table
+            if not global_func_table.get_function_variable_table(current_state.get_global_table()).lookup_variable(p[1]):
+                print("ERROR: Variable " + str(p[1] + " not declared"))
+        
+
 #TERMINAL
 #Regresa un metodo de objeto constante 
 def p_cte_mtd_obj(p):
@@ -613,14 +867,12 @@ def p_bool_cte(p):
     '''
     p[0] = p[1]
 
-
-
 def p_error(p):
     print("Syntax error found")
     print(p)
 
 # TERMINAL
-#Regresa nada cuando se llama un empty
+# Regresa nada cuando se llama un empty
 def p_empty(p):
     '''
     empty :
