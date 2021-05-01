@@ -30,12 +30,15 @@ class TestVarTable(unittest.TestCase):
 class TestFuncTable(unittest.TestCase):
     def test_push_function(self):
         ft = FunctionTable()
+        vt = VariableTable()
 
-        ft.set_function("print_something", "void")
-        self.assertEqual(ft.functions["print_something"], "void")
+        s = Symbol("variable", "int")
+        vt.set_variable(s, 12)
+        ft.set_function("print_something", "void", [s], vt)
+        self.assertEqual(ft.functions["print_something"], {'t': "void", 'p' : [s], 'vt' : vt} )
 
-        ft.set_function("calculate_something", "float")
-        self.assertEqual(ft.functions["calculate_something"], "float")
+        ft.set_function("calculate_something", "float", [], None)
+        self.assertEqual(ft.functions["calculate_something"], {'t': "float", 'p' : [], 'vt' : None} )
 
 class TestLexer(unittest.TestCase):
     def test_lexer(self):

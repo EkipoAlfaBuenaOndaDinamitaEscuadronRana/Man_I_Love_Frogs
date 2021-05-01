@@ -138,30 +138,4 @@ class StateTable(object):
                 print()
 
              
-            
-
-
-
-
-# a = Symbol("a", "int")
-# b = Symbol("b", "int")
-# a2 = Symbol("a", "int")
-# vt = VariableTable()
-
-# vt.set_variable(a, 1)
-# vt.set_variable(b, 2)
-
-# ft = FunctionTable()
-
-# ft.set_function("global", "void", vt)
-
-# ft.print_FuncTable()
-
-
-# if vt.lookup_variable(a2.name):
-#     print("found an existing a")
-# else: 
-#     vt.set_variable(a2, 1)
-
-
-# vt.print_VariableTable()
+        
