@@ -50,8 +50,8 @@ class SemanticTable:
         },
 
         'BOOL': {
-            'INT': 'error',
-            'FLT': 'error',
+            'INT': 'BOOL',
+            'FLT': 'BOOL',
             'CHAR': 'error',
             'STR': 'error',
             'BOOL': 'BOOL',
