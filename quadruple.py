@@ -64,6 +64,11 @@ class Quadruple(object):
             stack_values.pop()
             stack_operators.pop()
 
+        # print("--------------start: __generate_quadruple--------------")
+        # print("stack_values: {}".format(stack_values))
+        # print("stack_operators: {}".format(stack_operators))
+        # print("--------------end: __generate_quadruple--------------")
+
         final_ops.append(q)
         stack_values.append(result_id)
 
