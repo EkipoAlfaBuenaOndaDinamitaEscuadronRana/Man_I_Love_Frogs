@@ -1,6 +1,6 @@
 program test_no; 
 
-
+int a;
 int b = 2;
 
 func int square(int a){
@@ -10,6 +10,6 @@ func int square(int a){
 {
     int x = 10;
     if (x == 10){
-        int a = b;
+        a = b;
     }
 }

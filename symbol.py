@@ -3,9 +3,6 @@ class Symbol(object):
         self.name = name
         self.type = type
 
-    def __hash__(self):
-        return id(self)
-
     def set_name(self, name):
         self.name = name
 

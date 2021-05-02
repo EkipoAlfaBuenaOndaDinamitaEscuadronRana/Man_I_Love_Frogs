@@ -14,10 +14,6 @@ def get_parameters(line):
     return paramlist
 
 
-'''
-[[a, =, hola], ';']
-[a , ',' [b , ',' [[a, = ,hola]]]]
-'''
 def get_variables(type, line):
     line = [item for sublist in line for item in sublist]
     varList = {}

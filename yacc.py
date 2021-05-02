@@ -33,13 +33,9 @@ def p_global_vartable_distruct(p):
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
     # Elimina la tabla de var de global
-    
-
     global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
     # ESTADO: pop main
     current_state.pop_curr_state()
-    # global_func_table.print_FuncTable()
-
 
 
 # TERMINAL Y NO TERMINAL
@@ -78,7 +74,6 @@ def p_global_vartable(p):
 # NO TERMINAL Y TERMINAL
 # Deja que se declaren funciones y variables globales pero no obliga
 def p_bloque_g(p): 
-    # global_var_init
     '''
     bloque_g : var_dec var bloque_g
              | func_declaration func bloque_g
@@ -139,7 +134,6 @@ def p_var(p):
     
     # manda parametros tipo y var1 y lo formatea en una vartable
     curr_vars = get_variables(p[1], p[2])
-    #current_state.print_StateTable()                                    
     if current_state.get_curr_state_opt() == "noVar":
         print("ERROR: Can't declare variable(s) in this scope")
         sys.exit()
@@ -152,9 +146,6 @@ def p_var(p):
             else: 
                 # Inserta a vartable
                 global_func_table.get_function_variable_table(current_state.get_curr_state_table()).set_variable(symbol, curr_vars[symbol])
-                # print("VARIABLE SAVED")
-                # global_func_table.print_FuncTable()
-                # print()
         # ESTADO: POP VAR DEC PERO NO LA VARTABLE
         current_state.remove_curr_state_opt()
     
@@ -208,8 +199,7 @@ def p_func_init(p):
             # manda tipo, ID y lista de parametros
             global_func_table.set_function(p[3], p[2], get_parameters(p[5]), None)   
         
-        # ESTADO: pop funcDeclaration
-        # current_state.pop_curr_state()
+        # ESTADO:func dec
         
     # FUNCBUILD:
     elif current_state.get_curr_state_table() == "funcC" :
@@ -258,12 +248,10 @@ def p_func_distruct(p):
     if current_state.get_curr_state_table() != "funcD" :
         # Elimina la tabla de var de la funcion actual
         global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
-        # pop del estado actual
     
+    # pop del estado actual (sea funcDec o la tabla de la funcion que se llamo)
     current_state.pop_curr_state()
     
-
-
 
 # NO TERMINAL
 # Hace una decaración de los atributos de una funcion 
@@ -278,7 +266,6 @@ def p_func_parameters(p):
         p[0] = [p[1], p[2], p[4]]
     
     print("func_parameters: " + str(p[0]))
-
 
 
 # TERMINAL Y NO TERMINAL
@@ -327,17 +314,9 @@ def p_main_vartable_init(p):
     # CREA MAIN VAR TABLE
     # ESTADO: MAIN
     # LLAMAR FUNCION PARA METER TABLA de main A  GLOBAL FUNCTION TABLE y crea su VAR TABLE
-    # print("CURR STATE")
-    # print(current_state.get_curr_state_table())
     global_func_table.set_function("main", "void", [], VariableTable())
     current_state.push_state(State("main"))
-    # print("CURR STATE")
-    # print(current_state.get_curr_state_table())
     # Estado: MAIN # no se popea hasta que se acabe el programa
-
-
-#global_func_table = FunctionTable()
-#current_state = StateTable()
 
 # TERMINAL
 # Crea la vartable del main
@@ -352,7 +331,6 @@ def p_main_vartable_distruct(p):
     # BORRA MAIN VAR TABLE
     # ESTADO: MAIN
     # Elimina la tabla de var de main
-
     global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
     # ESTADO: pop main
     current_state.pop_curr_state()
@@ -366,7 +344,6 @@ def p_bloque(p):
     p[0] = [p[1], p[2]]
 
     print("p_bloque: " + str(p[0]))
-
 
     
 # TERMINAL Y NO TERMINAL
@@ -719,7 +696,6 @@ def p_op_mdr(p):
 # NO TERMINAL 
 # Regresa una expresion en parentesis o una constante
 def p_factor(p):
-    # Quite el | op_as op_not porque no estaba muy segura de sus aplicaciones
     '''
     factor : OP expresion CP 
            | op_not
@@ -780,15 +756,9 @@ def p_id_var(p):
         if not global_func_table.get_function_variable_table(current_state.get_curr_state_table()).lookup_variable(p[1]):
             # Checa que exista en la global table
             if not global_func_table.get_function_variable_table(current_state.get_global_table()).lookup_variable(p[1]):
-                # global_func_table.print_FuncTable()
                 print("ERROR: Variable " + str(p[1] + " not declared"))
                 sys.exit()
    
-        
-
-#global_func_table = FunctionTable()
-#current_state = StateTable()
-
 # NO TERMINAL
 # Regresa el formato de un index
 def p_index(p):
@@ -810,7 +780,7 @@ def p_id_func(p):
     '''
     p[0] = p[1]
 
-    # Esto es principalmente llamadas so creo qeu todavia no
+    # Esto es principalmente llamadas so creo qeu todavia no tengo que poner aqui las validaciones
 
 # TERMINAL Y NO TERMINAL
 # Regresa atributos de objetos
@@ -823,7 +793,6 @@ def p_cte_atr_obj(p):
     if len(p) == 2:
         p[0] = p[1]
     else: 
-        #No estoy muy segura, podria crear muchas tuplas dentro de tuplas
         p[0] = [p[1], p[2]]
 
 

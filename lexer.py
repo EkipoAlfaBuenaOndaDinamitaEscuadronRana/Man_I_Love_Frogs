@@ -114,19 +114,12 @@ t_ignore = r' '
 
 def t_tab(t):
     r'\t+'
-    #print("tab found!")
 
     t.lexer.lineno += len(t.value)
 
 def t_NL(t):
     r'\n+'
-    #print("newline found!")
     t.lexer.lineno += len(t.value)
-
-# def t_CBOOL(t):
-#     r'(true | false | [0-9]*)'
-#     t.value = float(t.value)
-#     return t
 
 def t_CINT(t):
     r'\d+'
