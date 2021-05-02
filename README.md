@@ -17,6 +17,17 @@ git clone git@github.com:Nombre-Pendiente/Super-Compi.git
 
 Posteriormente, es necesario tener instalado python en tu maquina. Puedes instalarlo [aquí](https://www.python.org/downloads/).
 
+## Avances de entrega 2
+1. Directorio de Funciones
+2. Tablas de Variables
+3. Tabla de Consideraciones Semánticas
+
+## Avances de entrega 3
+1. Tabla de Consideraciones Semánticas (programada)
+2. Manejo de expresiones
+3. Pruebas Unitarias
+4. Refactorización de código
+
 Para correr el proyecto, hay que usar el comando:
 
 ```
@@ -38,15 +49,3 @@ Breve descripción de lo que la tarea hace
 * [ ] Las pruebas pasan
 ```
 Una vez terminada la tarea realizada, el resto del equipo aprovará sus cambios y si se considera útil, se mergeará al proyecto
-
-### Avances de entrega 1
-1. Gramatica
-2. Expresiones regulares
-3. Diagramas descriptivos del lenguaje
-4. Lexer
-5. Parser
-
-### Avances de entrega 2
-1. Directorio de Funciones
-2. Tablas de Variables
-3. Tabla de Consideraciones Semánticas
