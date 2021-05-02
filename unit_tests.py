@@ -1,8 +1,3 @@
-'''
-Para correr el archivo, usar este comando
-python -m unittest unit_tests.py
-'''
-
 from symbol_tables import *
 from lexer import *
 from yacc import *
