@@ -36,7 +36,7 @@ Breve descripción de lo que la tarea hace
 * [ ] El código funciona
 * [ ] Se añadieron pruebas
 * [ ] Las pruebas pasan
-* [ ] El codigo pasó por el code styler
+* [ ] El codigo pasó por el estilizador de código
 ```
 Una vez terminada la tarea realizada, el resto del equipo aprovará sus cambios y si se considera útil, se mergeará al proyecto
 
