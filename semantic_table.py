@@ -1,4 +1,4 @@
-from symbol_table import *
+from symbol_tables import *
 
 class SemanticTable:
     types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }

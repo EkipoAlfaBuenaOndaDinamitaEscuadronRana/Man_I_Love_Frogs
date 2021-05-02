@@ -3,6 +3,13 @@ class Symbol(object):
         self.name = name
         self.type = type
 
+    def __eq__(self, quad):
+        return self.name == quad.name and self.type == quad.type
+    
+    def __hash__(self):
+        return id(self)
+
+
     def set_name(self, name):
         self.name = name
 

@@ -2,7 +2,6 @@ import collections
 from symbol import *
 
 class VariableTable(object):
-
     def __init__(self):
         self.variables = {}
 
