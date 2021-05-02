@@ -36,7 +36,8 @@ reserved = {
     'times' : 'TIMES',      #times
     'null' : 'NULL',        #null
     'true' : 'TRUE',        #true 
-    'false' : 'FALSE'       #false  
+    'false' : 'FALSE',      #false
+    'return' : 'RETURN'     #return
 }
 
 tokens = [
@@ -82,8 +83,8 @@ t_SCOL = r'\;'
 t_COMMA = r'\,'
 t_DOT = r'\.'
 t_COL = r'\:'
-t_OCB = r'\}'
-t_CCB = r'\{'
+t_OCB = r'\{'
+t_CCB = r'\}'
 t_OP = r'\('
 t_CP = r'\)'
 t_OSB = r'\['
@@ -111,15 +112,14 @@ t_MODEQ = r'\%\='
 
 t_ignore = r' '
 
+def t_tab(t):
+    r'\t+'
+
+    t.lexer.lineno += len(t.value)
 
 def t_NL(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
-
-# def t_CBOOL(t):
-#     r'(true | false | [0-9]*)'
-#     t.value = float(t.value)
-#     return t
 
 def t_CINT(t):
     r'\d+'

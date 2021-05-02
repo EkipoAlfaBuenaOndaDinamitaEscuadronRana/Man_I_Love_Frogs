@@ -1,0 +1,15 @@
+program test_no; 
+
+int a;
+int b = 2;
+
+func int square(int a){
+    a = a * a;
+}
+
+{
+    int x = 10;
+    if (x == 10){
+        a = b;
+    }
+}
