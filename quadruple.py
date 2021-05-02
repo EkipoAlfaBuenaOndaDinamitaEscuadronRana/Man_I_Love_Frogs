@@ -60,6 +60,15 @@ class Quadruple(object):
 
         del stack_values[-2:]
 
+        if len(stack_operators) and stack_operators[-1] == "OP":
+            stack_values.pop()
+            stack_operators.pop()
+
+        # print("--------------start: __generate_quadruple--------------")
+        # print("stack_values: {}".format(stack_values))
+        # print("stack_operators: {}".format(stack_operators))
+        # print("--------------end: __generate_quadruple--------------")
+
         final_ops.append(q)
         stack_values.append(result_id)
 
@@ -80,6 +89,9 @@ class Quadruple(object):
         for symbol in Quadruple.format_expression(expression):
             s_type = symbol.type
             s_name = symbol.name
+
+            print("stack_values: {}".format(stack_values))
+            print("stack_operators: {}\n".format(stack_operators))
 
             # is an operand
             if s_type in SemanticTable.types:
@@ -209,3 +221,8 @@ class Quadruple(object):
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
 
         return response
+
+expression = "( C - D * A ) * ( x - Y + z)"
+
+for i in Quadruple.arithmetic_expression(expression):
+    print(i.format_quadruple())
