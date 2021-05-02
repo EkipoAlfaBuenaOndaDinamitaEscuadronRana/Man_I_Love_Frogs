@@ -3,10 +3,9 @@ Para correr el archivo, usar este comando
 python -m unittest unit_tests.py
 '''
 
-from symbol_table import *
 from lexer import *
 from yacc import *
-from semantic_table import *
+from quadruple import *
 
 import unittest
 
@@ -90,3 +89,79 @@ class TestSemanticTable(unittest.TestCase):
         self.assertEqual(SemanticTable.considerate(s_char, s_lt, s_str), 'BOOL')
         self.assertEqual(SemanticTable.considerate(s_null, s_beq, s_bool), 'BOOL')
         self.assertEqual(SemanticTable.considerate(s_doub, s_add, s_char), 'error')
+
+class TestQuadruple(unittest.TestCase):
+    def test_arithmetic_expression(self):
+        expression_in_string = 'A + B * C / D - E * F'
+        expression_in_symbols = [ 
+            Symbol('A', 'INT'),
+            Symbol('ADD', 'operation'),
+            Symbol('B', 'FLT'),
+            Symbol('MUL', 'operation'),
+            Symbol('C', 'FLT'),
+            Symbol('DIV', 'operation'),
+            Symbol('D', 'FLT'),
+            Symbol('SUB', 'operation'),
+            Symbol('E', 'FLT'),
+            Symbol('MUL', 'operation'),
+            Symbol('F', 'FLT')
+        ]
+
+        expected_response = [
+            'MUL B C T1',
+            'DIV T1 D T2',
+            'ADD A T2 T3',
+            'MUL E F T4',
+            'SUB T3 T4 T5'
+        ]
+
+        response = []
+        for quad in Quadruple.arithmetic_expression(expression_in_symbols):
+            response.append(quad.format_quadruple())
+        self.assertEqual(response, expected_response)
+
+        response = []
+        for quad in Quadruple.arithmetic_expression(expression_in_string):
+            response.append(quad.format_quadruple())
+        self.assertEqual(response, expected_response)
+
+    def test_format_expression(self):
+        in_string_with_spaces = 'Ab + B * C / D - E * F'
+        in_string_without_spaces = 'Ab+B*C/D-E*F'
+
+        in_list_of_strings = [
+            'Ab',
+            '+',
+            'B',
+            '*',
+            'C',
+            '/',
+            'D',
+            '-',
+            'E',
+            '*',
+            'F',
+        ]
+
+        in_list_of_symbols = [
+            Symbol('Ab', 'FLT'),
+            Symbol('ADD', 'operation'),
+            Symbol('B', 'FLT'),
+            Symbol('MUL', 'operation'),
+            Symbol('C', 'FLT'),
+            Symbol('DIV', 'operation'),
+            Symbol('D', 'FLT'),
+            Symbol('SUB', 'operation'),
+            Symbol('E', 'FLT'),
+            Symbol('MUL', 'operation'),
+            Symbol('F', 'FLT')
+        ]
+
+        self.assertEqual(Quadruple.format_expression(in_string_with_spaces), in_list_of_symbols)
+        self.assertEqual(Quadruple.format_expression(in_string_without_spaces), in_list_of_symbols)
+        self.assertEqual(Quadruple.format_expression(in_list_of_strings), in_list_of_symbols)
+        self.assertEqual(Quadruple.format_expression(in_list_of_symbols), in_list_of_symbols)
+
+    def test_format_quadruple(self):
+        q = Quadruple('MUL', 'B', 'C', 'T1')
+        self.assertEqual(q.format_quadruple(), 'MUL B C T1')
