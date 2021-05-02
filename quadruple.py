@@ -52,6 +52,9 @@ class Quadruple(object):
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, final_ops
     ):
+        print("--------start: __generate_quadruple--------")
+        print("stack_values: {}".format(stack_values))
+        print("stack_operators: {}\n".format(stack_operators))
         result_id = "T" + str(result_quadruple_id)
 
         q = Quadruple(
@@ -60,14 +63,13 @@ class Quadruple(object):
 
         del stack_values[-2:]
 
-        if len(stack_operators) and stack_operators[-1] == "OP":
-            stack_values.pop()
-            stack_operators.pop()
+        # if len(stack_operators) and stack_operators[-1] == "OP":
+        #     stack_values.pop()
+        #     stack_operators.pop()
 
-        # print("--------------start: __generate_quadruple--------------")
-        # print("stack_values: {}".format(stack_values))
-        # print("stack_operators: {}".format(stack_operators))
-        # print("--------------end: __generate_quadruple--------------")
+        print("--------end: __generate_quadruple--------")
+        print("stack_values: {}".format(stack_values))
+        print("stack_operators: {}\n".format(stack_operators))
 
         final_ops.append(q)
         stack_values.append(result_id)
@@ -85,13 +87,12 @@ class Quadruple(object):
 
         final_ops = []
         result_quadruple_id = 1
+        print("stack_values: {}".format(stack_values))
+        print("stack_operators: {}\n".format(stack_operators))
 
         for symbol in Quadruple.format_expression(expression):
             s_type = symbol.type
             s_name = symbol.name
-
-            print("stack_values: {}".format(stack_values))
-            print("stack_operators: {}\n".format(stack_operators))
 
             # is an operand
             if s_type in SemanticTable.types:
@@ -160,7 +161,10 @@ class Quadruple(object):
                         stack_operators.pop()
 
                     else:
-                        while len(sub_stack_operators):
+
+                        print("START OF CLOSE PARENTHESIS")
+
+                        while len(sub_stack_operators) > 1:
                             Quadruple.__generate_quadruple(
                                 sub_stack_values,
                                 sub_stack_operators,
@@ -169,15 +173,29 @@ class Quadruple(object):
                             )
                             result_quadruple_id += 1
 
+                        stack_operators.pop()
+                        stack_values.pop(-2)
+
+                        print("stack_operators: {}".format(stack_operators))
+                        print("stack_values: {}".format(stack_values))
+
+                        print("END OF CLOSE PARENTHESIS\n")
+
             # is an unknown character
             else:
                 return "error: type {} not found".format(s_type)
+
+            print("stack_values: {}".format(stack_values))
+            print("stack_operators: {}\n".format(stack_operators))
 
         while len(stack_operators):
             Quadruple.__generate_quadruple(
                 stack_values, stack_operators, result_quadruple_id, final_ops
             )
             result_quadruple_id += 1
+
+            print("stack_values: {}".format(stack_values))
+            print("stack_operators: {}\n".format(stack_operators))
 
         return final_ops
 
@@ -222,7 +240,10 @@ class Quadruple(object):
 
         return response
 
-expression = "( C - D * A ) * ( x - Y + z)"
+expression = "(A + B) * (F / D)"
+print("-------Expression: {}-------\n".format(expression))
+result = Quadruple.arithmetic_expression(expression)
 
-for i in Quadruple.arithmetic_expression(expression):
+print("-----------------resultado final-----------------")
+for i in result:
     print(i.format_quadruple())
