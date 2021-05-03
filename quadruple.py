@@ -13,8 +13,10 @@ class Quadruple(object):
         operand = ""
 
         for symbol in expression:
-            if symbol in ["+", "-", "*", "/", "%"]:
-                exp.append(operand)
+
+            if symbol in ["+", "-", "*", "/", "%", "(", ")"]:
+                if len(operand):
+                    exp.append(operand)
                 exp.append(symbol)
                 operand = ""
 
@@ -26,11 +28,24 @@ class Quadruple(object):
 
         return exp
 
+    def __sub_stack_from_parentheses(stack):
+        if "(" in stack:
+            stack.reverse()
+            index = stack.index("(")
+            sub_stack = stack[:index]
+            stack.reverse()
+
+            return sub_stack
+
+        return stack
+
     def __another_op_mdr_in_stack(stack_operators):
-        return any(item in ["MUL", "DIV", "MOD"] for item in stack_operators)
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(item in ["MUL", "DIV", "MOD"] for item in sub_stack_operators)
 
     def __another_op_as_in_stack(stack_operators):
-        return any(item in ["ADD", "SUB"] for item in stack_operators)
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(item in ["ADD", "SUB"] for item in sub_stack_operators)
 
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, final_ops
@@ -48,8 +63,8 @@ class Quadruple(object):
 
     # TODO: Todavía no considera tipos basados en la tabla semantica
     # TODO: Todavía no considera tipos de comparison o matching
-    # TODO: No considera parentesis
     # TODO: No considera constantes (1, 1.5, "algo asi")
+    # TODO: No valida que el input sea correcto (A + B -)
     def arithmetic_expression(expression):
         # Examples:
         stack_values = []  # ["A", "B"]
@@ -59,11 +74,9 @@ class Quadruple(object):
         final_ops = []
         result_quadruple_id = 1
 
-        # for symbol in format_expression(expression):
         for symbol in Quadruple.format_expression(expression):
-
-            s_type = symbol.type  # operation
-            s_name = symbol.name  # +
+            s_type = symbol.type
+            s_name = symbol.name
 
             # is an operand
             if s_type in SemanticTable.types:
@@ -112,9 +125,33 @@ class Quadruple(object):
 
                 stack_operators.append(s_name)
 
-            # is a parenthesis
+            # is a parentheses
             elif s_type == "parentheses":
-                pass
+                # When a ( arrives
+                if s_name == "OP":
+                    stack_values.append("(")
+                    stack_operators.append("(")
+
+                # When a ) arrives
+                elif s_name == "CP":
+                    # case when there is just one value inside parenthesis example: A + (B)
+                    if len(stack_operators) == 0:
+                        stack_values.pop(-2)
+                        stack_operators.pop()
+
+                    else:
+                        while stack_operators[-1] != "(":
+                            Quadruple.__generate_quadruple(
+                                stack_values,
+                                stack_operators,
+                                result_quadruple_id,
+                                final_ops,
+                            )
+
+                            result_quadruple_id += 1
+
+                        stack_operators.pop()
+                        stack_values.pop(-2)
 
             # is an unknown character
             else:
@@ -153,6 +190,8 @@ class Quadruple(object):
                     "*": Symbol("MUL", "operation"),
                     "/": Symbol("DIV", "operation"),
                     "%": Symbol("MOD", "operation"),
+                    "(": Symbol("OP", "parentheses"),
+                    ")": Symbol("CP", "parentheses"),
                     "<": Symbol("LT", "comparison"),
                     ">": Symbol("GT", "comparison"),
                     "<=": Symbol("LTE", "comparison"),
@@ -160,9 +199,9 @@ class Quadruple(object):
                     "==": Symbol("BEQ", "matching"),
                     "!=": Symbol("BNEQ", "matching"),
                     "||": Symbol("OR", "matching"),
-                    "&&": Symbol("AND", "matching")
+                    "&&": Symbol("AND", "matching"),
                 }
 
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
-        
+
         return response
