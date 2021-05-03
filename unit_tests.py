@@ -136,15 +136,19 @@ class TestQuadruple(unittest.TestCase):
             response.append(quad.format_quadruple())
         self.assertEqual(response, expected_response_parentheses)
 
+        expression_with_comparison_operators = "A + B >= C * D"
+
+        
+
     def test_format_expression(self):
-        in_string_with_spaces = 'Ab + B * C / ( D - E ) * F'
-        in_string_without_spaces = 'Ab+B*C/(D-E)*F'
+        in_string_with_spaces = 'Ab + B >= C / ( D - E ) * F < G || H'
+        in_string_without_spaces = 'Ab+B>=C/(D-E)*F<G||H'
 
         in_list_of_strings = [
             'Ab',
             '+',
             'B',
-            '*',
+            '>=',
             'C',
             '/',
             '(',
@@ -154,13 +158,17 @@ class TestQuadruple(unittest.TestCase):
             ')',
             '*',
             'F',
+            '<',
+            'G',
+            '||',
+            'H',
         ]
 
         in_list_of_symbols = [
             Symbol('Ab', 'FLT'),
             Symbol('ADD', 'operation'),
             Symbol('B', 'FLT'),
-            Symbol('MUL', 'operation'),
+            Symbol('GTE', 'comparison'),
             Symbol('C', 'FLT'),
             Symbol('DIV', 'operation'),
             Symbol('OP', 'parentheses'),
@@ -169,7 +177,11 @@ class TestQuadruple(unittest.TestCase):
             Symbol('E', 'FLT'),
             Symbol('CP', 'parentheses'),
             Symbol('MUL', 'operation'),
-            Symbol('F', 'FLT')
+            Symbol('F', 'FLT'),
+            Symbol('LT', 'comparison'),
+            Symbol('G', 'FLT'),
+            Symbol('OR', 'matching'),
+            Symbol('H', 'FLT'),
         ]
 
         self.assertEqual(Quadruple.format_expression(in_string_with_spaces), in_list_of_symbols)

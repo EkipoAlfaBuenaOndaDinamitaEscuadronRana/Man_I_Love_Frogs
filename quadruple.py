@@ -11,17 +11,30 @@ class Quadruple(object):
     def __divide_expression(expression):
         exp = []
         operand = ""
+        i = 0;
 
-        for symbol in expression:
-
-            if symbol in ["+", "-", "*", "/", "%", "(", ")"]:
+        while i < len(expression):
+            if expression[i] in ["+", "-", "*", "/", "%", "(", ")", ">", "<", "=","|", "&", "!"]:
                 if len(operand):
                     exp.append(operand)
+
+                symbol = expression[i]
+
+                if symbol in ["<", ">", "=", "!"] and expression[i + 1] == "=":
+                    symbol += "="
+                    i += 1
+
+                elif (symbol == "|" or symbol == "&") and expression[i + 1] == symbol:
+                    symbol += symbol
+                    i += 1
+
                 exp.append(symbol)
                 operand = ""
 
             else:
-                operand += symbol
+                operand += expression[i]
+
+            i += 1
 
         if len(operand):
             exp.append(operand)
@@ -47,6 +60,14 @@ class Quadruple(object):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(item in ["ADD", "SUB"] for item in sub_stack_operators)
 
+    def __a_not_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return "NOT" in sub_stack_operators
+
+    def __another_comparator_or_matcher_in_stack():
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(item in Quadruple.__comparators_and_matchers for item in sub_stack_operators)
+
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, final_ops
     ):
@@ -61,10 +82,21 @@ class Quadruple(object):
         final_ops.append(q)
         stack_values.append(result_id)
 
+    def __generate_not_quadruple(
+        stack_values, stack_operators, result_quadruple_id, final_ops
+    ):
+        result_id = "T" + str(result_quadruple_id)
+        q = Quadruple(
+            stack_operators.pop(), stack_values.pop(), None, result_id
+        )
+
+        final_ops.append(q)
+        stack_values.append(result_id)
+
+
     # TODO: Todavía no considera tipos basados en la tabla semantica
-    # TODO: Todavía no considera tipos de comparison o matching
     # TODO: No considera constantes (1, 1.5, "algo asi")
-    # TODO: No valida que el input sea correcto (A + B -)
+    # TODO: No hace negacion de booleanos (!A)
     def arithmetic_expression(expression):
         # Examples:
         stack_values = []  # ["A", "B"]
@@ -78,10 +110,19 @@ class Quadruple(object):
             s_type = symbol.type
             s_name = symbol.name
 
-            # is an operand
+            # is it is a ! operator
+            if s_name == "!":
+                stack_operators.append("NOT")
+
             if s_type in SemanticTable.types:
                 stack_values.append(s_name)
-                stack_types.append(s_type)
+                stack_types.s_type(s_type)
+
+                if Quadruple.__a_not_in_stack(stack_operators):
+                    Quadruple.__generate_not_quadruple(
+                        stack_values, stack_operators, result_quadruple_id, final_ops
+                    )
+
 
             # is an operator
             elif s_type in ["operation", "comparison", "matching"]:
@@ -192,6 +233,7 @@ class Quadruple(object):
                     "%": Symbol("MOD", "operation"),
                     "(": Symbol("OP", "parentheses"),
                     ")": Symbol("CP", "parentheses"),
+                    "!": Symbol("NOT", "not"),
                     "<": Symbol("LT", "comparison"),
                     ">": Symbol("GT", "comparison"),
                     "<=": Symbol("LTE", "comparison"),
@@ -205,3 +247,8 @@ class Quadruple(object):
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
 
         return response
+
+expression = "!A"
+result = Quadruple.arithmetic_expression(expression)
+for i in result:
+    print(i.format_quadruple())
