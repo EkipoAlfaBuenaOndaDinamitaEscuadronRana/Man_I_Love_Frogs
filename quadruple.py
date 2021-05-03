@@ -30,23 +30,27 @@ class Quadruple(object):
 
     def __sub_stack_from_parentheses(stack):
         if "(" in stack:
-            last_position = len(stack) - 1 - stack[::-1].index('(')
-            return stack[-last_position + 1:]
+            stack.reverse()
+            index = stack.index("(")
+            sub_stack = stack[:index]
+            stack.reverse()
+
+            return sub_stack
 
         return stack
 
     def __another_op_mdr_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        # print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>")
-        # print("sub_stack_operators: ", sub_stack_operators)
-        # print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>\n")
+        print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>")
+        print("sub_stack_operators: ", sub_stack_operators)
+        print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>\n")
         return any(item in ["MUL", "DIV", "MOD"] for item in sub_stack_operators)
 
     def __another_op_as_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        # print("<<<<<<<<<<<__another_op_as_in_stack>>>>>>>>>>")
-        # print("sub_stack_operators: ", sub_stack_operators)
-        # print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>\n")
+        print("<<<<<<<<<<<__another_op_as_in_stack>>>>>>>>>>")
+        print("sub_stack_operators: ", sub_stack_operators)
+        print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>\n")
         return any(item in ["ADD", "SUB"] for item in sub_stack_operators)
 
     def __generate_quadruple(
@@ -73,7 +77,6 @@ class Quadruple(object):
 
     # TODO: Todavía no considera tipos basados en la tabla semantica
     # TODO: Todavía no considera tipos de comparison o matching
-    # TODO: No considera parentesis
     # TODO: No considera constantes (1, 1.5, "algo asi")
     # TODO: No valida que el input sea correcto (A + B -)
     def arithmetic_expression(expression):
@@ -140,10 +143,12 @@ class Quadruple(object):
 
             # is a parentheses
             elif s_type == "parentheses":
+                # When a ( arrives
                 if s_name == "OP":
                     stack_values.append("(")
                     stack_operators.append("(")
 
+                # When a ) arrives
                 elif s_name == "CP":
                     # case when there is just one value inside parenthesis example: A + (B)
                     if len(stack_operators) == 0:
@@ -229,13 +234,17 @@ class Quadruple(object):
 
         return response
 
-# expression = "(A + B * C) + C * (D + E)"
-expression = "(D / (E * F + G))"
-# expression = "C * (D / (E + F))"
-# expression = "(A - (E + (F + 1)))"
-print("------Expression: {}------\n".format(expression))
+# expression = "(A + B * C) + C * (D + E)"                  # PASS
+# expression = "(D / (E * F + G))"                          # PASS
+# expression = "C * (D / (E + F))"                          # PASS
+# expression = "(E / F + G / H)"                            # PASS
+# expression = "(A * (E / F + G / H) + I)"                  # PASS
+# expression = "(C * (E / F + G * H))"                      # PASS
+expression = "(A / (C * (E / F + G * (H / I + J - K - (L * M * N)))))"                # PASS
+
 result = Quadruple.arithmetic_expression(expression)
 
+print("------Expression: {}------".format(expression))
 print("-----------------resultado final-----------------")
 for i in result:
     print(i.format_quadruple())
