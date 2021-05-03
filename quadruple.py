@@ -41,24 +41,15 @@ class Quadruple(object):
 
     def __another_op_mdr_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>")
-        print("sub_stack_operators: ", sub_stack_operators)
-        print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>\n")
         return any(item in ["MUL", "DIV", "MOD"] for item in sub_stack_operators)
 
     def __another_op_as_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        print("<<<<<<<<<<<__another_op_as_in_stack>>>>>>>>>>")
-        print("sub_stack_operators: ", sub_stack_operators)
-        print("<<<<<<<<<<<__another_op_mdr_in_stack>>>>>>>>>>\n")
         return any(item in ["ADD", "SUB"] for item in sub_stack_operators)
 
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, final_ops
     ):
-        print("--------start: __generate_quadruple--------")
-        print("stack_operators: {}".format(stack_operators))
-        print("stack_values: {}".format(stack_values))
         result_id = "T" + str(result_quadruple_id)
 
         q = Quadruple(
@@ -66,11 +57,6 @@ class Quadruple(object):
         )
 
         del stack_values[-2:]
-
-        print("-------------__generate_quadruple--------")
-        print("stack_operators: {}".format(stack_operators))
-        print("stack_values: {}".format(stack_values))
-        print("--------end: __generate_quadruple--------\n")
 
         final_ops.append(q)
         stack_values.append(result_id)
@@ -87,8 +73,6 @@ class Quadruple(object):
 
         final_ops = []
         result_quadruple_id = 1
-        print("stack_operators: {}".format(stack_operators))
-        print("stack_values: {}\n".format(stack_values))
 
         for symbol in Quadruple.format_expression(expression):
             s_type = symbol.type
@@ -156,8 +140,6 @@ class Quadruple(object):
                         stack_operators.pop()
 
                     else:
-                        print("============START OF CLOSE PARENTHESIS============\n")
-
                         while stack_operators[-1] != "(":
                             Quadruple.__generate_quadruple(
                                 stack_values,
@@ -166,30 +148,20 @@ class Quadruple(object):
                                 final_ops,
                             )
 
-                            print("stack_operators: ", stack_operators)
-                            print("stack_values: ", stack_values, "\n")
-
                             result_quadruple_id += 1
 
                         stack_operators.pop()
                         stack_values.pop(-2)
-                        print("=============END OF CLOSE PARENTHESIS=============\n")
 
             # is an unknown character
             else:
                 return "error: type {} not found".format(s_type)
-
-            print("stack_operators: {}".format(stack_operators))
-            print("stack_values: {}\n".format(stack_values))
 
         while len(stack_operators):
             Quadruple.__generate_quadruple(
                 stack_values, stack_operators, result_quadruple_id, final_ops
             )
             result_quadruple_id += 1
-
-            print("stack_operators: {}".format(stack_operators))
-            print("stack_values: {}\n".format(stack_values))
 
         return final_ops
 
@@ -233,18 +205,3 @@ class Quadruple(object):
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
 
         return response
-
-# expression = "(A + B * C) + C * (D + E)"                  # PASS
-# expression = "(D / (E * F + G))"                          # PASS
-# expression = "C * (D / (E + F))"                          # PASS
-# expression = "(E / F + G / H)"                            # PASS
-# expression = "(A * (E / F + G / H) + I)"                  # PASS
-# expression = "(C * (E / F + G * H))"                      # PASS
-expression = "(A / (C * (E / F + G * (H / I + J - K - (L * M * N)))))"                # PASS
-
-result = Quadruple.arithmetic_expression(expression)
-
-print("------Expression: {}------".format(expression))
-print("-----------------resultado final-----------------")
-for i in result:
-    print(i.format_quadruple())
