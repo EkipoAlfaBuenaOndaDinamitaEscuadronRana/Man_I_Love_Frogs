@@ -72,6 +72,10 @@ class Quadruple(object):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return "NOT" in sub_stack_operators
 
+    def __any_op_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return True if len(sub_stack_operators) else False        
+
     def __another_comparator_or_matcher_in_stack():
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(item in Quadruple.__comparators_and_matchers for item in sub_stack_operators)
@@ -113,14 +117,25 @@ class Quadruple(object):
         final_ops = []
         result_quadruple_id = 1
 
+        print("Formated expression:", end=" ")
+        for i in Quadruple.format_expression(expression):
+            print(i.name, end=" ")
+        print()
+        print()
+
         for symbol in Quadruple.format_expression(expression):
             s_type = symbol.type
             s_name = symbol.name
 
             print("------------------------START------------------------")
-            print("Symbol: ", s_name)
-            print("stack_values: ", stack_values)
-            print("stack_operators: ", stack_operators)
+            print("symbol:", s_name)
+            print("stack_values:", stack_values)
+            print("stack_operators:", stack_operators)
+            print("final_ops:")
+
+            for i in final_ops:
+                print(i.format_quadruple())
+            print()
 
             # is it is a ! operator
             if s_type == "not":
@@ -139,6 +154,7 @@ class Quadruple(object):
             # is an operator
             elif s_type in ["operation", "comparison", "matching"]:
 
+                # Multiplication, Divition and Residue cases
                 if s_name in ["MUL", "DIV", "MOD"]:
 
                     # There is another operator of multiplication, division or residue
@@ -151,7 +167,7 @@ class Quadruple(object):
                         )
                         result_quadruple_id += 1
 
-                # Addition and substraction case
+                # Addition and substraction cases
                 elif s_name in ["ADD", "SUB"]:
 
                     # There is another operator on the stack
@@ -177,7 +193,7 @@ class Quadruple(object):
                 # Comparison operators case
                 elif s_name in ["GT", "LT", "GTE", "LTE"]:
 
-                    # There is another operator on the stack
+                    # There is another mathematical and comparison operator on the stack
                     if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
                         Quadruple.__generate_quadruple(
                             stack_values,
@@ -187,6 +203,7 @@ class Quadruple(object):
                         )
                         result_quadruple_id += 1
 
+                        # There is another mathematical operator in stack
                         if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
                             Quadruple.__generate_quadruple(
                                 stack_values,
@@ -196,6 +213,7 @@ class Quadruple(object):
                             )
                             result_quadruple_id += 1
 
+                            # There is another operator of sum or addition
                             if Quadruple.__another_op_as_in_stack(stack_operators):
                                 Quadruple.__generate_quadruple(
                                     stack_values,
@@ -204,6 +222,49 @@ class Quadruple(object):
                                     final_ops,
                                 )
                                 result_quadruple_id += 1
+
+                # matching operators case
+                elif s_name in ["BEQ", "BNEQ", "OR", "AND"]:
+
+                    # There is any another operator on the stack
+                    if Quadruple.__any_op_in_stack(stack_operators):
+                        Quadruple.__generate_quadruple(
+                            stack_values,
+                            stack_operators,
+                            result_quadruple_id,
+                            final_ops,
+                        )
+                        result_quadruple_id += 1
+
+                        # There is another mathematical and comparison operator on the stack
+                        if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
+                            Quadruple.__generate_quadruple(
+                                stack_values,
+                                stack_operators,
+                                result_quadruple_id,
+                                final_ops,
+                            )
+                            result_quadruple_id += 1
+
+                            # There is another mathematical operator in stack
+                            if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
+                                Quadruple.__generate_quadruple(
+                                    stack_values,
+                                    stack_operators,
+                                    result_quadruple_id,
+                                    final_ops,
+                                )
+                                result_quadruple_id += 1
+
+                                # There is another operator of sum or addition
+                                if Quadruple.__another_op_as_in_stack(stack_operators):
+                                    Quadruple.__generate_quadruple(
+                                        stack_values,
+                                        stack_operators,
+                                        result_quadruple_id,
+                                        final_ops,
+                                    )
+                                    result_quadruple_id += 1
 
                 stack_operators.append(s_name)
 
@@ -291,7 +352,7 @@ class Quadruple(object):
 
         return response
 
-expression = "A * D + E > B + (C + F * G / H)"
+expression = "!A || B < C + D * E && (F || G)"    # Pass
 result = Quadruple.arithmetic_expression(expression)
 
 print("\nResult:")
