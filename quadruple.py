@@ -24,7 +24,7 @@ class Quadruple(object):
                     symbol += "="
                     i += 1
 
-                elif (symbol == "|" or symbol == "&") and expression[i + 1] == symbol:
+                if symbol in ["|", "&"] and expression[i + 1] == symbol:
                     symbol += symbol
                     i += 1
 
@@ -59,6 +59,14 @@ class Quadruple(object):
     def __another_op_as_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(item in ["ADD", "SUB"] for item in sub_stack_operators)
+
+    def __another_op_as_mdr_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(item in ["MUL", "DIV", "MOD", "ADD", "SUB"] for item in sub_stack_operators)
+
+    def __another_op_as_mdr_comp_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(item in ["MUL", "DIV", "MOD", "ADD", "SUB", "GT", "LT", "GTE", "LTE"] for item in sub_stack_operators)
 
     def __a_not_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
@@ -96,7 +104,6 @@ class Quadruple(object):
 
     # TODO: Todavía no considera tipos basados en la tabla semantica
     # TODO: No considera constantes (1, 1.5, "algo asi")
-    # TODO: No hace negacion de booleanos (!A)
     def arithmetic_expression(expression):
         # Examples:
         stack_values = []  # ["A", "B"]
@@ -110,19 +117,24 @@ class Quadruple(object):
             s_type = symbol.type
             s_name = symbol.name
 
+            print("------------------------START------------------------")
+            print("Symbol: ", s_name)
+            print("stack_values: ", stack_values)
+            print("stack_operators: ", stack_operators)
+
             # is it is a ! operator
-            if s_name == "!":
+            if s_type == "not":
                 stack_operators.append("NOT")
 
-            if s_type in SemanticTable.types:
+            elif s_type in SemanticTable.types:
                 stack_values.append(s_name)
-                stack_types.s_type(s_type)
+                stack_types.append(s_type)
 
                 if Quadruple.__a_not_in_stack(stack_operators):
                     Quadruple.__generate_not_quadruple(
                         stack_values, stack_operators, result_quadruple_id, final_ops
                     )
-
+                    result_quadruple_id += 1
 
             # is an operator
             elif s_type in ["operation", "comparison", "matching"]:
@@ -143,9 +155,7 @@ class Quadruple(object):
                 elif s_name in ["ADD", "SUB"]:
 
                     # There is another operator on the stack
-                    if Quadruple.__another_op_mdr_in_stack(
-                        stack_operators
-                    ) or Quadruple.__another_op_as_in_stack(stack_operators):
+                    if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
                         Quadruple.__generate_quadruple(
                             stack_values,
                             stack_operators,
@@ -163,6 +173,37 @@ class Quadruple(object):
                                 final_ops,
                             )
                             result_quadruple_id += 1
+
+                # Comparison operators case
+                elif s_name in ["GT", "LT", "GTE", "LTE"]:
+
+                    # There is another operator on the stack
+                    if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
+                        Quadruple.__generate_quadruple(
+                            stack_values,
+                            stack_operators,
+                            result_quadruple_id,
+                            final_ops,
+                        )
+                        result_quadruple_id += 1
+
+                        if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
+                            Quadruple.__generate_quadruple(
+                                stack_values,
+                                stack_operators,
+                                result_quadruple_id,
+                                final_ops,
+                            )
+                            result_quadruple_id += 1
+
+                            if Quadruple.__another_op_as_in_stack(stack_operators):
+                                Quadruple.__generate_quadruple(
+                                    stack_values,
+                                    stack_operators,
+                                    result_quadruple_id,
+                                    final_ops,
+                                )
+                                result_quadruple_id += 1
 
                 stack_operators.append(s_name)
 
@@ -197,6 +238,8 @@ class Quadruple(object):
             # is an unknown character
             else:
                 return "error: type {} not found".format(s_type)
+
+            print("-------------------------END-------------------------\n\n")
 
         while len(stack_operators):
             Quadruple.__generate_quadruple(
@@ -248,7 +291,9 @@ class Quadruple(object):
 
         return response
 
-expression = "!A"
+expression = "A * D + E > B + (C + F * G / H)"
 result = Quadruple.arithmetic_expression(expression)
-for i in result:
-    print(i.format_quadruple())
+
+print("\nResult:")
+for quad in result:
+    print(quad.format_quadruple())
