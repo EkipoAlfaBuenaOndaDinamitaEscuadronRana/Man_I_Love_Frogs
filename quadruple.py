@@ -11,10 +11,24 @@ class Quadruple(object):
     def __divide_expression(expression):
         exp = []
         operand = ""
-        i = 0;
+        i = 0
 
         while i < len(expression):
-            if expression[i] in ["+", "-", "*", "/", "%", "(", ")", ">", "<", "=","|", "&", "!"]:
+            if expression[i] in [
+                "+",
+                "-",
+                "*",
+                "/",
+                "%",
+                "(",
+                ")",
+                ">",
+                "<",
+                "=",
+                "|",
+                "&",
+                "!",
+            ]:
                 if len(operand):
                     exp.append(operand)
 
@@ -62,11 +76,16 @@ class Quadruple(object):
 
     def __another_op_as_mdr_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        return any(item in ["MUL", "DIV", "MOD", "ADD", "SUB"] for item in sub_stack_operators)
+        return any(
+            item in ["MUL", "DIV", "MOD", "ADD", "SUB"] for item in sub_stack_operators
+        )
 
     def __another_op_as_mdr_comp_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        return any(item in ["MUL", "DIV", "MOD", "ADD", "SUB", "GT", "LT", "GTE", "LTE"] for item in sub_stack_operators)
+        return any(
+            item in ["MUL", "DIV", "MOD", "ADD", "SUB", "GT", "LT", "GTE", "LTE"]
+            for item in sub_stack_operators
+        )
 
     def __a_not_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
@@ -74,11 +93,13 @@ class Quadruple(object):
 
     def __any_op_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        return True if len(sub_stack_operators) else False        
+        return True if len(sub_stack_operators) else False
 
     def __another_comparator_or_matcher_in_stack():
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        return any(item in Quadruple.__comparators_and_matchers for item in sub_stack_operators)
+        return any(
+            item in Quadruple.__comparators_and_matchers for item in sub_stack_operators
+        )
 
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, final_ops
@@ -98,16 +119,12 @@ class Quadruple(object):
         stack_values, stack_operators, result_quadruple_id, final_ops
     ):
         result_id = "T" + str(result_quadruple_id)
-        q = Quadruple(
-            stack_operators.pop(), stack_values.pop(), None, result_id
-        )
+        q = Quadruple(stack_operators.pop(), stack_values.pop(), None, result_id)
 
         final_ops.append(q)
         stack_values.append(result_id)
 
-
     # TODO: Todavía no considera tipos basados en la tabla semantica
-    # TODO: No considera constantes (1, 1.5, "algo asi")
     def arithmetic_expression(expression):
         # Examples:
         stack_values = []  # ["A", "B"]
@@ -117,25 +134,9 @@ class Quadruple(object):
         final_ops = []
         result_quadruple_id = 1
 
-        print("Formated expression:", end=" ")
-        for i in Quadruple.format_expression(expression):
-            print(i.name, end=" ")
-        print()
-        print()
-
         for symbol in Quadruple.format_expression(expression):
             s_type = symbol.type
             s_name = symbol.name
-
-            print("------------------------START------------------------")
-            print("symbol:", s_name)
-            print("stack_values:", stack_values)
-            print("stack_operators:", stack_operators)
-            print("final_ops:")
-
-            for i in final_ops:
-                print(i.format_quadruple())
-            print()
 
             # is it is a ! operator
             if s_type == "not":
@@ -300,8 +301,6 @@ class Quadruple(object):
             else:
                 return "error: type {} not found".format(s_type)
 
-            print("-------------------------END-------------------------\n\n")
-
         while len(stack_operators):
             Quadruple.__generate_quadruple(
                 stack_values, stack_operators, result_quadruple_id, final_ops
@@ -351,10 +350,3 @@ class Quadruple(object):
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
 
         return response
-
-expression = "!A || B < C + D * E && (F || G)"    # Pass
-result = Quadruple.arithmetic_expression(expression)
-
-print("\nResult:")
-for quad in result:
-    print(quad.format_quadruple())

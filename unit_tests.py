@@ -137,8 +137,46 @@ class TestQuadruple(unittest.TestCase):
         self.assertEqual(response, expected_response_parentheses)
 
         expression_with_comparison_operators = "A + B >= C * D"
+        expected_response_comparison_operators = [
+            "ADD A B T1",
+            "MUL C D T2",
+            "GTE T1 T2 T3",
+        ]
 
-        
+        response = []
+        for quad in Quadruple.arithmetic_expression(
+            expression_with_comparison_operators
+        ):
+            response.append(quad.format_quadruple())
+        self.assertEqual(response, expected_response_comparison_operators)
+
+        expression_with_matching_operators = "A + B != C * D"
+        expected_response_matching_operators = [
+            "ADD A B T1",
+            "MUL C D T2",
+            "BNEQ T1 T2 T3",
+        ]
+
+        response = []
+        for quad in Quadruple.arithmetic_expression(expression_with_matching_operators):
+            response.append(quad.format_quadruple())
+        self.assertEqual(response, expected_response_matching_operators)
+
+        expression_with_all_type_operators = "!A || B < C + D * E && (F != G)"
+        expected_response_with_all_type_operators = [
+            "NOT A None T1",
+            "MUL D E T2",
+            "ADD C T2 T3",
+            "BNEQ F G T4",
+            "AND T3 T4 T5",
+            "LT B T5 T6",
+            "OR T1 T6 T7",
+        ]
+
+        response = []
+        for quad in Quadruple.arithmetic_expression(expression_with_all_type_operators):
+            response.append(quad.format_quadruple())
+        self.assertEqual(response, expected_response_with_all_type_operators)
 
     def test_format_expression(self):
         in_string_with_spaces = 'Ab + B >= C / ( D - E ) * F < G || H'

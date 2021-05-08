@@ -124,10 +124,6 @@ class SemanticTable:
         }
     }
 
-    __not: {
-
-    }
-
     def considerate(symbol_1, symbol_op, symbol_2):
         if not(symbol_1.type in SemanticTable.types) or not(symbol_2.type in SemanticTable.types):
             return 'error'
