@@ -372,6 +372,7 @@ def p_estatuto(p):
              | llamada SCOL
              | llamada_obj SCOL
              | var_dec var 
+             | return
     '''
 
 
@@ -381,6 +382,21 @@ def p_estatuto(p):
         p[0] = [p[1], p[2]]
 
     print("p_estatuto: " + str(p[0]))
+
+
+# TERMINAL Y NO TERMINAL
+# Hace el return de una expresion o un return vacio
+def p_return(p):
+    '''
+    return :  RETURN expresion SCOL 
+            | RETURN SCOL
+    '''
+    if len(p) == 3:
+        p[0] = [p[1], p[2]]
+    else: 
+        p[0] = [p[1], p[2], p[3]]
+
+
 
 # NO TERMINAL
 # cambia estado  
