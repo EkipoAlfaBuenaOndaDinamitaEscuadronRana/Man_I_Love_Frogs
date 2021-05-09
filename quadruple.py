@@ -11,17 +11,44 @@ class Quadruple(object):
     def __divide_expression(expression):
         exp = []
         operand = ""
+        i = 0
 
-        for symbol in expression:
-
-            if symbol in ["+", "-", "*", "/", "%", "(", ")"]:
+        while i < len(expression):
+            if expression[i] in [
+                "+",
+                "-",
+                "*",
+                "/",
+                "%",
+                "(",
+                ")",
+                ">",
+                "<",
+                "=",
+                "|",
+                "&",
+                "!",
+            ]:
                 if len(operand):
                     exp.append(operand)
+
+                symbol = expression[i]
+
+                if symbol in ["<", ">", "=", "!"] and expression[i + 1] == "=":
+                    symbol += "="
+                    i += 1
+
+                if symbol in ["|", "&"] and expression[i + 1] == symbol:
+                    symbol += symbol
+                    i += 1
+
                 exp.append(symbol)
                 operand = ""
 
             else:
-                operand += symbol
+                operand += expression[i]
+
+            i += 1
 
         if len(operand):
             exp.append(operand)
@@ -47,6 +74,33 @@ class Quadruple(object):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(item in ["ADD", "SUB"] for item in sub_stack_operators)
 
+    def __another_op_as_mdr_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(
+            item in ["MUL", "DIV", "MOD", "ADD", "SUB"] for item in sub_stack_operators
+        )
+
+    def __another_op_as_mdr_comp_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(
+            item in ["MUL", "DIV", "MOD", "ADD", "SUB", "GT", "LT", "GTE", "LTE"]
+            for item in sub_stack_operators
+        )
+
+    def __a_not_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return "NOT" in sub_stack_operators
+
+    def __any_op_in_stack(stack_operators):
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return True if len(sub_stack_operators) else False
+
+    def __another_comparator_or_matcher_in_stack():
+        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
+        return any(
+            item in Quadruple.__comparators_and_matchers for item in sub_stack_operators
+        )
+
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, final_ops
     ):
@@ -61,10 +115,16 @@ class Quadruple(object):
         final_ops.append(q)
         stack_values.append(result_id)
 
+    def __generate_not_quadruple(
+        stack_values, stack_operators, result_quadruple_id, final_ops
+    ):
+        result_id = "T" + str(result_quadruple_id)
+        q = Quadruple(stack_operators.pop(), stack_values.pop(), None, result_id)
+
+        final_ops.append(q)
+        stack_values.append(result_id)
+
     # TODO: Todavía no considera tipos basados en la tabla semantica
-    # TODO: Todavía no considera tipos de comparison o matching
-    # TODO: No considera constantes (1, 1.5, "algo asi")
-    # TODO: No valida que el input sea correcto (A + B -)
     def arithmetic_expression(expression):
         # Examples:
         stack_values = []  # ["A", "B"]
@@ -78,14 +138,24 @@ class Quadruple(object):
             s_type = symbol.type
             s_name = symbol.name
 
-            # is an operand
-            if s_type in SemanticTable.types:
+            # is it is a ! operator
+            if s_type == "not":
+                stack_operators.append("NOT")
+
+            elif s_type in SemanticTable.types:
                 stack_values.append(s_name)
                 stack_types.append(s_type)
+
+                if Quadruple.__a_not_in_stack(stack_operators):
+                    Quadruple.__generate_not_quadruple(
+                        stack_values, stack_operators, result_quadruple_id, final_ops
+                    )
+                    result_quadruple_id += 1
 
             # is an operator
             elif s_type in ["operation", "comparison", "matching"]:
 
+                # Multiplication, Divition and Residue cases
                 if s_name in ["MUL", "DIV", "MOD"]:
 
                     # There is another operator of multiplication, division or residue
@@ -98,13 +168,11 @@ class Quadruple(object):
                         )
                         result_quadruple_id += 1
 
-                # Addition and substraction case
+                # Addition and substraction cases
                 elif s_name in ["ADD", "SUB"]:
 
                     # There is another operator on the stack
-                    if Quadruple.__another_op_mdr_in_stack(
-                        stack_operators
-                    ) or Quadruple.__another_op_as_in_stack(stack_operators):
+                    if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
                         Quadruple.__generate_quadruple(
                             stack_values,
                             stack_operators,
@@ -122,6 +190,82 @@ class Quadruple(object):
                                 final_ops,
                             )
                             result_quadruple_id += 1
+
+                # Comparison operators case
+                elif s_name in ["GT", "LT", "GTE", "LTE"]:
+
+                    # There is another mathematical and comparison operator on the stack
+                    if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
+                        Quadruple.__generate_quadruple(
+                            stack_values,
+                            stack_operators,
+                            result_quadruple_id,
+                            final_ops,
+                        )
+                        result_quadruple_id += 1
+
+                        # There is another mathematical operator in stack
+                        if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
+                            Quadruple.__generate_quadruple(
+                                stack_values,
+                                stack_operators,
+                                result_quadruple_id,
+                                final_ops,
+                            )
+                            result_quadruple_id += 1
+
+                            # There is another operator of sum or addition
+                            if Quadruple.__another_op_as_in_stack(stack_operators):
+                                Quadruple.__generate_quadruple(
+                                    stack_values,
+                                    stack_operators,
+                                    result_quadruple_id,
+                                    final_ops,
+                                )
+                                result_quadruple_id += 1
+
+                # matching operators case
+                elif s_name in ["BEQ", "BNEQ", "OR", "AND"]:
+
+                    # There is any another operator on the stack
+                    if Quadruple.__any_op_in_stack(stack_operators):
+                        Quadruple.__generate_quadruple(
+                            stack_values,
+                            stack_operators,
+                            result_quadruple_id,
+                            final_ops,
+                        )
+                        result_quadruple_id += 1
+
+                        # There is another mathematical and comparison operator on the stack
+                        if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
+                            Quadruple.__generate_quadruple(
+                                stack_values,
+                                stack_operators,
+                                result_quadruple_id,
+                                final_ops,
+                            )
+                            result_quadruple_id += 1
+
+                            # There is another mathematical operator in stack
+                            if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
+                                Quadruple.__generate_quadruple(
+                                    stack_values,
+                                    stack_operators,
+                                    result_quadruple_id,
+                                    final_ops,
+                                )
+                                result_quadruple_id += 1
+
+                                # There is another operator of sum or addition
+                                if Quadruple.__another_op_as_in_stack(stack_operators):
+                                    Quadruple.__generate_quadruple(
+                                        stack_values,
+                                        stack_operators,
+                                        result_quadruple_id,
+                                        final_ops,
+                                    )
+                                    result_quadruple_id += 1
 
                 stack_operators.append(s_name)
 
@@ -192,6 +336,7 @@ class Quadruple(object):
                     "%": Symbol("MOD", "operation"),
                     "(": Symbol("OP", "parentheses"),
                     ")": Symbol("CP", "parentheses"),
+                    "!": Symbol("NOT", "not"),
                     "<": Symbol("LT", "comparison"),
                     ">": Symbol("GT", "comparison"),
                     "<=": Symbol("LTE", "comparison"),

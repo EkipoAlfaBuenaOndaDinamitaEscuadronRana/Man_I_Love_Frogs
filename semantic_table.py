@@ -3,14 +3,14 @@ from symbol_tables import *
 class SemanticTable:
     types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
 
-    #                    <     >     <=     >=
-    __comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
+    #                  <     >     <=     >=
+    comparison_op = { 'LT', 'GT', 'LTE', 'GTE' }
 
     #                    +      -      +=       -=       *=     /=     %      *=       /=       %=
     __operations_op = { 'ADD', 'SUB', 'ADDEQ', 'SUBEQ', 'MUL', 'DIV', 'MOD', 'MULEQ', 'DIVEQ', 'MODEQ' }
 
-    #                  ==     !=      ||    &&
-    __matching_op = { 'BEQ', 'BNEQ', 'OR', 'AND' }
+    #                ==     !=      ||    &&
+    matching_op = { 'BEQ', 'BNEQ', 'OR', 'AND' }
 
     __operations = {
         'INT' : {
