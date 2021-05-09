@@ -84,11 +84,19 @@ class TestSemanticTable(unittest.TestCase):
         # Non-existent type
         s_doub = Symbol("double", "DOUBLE")
 
+        # TODO: This consideration is no loger done with symbols. But I don't want to delete the tests yet
         self.assertEqual(SemanticTable.considerate(s_flt, s_add, s_int), 'FLT')
         self.assertEqual(SemanticTable.considerate(s_flt, s_sub, s_null), 'error')
         self.assertEqual(SemanticTable.considerate(s_char, s_lt, s_str), 'BOOL')
         self.assertEqual(SemanticTable.considerate(s_null, s_beq, s_bool), 'BOOL')
         self.assertEqual(SemanticTable.considerate(s_doub, s_add, s_char), 'error')
+
+        # Consideration with strings
+        self.assertEqual(SemanticTable.considerate("FLT", "ADD", "INT"), 'FLT')
+        self.assertEqual(SemanticTable.considerate("FLT", "SUB", "NULL"), 'error')
+        self.assertEqual(SemanticTable.considerate("CHAR", "LT", "STR"), 'BOOL')
+        self.assertEqual(SemanticTable.considerate("NULL", "BEQ", "BOOL"), 'BOOL')
+        self.assertEqual(SemanticTable.considerate('DOUBLE', "ADD", "CHAR"), 'error')
 
 class TestQuadruple(unittest.TestCase):
     def test_arithmetic_expression(self):
@@ -162,7 +170,26 @@ class TestQuadruple(unittest.TestCase):
             response.append(quad.format_quadruple())
         self.assertEqual(response, expected_response_matching_operators)
 
-        expression_with_all_type_operators = "!A || B < C + D * E && (F != G)"
+        expression_with_all_type_operators = [
+            # "!A || B < C + D * E && (F != G)"
+            Symbol('NOT', 'not'),
+            Symbol('A', 'BOOL'),
+            Symbol('OR', 'matching'),
+            Symbol('B', 'INT'),
+            Symbol('LT', 'comparison'),
+            Symbol('C', 'FLT'),
+            Symbol('ADD', 'operation'),
+            Symbol('D', 'INT'),
+            Symbol('MUL', 'operation'),
+            Symbol('E', 'FLT'),
+            Symbol('AND', 'matching'),
+            Symbol('OP', 'parentheses'),
+            Symbol('F', 'STR'),
+            Symbol('BNEQ', 'matching'),
+            Symbol('G', 'CHAR'),
+            Symbol('CP', 'parentheses'),
+        ]
+
         expected_response_with_all_type_operators = [
             "NOT A None T1",
             "MUL D E T2",
