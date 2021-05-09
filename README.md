@@ -19,6 +19,16 @@ Compilador de Rosamaría Martínez y Adrián García
 3. Pruebas Unitarias
 4. Refactorización de código
 
+## Avances de entrega 4
+1. Manejo de expresiones (con correcciones)
+2. Solucion de bugs relacionados con parser
+3. Asignacion de variables
+4. Tabla de variables funcional
+
+## Avances de entrega 5
+1. Uso de operadores comparativos en expresiones aritmeticas
+2. Consideraciones semanticas implementadas
+
 ## Instalacion
 Para correr este archivo, es necesario tener instalado python.
 
