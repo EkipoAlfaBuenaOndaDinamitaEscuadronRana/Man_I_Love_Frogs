@@ -36,6 +36,7 @@ Breve descripción de lo que la tarea hace
 * [ ] El código funciona
 * [ ] Se añadieron pruebas
 * [ ] Las pruebas pasan
+* [ ] El codigo pasó por el estilizador de código
 ```
 Una vez terminada la tarea realizada, el resto del equipo aprovará sus cambios y si se considera útil, se mergeará al proyecto
 
@@ -43,6 +44,15 @@ Una vez terminada la tarea realizada, el resto del equipo aprovará sus cambios 
 Para correr las pruebas unitarias, es necesario usar el comando
 ```
 python3 -m unittest unit_tests.py
+```
+
+## Code Styler
+Para este proyecto, usamos [Black](https://github.com/psf/black) como estilizador de código. Cada vez que se mande un Pull Request a revisión, es importante correr los siguietes comandos para cada uno de los archivos modificados enviados a revision
+```
+black {nombre_de_archivo.py}
+```
+```
+python3 -m black {nombre_de_archivo.py}
 ```
 
 ### Avances de entrega 1
