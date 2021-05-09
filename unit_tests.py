@@ -170,24 +170,24 @@ class TestQuadruple(unittest.TestCase):
             response.append(quad.format_quadruple())
         self.assertEqual(response, expected_response_matching_operators)
 
+        # !A || B < C + D * E && (F != G)
         expression_with_all_type_operators = [
-            # "!A || B < C + D * E && (F != G)"
-            Symbol('NOT', 'not'),
-            Symbol('A', 'BOOL'),
-            Symbol('OR', 'matching'),
-            Symbol('B', 'INT'),
-            Symbol('LT', 'comparison'),
-            Symbol('C', 'FLT'),
-            Symbol('ADD', 'operation'),
-            Symbol('D', 'INT'),
-            Symbol('MUL', 'operation'),
-            Symbol('E', 'FLT'),
-            Symbol('AND', 'matching'),
-            Symbol('OP', 'parentheses'),
-            Symbol('F', 'STR'),
-            Symbol('BNEQ', 'matching'),
-            Symbol('G', 'CHAR'),
-            Symbol('CP', 'parentheses'),
+            Symbol("NOT", "not"),
+            Symbol("A", "BOOL"),
+            Symbol("OR", "matching"),
+            Symbol("B", "INT"),
+            Symbol("LT", "comparison"),
+            Symbol("C", "FLT"),
+            Symbol("ADD", "operation"),
+            Symbol("D", "INT"),
+            Symbol("MUL", "operation"),
+            Symbol("E", "FLT"),
+            Symbol("AND", "matching"),
+            Symbol("OP", "parentheses"),
+            Symbol("F", "STR"),
+            Symbol("BNEQ", "matching"),
+            Symbol("G", "CHAR"),
+            Symbol("CP", "parentheses"),
         ]
 
         expected_response_with_all_type_operators = [
@@ -204,6 +204,23 @@ class TestQuadruple(unittest.TestCase):
         for quad in Quadruple.arithmetic_expression(expression_with_all_type_operators):
             response.append(quad.format_quadruple())
         self.assertEqual(response, expected_response_with_all_type_operators)
+
+        expression_with_uncompatible_types = [
+            Symbol("A", "INT"),
+            Symbol("ADD", "operation"),
+            Symbol("B", "BOOL"),
+        ]
+
+        response = Quadruple.arithmetic_expression(expression_with_uncompatible_types)
+        self.assertEqual(response, "error: non-compatible types")
+
+        expression_with_not_and_int = [
+            Symbol("NOT", "not"),
+            Symbol("A", "INT"),
+        ]
+
+        response = Quadruple.arithmetic_expression(expression_with_uncompatible_types)
+        self.assertEqual(response, "error: non-compatible types")
 
     def test_format_expression(self):
         in_string_with_spaces = 'Ab + B >= C / ( D - E ) * F < G || H'
