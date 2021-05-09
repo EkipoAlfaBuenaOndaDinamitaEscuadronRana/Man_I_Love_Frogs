@@ -1,4 +1,4 @@
-from symbol_table import *
+from symbol_tables import *
 
 class SemanticTable:
     types = { 'INT', 'FLT', 'CHAR', 'STR', 'BOOL', 'NULL' }
@@ -16,7 +16,7 @@ class SemanticTable:
         'INT' : {
             'INT': 'INT',
             'FLT': 'FLT',
-            'CHAR': 'error',
+            'CHAR': 'INT',
             'STR': 'error',
             'BOOL': 'error',
             'NULL': 'error'
@@ -25,15 +25,15 @@ class SemanticTable:
         'FLT': {
             'INT': 'FLT',
             'FLT': 'FLT',
-            'CHAR': 'error',
+            'CHAR': 'FLT',
             'STR': 'error',
             'BOOL': 'error',
             'NULL': 'error'
         },
 
         'CHAR': {
-            'INT': 'error',
-            'FLT': 'error',
+            'INT': 'INT',
+            'FLT': 'FLT',
             'CHAR': 'STR',
             'STR': 'STR',
             'BOOL': 'error',
@@ -50,8 +50,8 @@ class SemanticTable:
         },
 
         'BOOL': {
-            'INT': 'error',
-            'FLT': 'error',
+            'INT': 'BOOL',
+            'FLT': 'BOOL',
             'CHAR': 'error',
             'STR': 'error',
             'BOOL': 'BOOL',
@@ -72,7 +72,7 @@ class SemanticTable:
         'INT': {
             'INT': 'BOOL',
             'FLT': 'BOOL',
-            'CHAR': 'error',
+            'CHAR': 'BOOL',
             'STR': 'error',
             'BOOL': 'BOOL',
             'NULL': 'error'
@@ -81,15 +81,15 @@ class SemanticTable:
         'FLT': {
             'INT': 'BOOL',
             'FLT': 'BOOL',
-            'CHAR': 'error',
+            'CHAR': 'BOOL',
             'STR': 'error',
             'BOOL': 'BOOL',
-            'NULL': 'BOOL'
+            'NULL': 'error'
         },
 
         'CHAR': {
-            'INT': 'error',
-            'FLT': 'error',
+            'INT': 'BOOL',
+            'FLT': 'BOOL',
             'CHAR': 'BOOL',
             'STR': 'BOOL',
             'BOOL': 'error',

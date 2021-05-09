@@ -5,15 +5,12 @@ parser = yacc.yacc()
 
 def parser_file(file_name):
 
-    file = open(file_name)
+    file = open(file_name, "r")
 
-    while True:
-        line = file.readline()
+    line = file.read()
+    
+    if line:
+        parser.parse(line)
 
-        if line:
-            parser.parse(line)
 
-        else:
-            break
-
-parser_file("tests/works_1.txt")
+parser_file("tests/test_3.txt")
