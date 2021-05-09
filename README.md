@@ -68,3 +68,8 @@ python3 -m unittest unit_tests.py
 2. Solucion de bugs relacionados con parser
 3. Asignacion de variables
 4. Tabla de variables funcional
+
+### Avances de entrega 5
+1. Uso de operadores comparativos en expresiones aritmeticas
+2. Consideraciones semanticas implementadas
+3. Game engine

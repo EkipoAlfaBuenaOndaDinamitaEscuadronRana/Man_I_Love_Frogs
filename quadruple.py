@@ -101,6 +101,19 @@ class Quadruple(object):
             item in Quadruple.__comparators_and_matchers for item in sub_stack_operators
         )
 
+    def __not_consideration(stack_types):
+        return stack_types[-1] != "BOOL"
+
+    def __type_consideration(stack_types, stack_operators):
+        consideration = SemanticTable.considerate(
+            stack_types[-2], stack_operators[-1], stack_types[-1]
+        )
+
+        del stack_types[-2:]
+
+        stack_types.append(consideration)
+        return consideration
+
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, final_ops
     ):
@@ -124,9 +137,7 @@ class Quadruple(object):
         final_ops.append(q)
         stack_values.append(result_id)
 
-    # TODO: Todavía no considera tipos basados en la tabla semantica
     def arithmetic_expression(expression):
-        # Examples:
         stack_values = []  # ["A", "B"]
         stack_operators = []  # ["ADD"]
         stack_types = []  # ["INT", "FLT"]
@@ -147,9 +158,14 @@ class Quadruple(object):
                 stack_types.append(s_type)
 
                 if Quadruple.__a_not_in_stack(stack_operators):
+
+                    if Quadruple.__not_consideration(stack_types):
+                        return "error: non-compatible types"
+
                     Quadruple.__generate_not_quadruple(
                         stack_values, stack_operators, result_quadruple_id, final_ops
                     )
+
                     result_quadruple_id += 1
 
             # is an operator
@@ -160,12 +176,19 @@ class Quadruple(object):
 
                     # There is another operator of multiplication, division or residue
                     if Quadruple.__another_op_mdr_in_stack(stack_operators):
+                        if (
+                            Quadruple.__type_consideration(stack_types, stack_operators)
+                            == "error"
+                        ):
+                            return "error: non-compatible types"
+
                         Quadruple.__generate_quadruple(
                             stack_values,
                             stack_operators,
                             result_quadruple_id,
                             final_ops,
                         )
+
                         result_quadruple_id += 1
 
                 # Addition and substraction cases
@@ -173,22 +196,38 @@ class Quadruple(object):
 
                     # There is another operator on the stack
                     if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
+                        if (
+                            Quadruple.__type_consideration(stack_types, stack_operators)
+                            == "error"
+                        ):
+                            return "error: non-compatible types"
+
                         Quadruple.__generate_quadruple(
                             stack_values,
                             stack_operators,
                             result_quadruple_id,
                             final_ops,
                         )
+
                         result_quadruple_id += 1
 
                         # There is another operator of sum or addition
                         if Quadruple.__another_op_as_in_stack(stack_operators):
+                            if (
+                                Quadruple.__type_consideration(
+                                    stack_types, stack_operators
+                                )
+                                == "error"
+                            ):
+                                return "error: non-compatible types"
+
                             Quadruple.__generate_quadruple(
                                 stack_values,
                                 stack_operators,
                                 result_quadruple_id,
                                 final_ops,
                             )
+
                             result_quadruple_id += 1
 
                 # Comparison operators case
@@ -196,32 +235,57 @@ class Quadruple(object):
 
                     # There is another mathematical and comparison operator on the stack
                     if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
+                        if (
+                            Quadruple.__type_consideration(stack_types, stack_operators)
+                            == "error"
+                        ):
+                            return "error: non-compatible types"
+
                         Quadruple.__generate_quadruple(
                             stack_values,
                             stack_operators,
                             result_quadruple_id,
                             final_ops,
                         )
+
                         result_quadruple_id += 1
 
                         # There is another mathematical operator in stack
                         if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
+                            if (
+                                Quadruple.__type_consideration(
+                                    stack_types, stack_operators
+                                )
+                                == "error"
+                            ):
+                                return "error: non-compatible types"
+
                             Quadruple.__generate_quadruple(
                                 stack_values,
                                 stack_operators,
                                 result_quadruple_id,
                                 final_ops,
                             )
+
                             result_quadruple_id += 1
 
                             # There is another operator of sum or addition
                             if Quadruple.__another_op_as_in_stack(stack_operators):
+                                if (
+                                    Quadruple.__type_consideration(
+                                        stack_types, stack_operators
+                                    )
+                                    == "error"
+                                ):
+                                    return "error: non-compatible types"
+
                                 Quadruple.__generate_quadruple(
                                     stack_values,
                                     stack_operators,
                                     result_quadruple_id,
                                     final_ops,
                                 )
+
                                 result_quadruple_id += 1
 
                 # matching operators case
@@ -229,42 +293,76 @@ class Quadruple(object):
 
                     # There is any another operator on the stack
                     if Quadruple.__any_op_in_stack(stack_operators):
+                        if (
+                            Quadruple.__type_consideration(stack_types, stack_operators)
+                            == "error"
+                        ):
+                            return "error: non-compatible types"
+
                         Quadruple.__generate_quadruple(
                             stack_values,
                             stack_operators,
                             result_quadruple_id,
                             final_ops,
                         )
+
                         result_quadruple_id += 1
 
                         # There is another mathematical and comparison operator on the stack
                         if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
+                            if (
+                                Quadruple.__type_consideration(
+                                    stack_types, stack_operators
+                                )
+                                == "error"
+                            ):
+                                return "error: non-compatible types"
+
                             Quadruple.__generate_quadruple(
                                 stack_values,
                                 stack_operators,
                                 result_quadruple_id,
                                 final_ops,
                             )
+
                             result_quadruple_id += 1
 
                             # There is another mathematical operator in stack
                             if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
+                                if (
+                                    Quadruple.__type_consideration(
+                                        stack_types, stack_operators
+                                    )
+                                    == "error"
+                                ):
+                                    return "error: non-compatible types"
+
                                 Quadruple.__generate_quadruple(
                                     stack_values,
                                     stack_operators,
                                     result_quadruple_id,
                                     final_ops,
                                 )
+
                                 result_quadruple_id += 1
 
                                 # There is another operator of sum or addition
                                 if Quadruple.__another_op_as_in_stack(stack_operators):
+                                    if (
+                                        Quadruple.__type_consideration(
+                                            stack_types, stack_operators
+                                        )
+                                        == "error"
+                                    ):
+                                        return "error: non-compatible types"
+
                                     Quadruple.__generate_quadruple(
                                         stack_values,
                                         stack_operators,
                                         result_quadruple_id,
                                         final_ops,
                                     )
+
                                     result_quadruple_id += 1
 
                 stack_operators.append(s_name)
@@ -285,6 +383,14 @@ class Quadruple(object):
 
                     else:
                         while stack_operators[-1] != "(":
+                            if (
+                                Quadruple.__type_consideration(
+                                    stack_types, stack_operators
+                                )
+                                == "error"
+                            ):
+                                return "error: non-compatible types"
+
                             Quadruple.__generate_quadruple(
                                 stack_values,
                                 stack_operators,
@@ -302,9 +408,13 @@ class Quadruple(object):
                 return "error: type {} not found".format(s_type)
 
         while len(stack_operators):
+            if Quadruple.__type_consideration(stack_types, stack_operators) == "error":
+                return "error: non-compatible types"
+
             Quadruple.__generate_quadruple(
                 stack_values, stack_operators, result_quadruple_id, final_ops
             )
+
             result_quadruple_id += 1
 
         return final_ops
