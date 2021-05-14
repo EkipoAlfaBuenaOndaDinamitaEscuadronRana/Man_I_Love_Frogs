@@ -1,11 +1,12 @@
 from lexer import *
-from helper_functions import * 
+from helper_functions import *
+from quadruple_stack import * 
 import ply.yacc as yacc
 import sys
 
 global_func_table = FunctionTable()
 current_state = StateTable()
-
+quad_stack = QuadrupleStack()
 
 # TERMINAL Y NO TERMINAL
 # Permite que empiece un programa pero no lo obliga a hacerlo
@@ -36,6 +37,7 @@ def p_global_vartable_distruct(p):
     global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
     # ESTADO: pop main
     current_state.pop_curr_state()
+    quad_stack.print_quads()
 
 
 # TERMINAL Y NO TERMINAL
@@ -446,7 +448,10 @@ def p_asignatura(p):
     '''
     asignatura : id_var EQ expresion
     '''
+    # Resuleve la expresion que se esta asignando
     p[0] = [p[1], p[2], p[3]]
+    quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[3])))
+    # 
     
     print("p_asignatura: " + str(p[0]))
 

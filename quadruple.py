@@ -65,7 +65,7 @@ class Quadruple(object):
     # TODO: Todavía no considera tipos de comparison o matching
     # TODO: No considera constantes (1, 1.5, "algo asi")
     # TODO: No valida que el input sea correcto (A + B -)
-    def arithmetic_expression(expression):
+    def arithmetic_expression(self, expression):
         # Examples:
         stack_values = []  # ["A", "B"]
         stack_operators = []  # ["ADD"]

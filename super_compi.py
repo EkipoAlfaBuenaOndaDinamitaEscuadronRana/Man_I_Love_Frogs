@@ -13,4 +13,4 @@ def parser_file(file_name):
         parser.parse(line)
 
 
-parser_file("tests/test_3.txt")
+parser_file("tests/test_4.txt")
