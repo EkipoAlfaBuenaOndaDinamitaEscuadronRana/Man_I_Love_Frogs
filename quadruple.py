@@ -137,7 +137,14 @@ class Quadruple(object):
         resulting_quads.append(q)
         stack_values.append(result_id)
 
-    def evaluate_symbol(symbol, stack_values, stack_operators, stack_types, resulting_quads, result_quadruple_id):
+    def evaluate_symbol(
+        symbol,
+        stack_values,
+        stack_operators,
+        stack_types,
+        resulting_quads,
+        result_quadruple_id,
+    ):
         s_type = symbol.type
         s_name = symbol.name
 
@@ -207,9 +214,7 @@ class Quadruple(object):
                     # There is another operator of sum or addition
                     if Quadruple.__another_op_as_in_stack(stack_operators):
                         if (
-                            Quadruple.__type_consideration(
-                                stack_types, stack_operators
-                            )
+                            Quadruple.__type_consideration(stack_types, stack_operators)
                             == "error"
                         ):
                             return "error: non-compatible types"
@@ -246,9 +251,7 @@ class Quadruple(object):
                     # There is another mathematical operator in stack
                     if Quadruple.__another_op_as_mdr_in_stack(stack_operators):
                         if (
-                            Quadruple.__type_consideration(
-                                stack_types, stack_operators
-                            )
+                            Quadruple.__type_consideration(stack_types, stack_operators)
                             == "error"
                         ):
                             return "error: non-compatible types"
@@ -304,9 +307,7 @@ class Quadruple(object):
                     # There is another mathematical and comparison operator on the stack
                     if Quadruple.__another_op_as_mdr_comp_in_stack(stack_operators):
                         if (
-                            Quadruple.__type_consideration(
-                                stack_types, stack_operators
-                            )
+                            Quadruple.__type_consideration(stack_types, stack_operators)
                             == "error"
                         ):
                             return "error: non-compatible types"
@@ -377,9 +378,7 @@ class Quadruple(object):
                 else:
                     while stack_operators[-1] != "(":
                         if (
-                            Quadruple.__type_consideration(
-                                stack_types, stack_operators
-                            )
+                            Quadruple.__type_consideration(stack_types, stack_operators)
                             == "error"
                         ):
                             return "error: non-compatible types"
@@ -410,7 +409,14 @@ class Quadruple(object):
         resulting_quads = []
 
         for symbol in Quadruple.format_expression(expression):
-            result_quadruple_id = Quadruple.evaluate_symbol(symbol, stack_values, stack_operators, stack_types, resulting_quads, result_quadruple_id)
+            result_quadruple_id = Quadruple.evaluate_symbol(
+                symbol,
+                stack_values,
+                stack_operators,
+                stack_types,
+                resulting_quads,
+                result_quadruple_id,
+            )
 
             if type(result_quadruple_id) != int:
                 return result_quadruple_id
