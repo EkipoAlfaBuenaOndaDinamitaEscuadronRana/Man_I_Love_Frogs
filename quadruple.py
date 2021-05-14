@@ -10,7 +10,19 @@ class Quadruple(object):
 
     def __is_operator(symbol):
         return symbol in [
-            "+", "-", "*", "/", "%", "(", ")", ">", "<", "=", "|", "&", "!"
+            "+",
+            "-",
+            "*",
+            "/",
+            "%",
+            "(",
+            ")",
+            ">",
+            "<",
+            "=",
+            "|",
+            "&",
+            "!",
         ]
 
     def __divide_expression(expression):
@@ -131,7 +143,9 @@ class Quadruple(object):
     def __generate_eq_quadruple(
         stack_values, stack_operators, result_quadruple_id, resulting_quads
     ):
-        q = Quadruple(stack_operators.pop(), stack_values.pop(), None, stack_values.pop())
+        q = Quadruple(
+            stack_operators.pop(), stack_values.pop(), None, stack_values.pop()
+        )
         resulting_quads.append(q)
 
     def evaluate_symbol(

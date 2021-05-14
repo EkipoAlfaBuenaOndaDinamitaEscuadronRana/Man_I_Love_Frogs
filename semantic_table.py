@@ -172,7 +172,7 @@ class SemanticTable:
             return "BOOL"
 
         elif symbol_op == "assignment":
-            return 
+            return True
 
         else:
             return "error"
