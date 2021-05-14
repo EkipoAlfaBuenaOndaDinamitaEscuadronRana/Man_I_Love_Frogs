@@ -4,7 +4,7 @@ int a;
 int b = 2;
 
 func int square(int a){
-    a = a * a;
+    return a * a;
 }
 
 {

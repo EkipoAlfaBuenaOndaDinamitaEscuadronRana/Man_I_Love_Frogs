@@ -1,7 +1,6 @@
 from symbol_tables import *
 
 
-
 def get_parameters(line):
     paramlist = []
     currlist = line
@@ -10,7 +9,7 @@ def get_parameters(line):
             paramlist.append(Symbol(currlist[0], currlist[1]))
             currlist.pop(1)
             currlist.pop(0)
-            if (len(currlist) > 0):
+            if len(currlist) > 0:
                 currlist = currlist[0]
 
     return paramlist
@@ -31,10 +30,10 @@ def get_variables(type, line):
     varList = {}
     currSymbol = Symbol()
     currSymbol.set_type(type)
-    while line[0] != ';':
-        if line[0] == ',':
+    while line[0] != ";":
+        if line[0] == ",":
             line.pop(0)
-        elif line[1] == '=':
+        elif line[1] == "=":
             currSymbol.set_name(line[0])
             line.pop(1)
             line.pop(0)
@@ -46,7 +45,6 @@ def get_variables(type, line):
             varList[currSymbol] = None
             line.pop(0)
     return varList
-
 
 def expresion_to_string(expression):
     if type(expression) != list:
