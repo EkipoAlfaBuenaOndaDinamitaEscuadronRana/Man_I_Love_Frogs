@@ -455,7 +455,7 @@ class Quadruple(object):
 
     def format_quadruple(self):
         return "{} {} {} {}".format(
-            self.operator, self.operand_1, self.operand_2, self.result_id
+            self.operator.name, self.operand_1.name, self.operand_2.name, self.result_id.name
         )
 
     def format_expression(expression):
@@ -495,3 +495,12 @@ class Quadruple(object):
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
 
         return response
+
+quad = Quadruple(
+    Symbol("ADD", "operation"),
+    Symbol("A", "FLT"),
+    Symbol("B", "FLT"),
+    Symbol("T1", "FLT")
+)
+
+print(quad.format_quadruple())
