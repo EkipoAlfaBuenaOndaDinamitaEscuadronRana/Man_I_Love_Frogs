@@ -8,37 +8,28 @@ class Quadruple(object):
         self.operand_2 = operand_2
         self.result_id = result_id
 
+    def __is_operator(symbol):
+        return symbol in [
+            "+", "-", "*", "/", "%", "(", ")", ">", "<", "=", "|", "&", "!"
+        ]
+
     def __divide_expression(expression):
         exp = []
         operand = ""
         i = 0
 
         while i < len(expression):
-            if expression[i] in [
-                "+",
-                "-",
-                "*",
-                "/",
-                "%",
-                "(",
-                ")",
-                ">",
-                "<",
-                "=",
-                "|",
-                "&",
-                "!",
-            ]:
+            symbol = expression[i]
+
+            if Quadruple.__is_operator(symbol):
                 if len(operand):
                     exp.append(operand)
-
-                symbol = expression[i]
 
                 if symbol in ["<", ">", "=", "!"] and expression[i + 1] == "=":
                     symbol += "="
                     i += 1
 
-                if symbol in ["|", "&"] and expression[i + 1] == symbol:
+                elif symbol in ["|", "&"] and expression[i + 1] == symbol:
                     symbol += symbol
                     i += 1
 
@@ -461,6 +452,7 @@ class Quadruple(object):
                     "(": Symbol("OP", "parentheses"),
                     ")": Symbol("CP", "parentheses"),
                     "!": Symbol("NOT", "not"),
+                    "=": Symbol("EQ", "assignment"),
                     "<": Symbol("LT", "comparison"),
                     ">": Symbol("GT", "comparison"),
                     "<=": Symbol("LTE", "comparison"),

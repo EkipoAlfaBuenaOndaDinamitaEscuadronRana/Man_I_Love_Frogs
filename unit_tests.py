@@ -258,12 +258,12 @@ class TestQuadruple(unittest.TestCase):
         self.assertEqual(response, "error: non-compatible types")
 
     def test_format_expression(self):
-        in_string_with_spaces = "Ab + B >= C / ( D - E ) * F < G || H"
-        in_string_without_spaces = "Ab+B>=C/(D-E)*F<G||H"
+        in_string_with_spaces = "Ab = B >= C / ( D - E ) * F < G || H"
+        in_string_without_spaces = "Ab=B>=C/(D-E)*F<G||H"
 
         in_list_of_strings = [
             "Ab",
-            "+",
+            "=",
             "B",
             ">=",
             "C",
@@ -283,7 +283,7 @@ class TestQuadruple(unittest.TestCase):
 
         in_list_of_symbols = [
             Symbol("Ab", "FLT"),
-            Symbol("ADD", "operation"),
+            Symbol("EQ", "assignment"),
             Symbol("B", "FLT"),
             Symbol("GTE", "comparison"),
             Symbol("C", "FLT"),
