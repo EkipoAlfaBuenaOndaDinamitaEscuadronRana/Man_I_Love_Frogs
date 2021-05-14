@@ -145,12 +145,6 @@ class Quadruple(object):
         s_type = symbol.type
         s_name = symbol.name
 
-        print("-------------------------Start-------------------------")
-        print("stack_values: ", stack_values)
-        print("stack_operators: ", stack_operators)
-        print("s_name: ", s_name)
-        print("s_type: ", s_type)
-
         # is it is a ! operator
         if s_type == "not":
             stack_operators.append("NOT")
@@ -404,8 +398,6 @@ class Quadruple(object):
         # is an unknown character
         else:
             return "error: type {} not found".format(s_type)
-
-        print("--------------------------End--------------------------\n")
 
         return result_quadruple_id
 

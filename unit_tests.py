@@ -257,6 +257,24 @@ class TestQuadruple(unittest.TestCase):
         )
         self.assertEqual(response, "error: non-compatible types")
 
+        assignment_expression = [
+            Symbol("A", "FLT"),
+            Symbol("=", "assignment"),
+            Symbol("B", "FLT"),
+            Symbol("ADD", "operation"),
+            Symbol("C", "FLT"),
+        ]
+
+        response = []
+        for quad in Quadruple.arithmetic_expression(assignment_expression, 1):
+            response.append(quad.format_quadruple())
+
+        expected_response = [
+            "ADD B C T1",
+            "EQ T1 None A",
+        ]
+        self.assertEqual(response, expected_response)
+
     def test_format_expression(self):
         in_string_with_spaces = "Ab = B >= C / ( D - E ) * F < G || H"
         in_string_without_spaces = "Ab=B>=C/(D-E)*F<G||H"
