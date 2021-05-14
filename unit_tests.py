@@ -328,7 +328,7 @@ class TestQuadruple(unittest.TestCase):
             stack_operators,
             stack_types,
             resulting_quads,
-            result_quadruple_id
+            result_quadruple_id,
         )
 
         resulting_quads_formatted = []
