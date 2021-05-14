@@ -128,6 +128,12 @@ class Quadruple(object):
         resulting_quads.append(q)
         stack_values.append(result_id)
 
+    def __generate_eq_quadruple(
+        stack_values, stack_operators, result_quadruple_id, resulting_quads
+    ):
+        q = Quadruple(stack_operators.pop(), stack_values.pop(), None, stack_values.pop())
+        resulting_quads.append(q)
+
     def evaluate_symbol(
         symbol,
         stack_values,
@@ -139,9 +145,18 @@ class Quadruple(object):
         s_type = symbol.type
         s_name = symbol.name
 
+        print("-------------------------Start-------------------------")
+        print("stack_values: ", stack_values)
+        print("stack_operators: ", stack_operators)
+        print("s_name: ", s_name)
+        print("s_type: ", s_type)
+
         # is it is a ! operator
         if s_type == "not":
             stack_operators.append("NOT")
+
+        elif s_type == "assignment":
+            stack_operators.append("EQ")
 
         # is a value
         elif s_type in SemanticTable.types:
@@ -390,6 +405,8 @@ class Quadruple(object):
         else:
             return "error: type {} not found".format(s_type)
 
+        print("--------------------------End--------------------------\n")
+
         return result_quadruple_id
 
     def arithmetic_expression(expression, result_quadruple_id):
@@ -416,11 +433,17 @@ class Quadruple(object):
             if Quadruple.__type_consideration(stack_types, stack_operators) == "error":
                 return "error: non-compatible types"
 
-            Quadruple.__generate_quadruple(
-                stack_values, stack_operators, result_quadruple_id, resulting_quads
-            )
+            elif stack_operators[-1] != "EQ":
+                Quadruple.__generate_quadruple(
+                    stack_values, stack_operators, result_quadruple_id, resulting_quads
+                )
 
-            result_quadruple_id += 1
+                result_quadruple_id += 1
+
+            else:
+                Quadruple.__generate_eq_quadruple(
+                    stack_values, stack_operators, result_quadruple_id, resulting_quads
+                )
 
         return resulting_quads
 

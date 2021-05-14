@@ -148,6 +148,8 @@ class SemanticTable:
                 symbol_op = "comparison"
             elif symbol_op in ["BEQ", "BNEQ", "OR", "AND"]:
                 symbol_op = "matching"
+            elif symbol_op == "EQ":
+                symbol_op = "assignment"
 
         # When input is in symbol
         else:
@@ -168,6 +170,9 @@ class SemanticTable:
 
         elif symbol_op == "matching":
             return "BOOL"
+
+        elif symbol_op == "assignment":
+            return 
 
         else:
             return "error"
