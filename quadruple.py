@@ -402,13 +402,12 @@ class Quadruple(object):
 
         return result_quadruple_id
 
-    def arithmetic_expression(expression):
+    def arithmetic_expression(expression, result_quadruple_id):
         stack_values = []  # ["A", "B"]
         stack_operators = []  # ["ADD"]
         stack_types = []  # ["INT", "FLT"]
 
         resulting_quads = []
-        result_quadruple_id = 1
 
         for symbol in Quadruple.format_expression(expression):
             result_quadruple_id = Quadruple.evaluate_symbol(symbol, stack_values, stack_operators, stack_types, resulting_quads, result_quadruple_id)
