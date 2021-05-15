@@ -7,5 +7,3 @@ program quads;
     int c = x / y;
     int d = x - y;
 }
-
-

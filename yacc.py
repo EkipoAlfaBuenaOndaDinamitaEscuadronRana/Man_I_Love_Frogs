@@ -37,6 +37,8 @@ def p_global_vartable_distruct(p):
     global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
     # ESTADO: pop main
     current_state.pop_curr_state()
+    quad_stack.push_quad(Quadruple("ENDOF", '-', '-', '-'))
+    print("FINAL QUAD STACK")
     quad_stack.print_quads()
 
 
@@ -450,7 +452,7 @@ def p_asignatura(p):
     '''
     # Resuleve la expresion que se esta asignando
     p[0] = [p[1], p[2], p[3]]
-    quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[3])))
+    #quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[3])))
     # 
     
     print("p_asignatura: " + str(p[0]))
@@ -459,22 +461,50 @@ def p_asignatura(p):
 # Formato de if 
 def p_condicion(p):
     '''
-    condicion : IF OP expresion CP bloque condicion1
+    condicion : IF OP expresion CP if_uno bloque condicion1 if_dos
     '''
     p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
     
+# TERMINAL
+# Valida expresion y agrega el GOTOF
+def p_if_uno(p):
+    '''
+    if_uno : empty
+    '''
+    p[0] = p[1]
+    quad_stack.if_1()
+
+# TERMINAL
+# Llena a donde ir cuando se acaba
+def p_if_dos(p):
+    '''
+    if_dos : empty
+    '''
+    p[0] = p[1]
+    quad_stack.if_2()
+
+# TERMINAL
+# Indica el fin del if o el comienzo del else
+def p_if_tres(p):
+    '''
+    if_tres : ELSE
+    '''
+    p[0] = p[1]
+    quad_stack.if_3()
+
 # NO TERMINAL
 # Permite else y else if pero no lo obliga
 def p_condicion1(p):
     '''
-    condicion1 : ELSE condicion 
-               | ELSE bloque
+    condicion1 : if_tres condicion 
+               | if_tres bloque
                | empty
     '''
     if len(p) == 2:
         p[0] = p[1]
     else: 
         p[0] = [p[1], p[2]]
+
 
 # NO TERMINAL
 # Escribe un write con una expresion
@@ -576,6 +606,9 @@ def p_expresion(p):
         p[0] = p[1]
     else: 
         p[0] = [p[1], p[2], p[3]]
+
+    quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[0])))
+
 
 # TERMINAL 
 # Regresa +=, -=, *=, /=. %=
