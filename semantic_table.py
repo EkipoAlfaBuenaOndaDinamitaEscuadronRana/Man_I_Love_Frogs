@@ -129,23 +129,18 @@ class SemanticTable:
     }
 
     def clasify_symbol_op(symbol_op):
-        if symbol_op in [
-            "ADD",
-            "SUB",
-            "DIV",
-            "MUL",
-            "MOD",
-            "ADDEQ",
-            "SUBEQ",
-            "DIVEQ",
-            "MODEQ",
-            "MODEQ",
-        ]:
+        if symbol_op in SemanticTable.__operations_op:
             return "operation"
-        elif symbol_op in ["LT", "GT", "LTE", "GTE"]:
+
+        elif symbol_op in SemanticTable.__assignment_operations_op:
+            return "assignment_operation"
+
+        elif symbol_op in SemanticTable.comparison_op:
             return "comparison"
-        elif symbol_op in ["BEQ", "BNEQ", "OR", "AND"]:
+
+        elif symbol_op in SemanticTable.matching_op:
             return "matching"
+
         elif symbol_op == "EQ":
             return "assignment"
 
