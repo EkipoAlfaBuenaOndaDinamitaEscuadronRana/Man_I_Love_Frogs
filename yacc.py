@@ -448,14 +448,36 @@ def p_estatuto_con_bloque(p):
 # Hace una asignacion a una variable
 def p_asignatura(p):
     '''
-    asignatura : id_var EQ expresion
+    asignatura : id_var EQ as_on expresion as_off
     '''
     # Resuleve la expresion que se esta asignando
-    p[0] = [p[1], p[2], p[3]]
-    #quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[3])))
-    # 
-    
+    p[0] = [p[1], p[2], p[3], p[4], p[5]]
     # print("p_asignatura: " + str(p[0]))
+
+    print(p[0])
+    print(expresion_to_string(p[0]))
+    quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[0])))
+    
+       
+# TERMINAL
+# Prende estado de asignación
+def p_as_on(p):
+    '''
+    as_on : empty
+    '''
+    p[0] = p[1]
+    current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
+
+# TERMINAL
+# Apaga estado de asignación
+def p_as_off(p):
+    '''
+    as_off : empty
+    '''
+    p[0] = p[1]
+    current_state.pop_curr_state()
+
+
 
 # NO TERMINAL
 # Formato de if 
@@ -463,7 +485,7 @@ def p_condicion(p):
     '''
     condicion : IF OP expresion CP if_uno bloque condicion1 if_dos
     '''
-    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
+    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]]
     
 # TERMINAL
 # Valida expresion y agrega el GOTOF
@@ -535,15 +557,16 @@ def p_ciclo(p):
 # Formato general de un while
 def p_while(p):
     '''
-    while : WHILE ciclo_uno expresion ciclo_dos bloque ciclo_tres
+    while : WHILE ciclo_uno OP expresion CP ciclo_dos bloque ciclo_tres
     '''
-    p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]]
+
 
 # TERMINAL
 # Indica a donde regresar a validar la condicion del ciclo
 def p_ciclo_uno(p):
     '''
-    ciclo_uno : OP
+    ciclo_uno : empty
     '''
     p[0] = p[1]
     quad_stack.ciclo_1()
@@ -552,7 +575,7 @@ def p_ciclo_uno(p):
 # Cuadruplo de GOTOF si la condicion es falsa
 def p_ciclo_dos(p):
     '''
-    ciclo_dos : CP
+    ciclo_dos : empty
     '''
     p[0] = p[1]
     quad_stack.ciclo_2()
@@ -634,8 +657,8 @@ def p_expresion(p):
         p[0] = p[1]
     else: 
         p[0] = [p[1], p[2], p[3]]
-
-    quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[0])))
+    if current_state.get_curr_state_opt() != "as_on":
+        quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[0])))
 
 
 # TERMINAL 
