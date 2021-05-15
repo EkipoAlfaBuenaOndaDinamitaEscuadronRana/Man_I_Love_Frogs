@@ -147,6 +147,7 @@ class Quadruple(object):
 
         q = Quadruple(operator, value, None, quad_result)
 
+        stack_types.append(consideration)
         resulting_quads.append(q)
         stack_values.append(result_id)
 
@@ -431,7 +432,18 @@ class Quadruple(object):
             if type(result_quadruple_id) != int:
                 return result_quadruple_id
 
+        print("-------------END_OF_EXPRESSION-----------\n")
+
         while len(stack_operators):
+
+            print("----------------START_FINAL--------------")
+            print("stack_values:", stack_values)
+            print("stack_operators:", stack_operators)
+            print("stack_types:", stack_types)
+            print("resulting_quads:")
+            for quad in resulting_quads:
+                print("  ", quad.format_quadruple())
+
             if Quadruple.__type_consideration(stack_types, stack_operators) == "error":
                 return "error: non-compatible types"
 
@@ -458,6 +470,8 @@ class Quadruple(object):
                     return "error: non-compatible types"
 
                 result_quadruple_id += 1
+
+            print("-----------------END_FINAL---------------\n")
 
         return resulting_quads
 
@@ -510,34 +524,25 @@ class Quadruple(object):
 
         return response
 
+# !A || B < C + D * E && (F != G)
 expression = [
-    Symbol("A", "INT"),
-    Symbol("ADD", "operation"),
-    Symbol("B", "FLT"),
-    Symbol("MUL", "operation"),
+    Symbol("NOT", "not"),
+    Symbol("A", "BOOL"),
+    Symbol("OR", "matching"),
+    Symbol("B", "INT"),
+    Symbol("LT", "comparison"),
     Symbol("C", "FLT"),
-    Symbol("DIV", "operation"),
-    Symbol("D", "FLT"),
-    Symbol("SUB", "operation"),
-    Symbol("E", "FLT"),
+    Symbol("ADD", "operation"),
+    Symbol("D", "INT"),
     Symbol("MUL", "operation"),
-    Symbol("F", "FLT"),
+    Symbol("E", "FLT"),
+    Symbol("AND", "matching"),
+    Symbol("OP", "parentheses"),
+    Symbol("F", "STR"),
+    Symbol("BNEQ", "matching"),
+    Symbol("G", "CHAR"),
+    Symbol("CP", "parentheses"),
 ]
-
-# expression_in_symbols = [
-#     Symbol("A", "INT"),
-#     Symbol("ADD", "operation"),
-#     Symbol("B", "FLT"),
-#     Symbol("MUL", "operation"),
-#     Symbol("C", "FLT"),
-#     Symbol("DIV", "operation"),
-#     Symbol("D", "FLT"),
-#     Symbol("SUB", "operation"),
-#     Symbol("E", "FLT"),
-# ]
-
-# expression = "A + B * C / D - E * F"
-print("expression:", expression)    
 
 res = Quadruple.arithmetic_expression(expression, 1)
 
