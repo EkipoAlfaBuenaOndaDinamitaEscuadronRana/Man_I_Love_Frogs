@@ -259,7 +259,7 @@ class TestQuadruple(unittest.TestCase):
 
         assignment_expression = [
             Symbol("A", "FLT"),
-            Symbol("=", "assignment"),
+            Symbol("EQ", "assignment"),
             Symbol("B", "FLT"),
             Symbol("ADD", "operation"),
             Symbol("C", "FLT"),
@@ -272,6 +272,24 @@ class TestQuadruple(unittest.TestCase):
         expected_response = [
             "ADD B C T1",
             "EQ T1 None A",
+        ]
+        self.assertEqual(response, expected_response)
+
+        assignment_sub_expression = [
+            Symbol("A", "FLT"),
+            Symbol("SUBEQ", "assignment_operation"),
+            Symbol("B", "FLT"),
+            Symbol("ADD", "operation"),
+            Symbol("C", "FLT"),
+        ]
+
+        response = []
+        for quad in Quadruple.arithmetic_expression(assignment_sub_expression, 1):
+            response.append(quad.format_quadruple())
+
+        expected_response = [
+            "ADD B C T1",
+            "SUBEQ T1 None A",
         ]
         self.assertEqual(response, expected_response)
 
