@@ -8,19 +8,19 @@ class SemanticTable:
     comparison_op = {"LT", "GT", "LTE", "GTE"}
 
     __operations_op = {
-        "ADD", # +
-        "SUB", # -
-        "MUL", # *
-        "DIV", # /
-        "MOD", # %
+        "ADD",  # +
+        "SUB",  # -
+        "MUL",  # *
+        "DIV",  # /
+        "MOD",  # %
     }
 
     __assignment_operations_op = {
-        "ADDEQ", # +=
-        "SUBEQ", # -=
-        "MULEQ", # *=
-        "DIVEQ", # /=
-        "MODEQ", # %=
+        "ADDEQ",  # +=
+        "SUBEQ",  # -=
+        "MULEQ",  # *=
+        "DIVEQ",  # /=
+        "MODEQ",  # %=
     }
 
     #                ==     !=      ||    &&

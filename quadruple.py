@@ -167,7 +167,7 @@ class Quadruple(object):
         if s_type == "not":
             stack_operators.append("NOT")
 
-        elif s_type in ["assignment", "assignment_operation"] :
+        elif s_type in ["assignment", "assignment_operation"]:
             stack_operators.append(s_name)
 
         # is a value
@@ -443,7 +443,14 @@ class Quadruple(object):
             if Quadruple.__type_consideration(stack_types, stack_operators) == "error":
                 return "error: non-compatible types"
 
-            elif stack_operators[-1] in ["EQ", "ADDEQ", "SUBEQ", "MULEQ", "DIVEQ", "MODEQ"]:
+            elif stack_operators[-1] in [
+                "EQ",
+                "ADDEQ",
+                "SUBEQ",
+                "MULEQ",
+                "DIVEQ",
+                "MODEQ",
+            ]:
                 Quadruple.__generate_assignment_quadruple(
                     stack_values, stack_operators, result_quadruple_id, resulting_quads
                 )
