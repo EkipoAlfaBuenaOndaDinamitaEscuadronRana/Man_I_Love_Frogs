@@ -7,18 +7,20 @@ class SemanticTable:
     #                  <     >     <=     >=
     comparison_op = {"LT", "GT", "LTE", "GTE"}
 
-    #                    +      -      +=       -=       *=     /=     %      *=       /=       %=
     __operations_op = {
-        "ADD",
-        "SUB",
-        "ADDEQ",
-        "SUBEQ",
-        "MUL",
-        "DIV",
-        "MOD",
-        "MULEQ",
-        "DIVEQ",
-        "MODEQ",
+        "ADD",  # +
+        "SUB",  # -
+        "MUL",  # *
+        "DIV",  # /
+        "MOD",  # %
+    }
+
+    __assignment_operations_op = {
+        "ADDEQ",  # +=
+        "SUBEQ",  # -=
+        "MULEQ",  # *=
+        "DIVEQ",  # /=
+        "MODEQ",  # %=
     }
 
     #                ==     !=      ||    &&

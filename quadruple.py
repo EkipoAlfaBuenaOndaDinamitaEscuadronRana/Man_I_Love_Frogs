@@ -45,6 +45,10 @@ class Quadruple(object):
                     symbol += symbol
                     i += 1
 
+                elif symbol in ["+", "-", "*", "/", "%"] and expression[i + 1] == "=":
+                    symbol += "="
+                    i += 1
+
                 exp.append(symbol)
                 operand = ""
 
@@ -150,8 +154,8 @@ class Quadruple(object):
         resulting_quads.append(q)
         stack_values.append(result_id)
 
-    def __generate_eq_quadruple(
-        stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
+    def __generate_assignment_quadruple(
+        stack_values, stack_operators, result_quadruple_id, resulting_quads
     ):
 
         operator = Symbol(stack_operators.pop(), "assignment")
@@ -183,8 +187,8 @@ class Quadruple(object):
         if s_type == "not":
             stack_operators.append("NOT")
 
-        elif s_type == "assignment":
-            stack_operators.append("EQ")
+        elif s_type in ["assignment", "assignment_operation"]:
+            stack_operators.append(s_name)
 
         # is a value
         elif s_type in SemanticTable.types:
@@ -432,7 +436,14 @@ class Quadruple(object):
             if Quadruple.__type_consideration(stack_types, stack_operators) == "error":
                 return "error: non-compatible types"
 
-            elif stack_operators[-1] != "EQ":
+            elif stack_operators[-1] in [
+                "EQ",
+                "ADDEQ",
+                "SUBEQ",
+                "MULEQ",
+                "DIVEQ",
+                "MODEQ",
+            ]:
                 Quadruple.__generate_quadruple(
                     stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
                 )
@@ -446,6 +457,8 @@ class Quadruple(object):
                 Quadruple.__generate_eq_quadruple(
                     stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
                 )
+
+                result_quadruple_id += 1
 
         return resulting_quads
 
@@ -487,7 +500,11 @@ class Quadruple(object):
                     "==": Symbol("BEQ", "matching"),
                     "!=": Symbol("BNEQ", "matching"),
                     "||": Symbol("OR", "matching"),
-                    "&&": Symbol("AND", "matching"),
+                    "+=": Symbol("ADDEQ", "assignment_operation"),
+                    "-=": Symbol("SUBEQ", "assignment_operation"),
+                    "*=": Symbol("MULEQ", "assignment_operation"),
+                    "/=": Symbol("DIVEQ", "assignment_operation"),
+                    "%=": Symbol("MODEQ", "assignment_operation"),
                 }
 
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
