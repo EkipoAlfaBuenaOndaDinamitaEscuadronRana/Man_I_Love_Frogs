@@ -379,5 +379,10 @@ class TestQuadruple(unittest.TestCase):
         self.assertEqual(resulting_quads_formatted, ["ADD A B T1"])
 
     def test_format_quadruple(self):
-        q = Quadruple("MUL", "B", "C", "T1")
+        q = Quadruple(
+            Symbol("MUL", "operation"),
+            Symbol("B", "FLT"),
+            Symbol("C", "FLT"),
+            Symbol("T1", "FLT")
+        )
         self.assertEqual(q.format_quadruple(), "MUL B C T1")
