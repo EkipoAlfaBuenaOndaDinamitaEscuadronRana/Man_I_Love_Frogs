@@ -594,9 +594,9 @@ def p_ciclo_tres(p):
 # Formato general de un for
 def p_for(p):
     '''
-    for : FOR OP for1 CP bloque
+    for : FOR OP for1 CP bloque ciclo_tres
     '''
-    p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
 
 
 # NO TERMINAL
@@ -621,9 +621,9 @@ def p_for_simple(p):
 # Regresa el formato de un for complejo
 def p_for_complex(p):
     '''
-    for_complex : asignatura SCOL expresion SCOL expresion
+    for_complex : asignatura SCOL ciclo_uno expresion SCOL ciclo_dos asignatura
     '''
-    p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    p[0] = [p[1], p[2], p[3], p[4], p[5],  p[6], p[7]]
 
 # NO TERMINAL
 # inicia una llamada a una funcion
