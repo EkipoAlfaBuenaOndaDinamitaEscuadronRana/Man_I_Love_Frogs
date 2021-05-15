@@ -172,6 +172,16 @@ class Quadruple(object):
         s_type = symbol.type
         s_name = symbol.name
 
+        print("------------------START------------------")
+        print("stack_values:", stack_values)
+        print("stack_operators:", stack_operators)
+        print("stack_types:", stack_types)
+        print("s_name:", s_name)
+        print("s_type:", s_type)
+        print("resulting_quads:")
+        for quad in resulting_quads:
+            print("  ", quad.format_quadruple())
+
         # is it is a ! operator
         if s_type == "not":
             stack_operators.append("NOT")
@@ -397,6 +407,8 @@ class Quadruple(object):
         else:
             return "error: type {} not found".format(s_type)
 
+        print("-------------------END-------------------\n")
+
         return result_quadruple_id
 
     def arithmetic_expression(expression, result_quadruple_id):
@@ -431,19 +443,19 @@ class Quadruple(object):
                 "DIVEQ",
                 "MODEQ",
             ]:
+                Quadruple.__generate_assignment_quadruple(
+                    stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
+                )
+
+                result_quadruple_id += 1
+
+            else:
                 Quadruple.__generate_quadruple(
                     stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
                 )
 
                 if stack_types[-1] == "error":
                     return "error: non-compatible types"
-
-                result_quadruple_id += 1
-
-            else:
-                Quadruple.__generate_assignment_quadruple(
-                    stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
-                )
 
                 result_quadruple_id += 1
 
@@ -498,7 +510,7 @@ class Quadruple(object):
 
         return response
 
-expression_in_symbols = [
+expression = [
     Symbol("A", "INT"),
     Symbol("ADD", "operation"),
     Symbol("B", "FLT"),
@@ -512,5 +524,22 @@ expression_in_symbols = [
     Symbol("F", "FLT"),
 ]
 
-for quad in Quadruple.arithmetic_expression(expression_in_symbols, 1):
-    response.append(quad.format_quadruple())
+# expression_in_symbols = [
+#     Symbol("A", "INT"),
+#     Symbol("ADD", "operation"),
+#     Symbol("B", "FLT"),
+#     Symbol("MUL", "operation"),
+#     Symbol("C", "FLT"),
+#     Symbol("DIV", "operation"),
+#     Symbol("D", "FLT"),
+#     Symbol("SUB", "operation"),
+#     Symbol("E", "FLT"),
+# ]
+
+# expression = "A + B * C / D - E * F"
+print("expression:", expression)    
+
+res = Quadruple.arithmetic_expression(expression, 1)
+
+for quad in res:
+    print(quad.format_quadruple())
