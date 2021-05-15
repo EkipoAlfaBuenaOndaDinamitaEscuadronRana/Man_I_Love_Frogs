@@ -139,7 +139,7 @@ class Quadruple(object):
         stack_values, stack_operators, result_quadruple_id, resulting_quads
     ):
         result_id = "T" + str(result_quadruple_id)
-        q = Quadruple(stack_operators.pop(), stack_values.pop(), "-", result_id)
+        q = Quadruple(stack_operators.pop(), stack_values.pop(), None, result_id)
 
         resulting_quads.append(q)
         stack_values.append(result_id)
@@ -148,7 +148,7 @@ class Quadruple(object):
         stack_values, stack_operators, result_quadruple_id, resulting_quads
     ):
         q = Quadruple(
-            stack_operators.pop(), stack_values.pop(), "-", stack_values.pop()
+            stack_operators.pop(), stack_values.pop(), None, stack_values.pop()
         )
         resulting_quads.append(q)
 

@@ -6,6 +6,6 @@ int c = 0;
 for(a = 0; a < b; a = a + 1){
     c = c + 1;
 }
-
+    b = b + c;
 }
 

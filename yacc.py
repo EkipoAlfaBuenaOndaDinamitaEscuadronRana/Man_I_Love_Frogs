@@ -10,12 +10,22 @@ quad_stack = QuadrupleStack()
 
 # TERMINAL Y NO TERMINAL
 # Permite que empiece un programa pero no lo obliga a hacerlo
+
 def p_inicial(p):
     '''
-    inicial : program global_vartable_distruct
+    inicial : empty start
+            | COL start
+    '''
+    if p[1] == ':':
+         p[0] = quad_stack.return_quads_test()
+    else:
+        p[0] = quad_stack.return_quads()
+
+def p_start(p):
+    '''
+    start : program global_vartable_distruct
             | empty
     '''
-    #print(run(p[1]))
     if len(p) == 2:
         p[0] = p[1]
     else: 
@@ -37,9 +47,9 @@ def p_global_vartable_distruct(p):
     global_func_table.erase_function_variable_table(current_state.get_curr_state_table())
     # ESTADO: pop main
     current_state.pop_curr_state()
-    quad_stack.push_quad(Quadruple("ENDOF", '-', '-', '-'))
-    print("FINAL QUAD STACK")
-    quad_stack.print_quads()
+    quad_stack.push_quad(Quadruple("ENDOF", None, None, None))
+    # print("FINAL QUAD STACK")
+    #quad_stack.print_quads()
 
 
 # TERMINAL Y NO TERMINAL
@@ -269,7 +279,7 @@ def p_func_parameters(p):
     else: 
         p[0] = [p[1], p[2], p[4]]
     
-    print("func_parameters: " + str(p[0]))
+    # print("p_func_parameters: " + str(p[0]))
 
 
 # TERMINAL Y NO TERMINAL
@@ -468,9 +478,6 @@ def p_asignatura(p):
     # Resuleve la expresion que se esta asignando
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
     # print("p_asignatura: " + str(p[0]))
-
-    print(p[0])
-    print(expresion_to_string(p[0]))
     quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[0])))
     
        
@@ -621,7 +628,10 @@ def p_for1(p):
     for1  : for_simple 
           | for_complex
     '''
-    p[0] = p[1]
+    if len(p) == 2:
+        p[0] = p[1]
+    else: 
+        p[0] = [p[1], p[2], p[3]]
 
 # TERMINAL Y NO TERMINAL
 # Regresa el fromato de un for simple
@@ -630,7 +640,10 @@ def p_for_simple(p):
     for_simple  : id_var TIMES 
                 | CINT TIMES
     '''
+
     p[0] = [p[1], p[2]]
+    # quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[0])))
+
 
 # NO TERMINAL
 # Regresa el formato de un for complejo
@@ -943,6 +956,7 @@ def p_bool_cte(p):
 def p_error(p):
     print("Syntax error found")
     print(p)
+    sys.exit()
 
 # TERMINAL
 # Regresa nada cuando se llama un empty
@@ -955,4 +969,6 @@ def p_empty(p):
 
 def run(p):
     return p
+
+
 
