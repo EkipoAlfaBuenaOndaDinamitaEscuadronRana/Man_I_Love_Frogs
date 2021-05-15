@@ -383,6 +383,6 @@ class TestQuadruple(unittest.TestCase):
             Symbol("MUL", "operation"),
             Symbol("B", "FLT"),
             Symbol("C", "FLT"),
-            Symbol("T1", "FLT")
+            Symbol("T1", "FLT"),
         )
         self.assertEqual(q.format_quadruple(), "MUL B C T1")
