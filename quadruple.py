@@ -500,11 +500,11 @@ class Quadruple(object):
                     "==": Symbol("BEQ", "matching"),
                     "!=": Symbol("BNEQ", "matching"),
                     "||": Symbol("OR", "matching"),
-                    "+=": Symbol("ADDEQ", "matching"),
-                    "-=": Symbol("SUBEQ", "matching"),
-                    "*=": Symbol("MULEQ", "matching"),
-                    "/=": Symbol("DIVEQ", "matching"),
-                    "%=": Symbol("MODEQ", "matching"),
+                    "+=": Symbol("ADDEQ", "assignment_operation"),
+                    "-=": Symbol("SUBEQ", "assignment_operation"),
+                    "*=": Symbol("MULEQ", "assignment_operation"),
+                    "/=": Symbol("DIVEQ", "assignment_operation"),
+                    "%=": Symbol("MODEQ", "assignment_operation"),
                 }
 
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
