@@ -29,7 +29,7 @@ def p_global_vartable_distruct(p):
 
     '''
     p[0] = p[1]
-    print("p_global_vartable_distruct: " + str(p[0]))
+    # print("p_global_vartable_distruct: " + str(p[0]))
 
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
@@ -55,7 +55,7 @@ def p_program(p):
     else: 
        p[0] =  [p[1], p[2], p[3], p[4], p[5], p[6]]
     
-    print("p_program: " + str(p[0]))
+    # print("p_program: " + str(p[0]))
     #for i in range(len(p)):
         #print("p[" + str(i) + "]: " + str(p[i]))
 
@@ -66,7 +66,7 @@ def p_global_vartable(p):
 
     '''
     p[0] = p[1]
-    print("p_global_vartable: " + str(p[0]))
+    # print("p_global_vartable: " + str(p[0]))
 
     # GLOBAL VAR TABLE INIT
     # ESTADO: global var table
@@ -89,7 +89,7 @@ def p_bloque_g(p):
     else: 
         p[0] = [p[1], p[2], p[3]]
 
-    print("p_bloque_g: " + str(p[0]))
+    # print("p_bloque_g: " + str(p[0]))
 
 # NO TERMINAL
 # Validación e insersion de variable a symboltable   
@@ -100,7 +100,7 @@ def p_func_declar_init(p):
     '''
     p[0] = p[1]
 
-    print("p_func_declaration: " + str(p[0]))
+    # print("p_func_declaration: " + str(p[0]))
     # DECLARA ESTADO FUNCION SIENDO DECLARADA
     # ESTADO: push FUNC DECLARATION
     current_state.push_state(State("funcD", "varD"))
@@ -114,7 +114,7 @@ def p_var_dec(p):
     '''
     p[0] = p[1]
 
-    print("p_var_dec: " + str(p[0]))
+    # print("p_var_dec: " + str(p[0]))
     # AVISA QUE SE ESTAN DECLARANDO VARIABLES
     # ESTADO: VARDEC + TABLE
     if current_state.get_curr_state_opt() != "noVar":
@@ -131,7 +131,7 @@ def p_var(p):
     '''
     p[0] = [p[1], p[2]]
 
-    print("p_var: " + str(p[0]))
+    # print("p_var: " + str(p[0]))
     # INSERTA VARIABLES 
         # ESTADO: current variable table -> no sabemos cual porque no sabemos
                                          #  cuando se declaro pero no importa
@@ -168,7 +168,7 @@ def p_var1(p):
     else: 
         p[0] = [p[1], p[2], p[3]]
     
-    print("p_var1: " + str(p[0]))
+    # print("p_var1: " + str(p[0]))
 
 # NO TERMINAL
 # Hace el header y cuerpo de una funcion 
@@ -178,7 +178,7 @@ def p_func(p):
     '''
     p[0] = [p[1], p[2], p[3], p[4]]
 
-    print("p_func: " + str(p[0]))
+    # print("p_func: " + str(p[0]))
 
 # NO TERMINAL
 # Validación e insersion de funcion a symboltable   
@@ -189,7 +189,7 @@ def p_func_init(p):
     '''
     p[0] =  [p[1], p[2], p[3], p[4], p[5], p[6]]
 
-    print("p_func_init: " + str(p[0]))
+    # print("p_func_init: " + str(p[0]))
     # INSERTA FUNCION A TABLA 
     # ESTADO: func building o func dec
     # FUNCDEC:
@@ -231,7 +231,7 @@ def p_func_state(p):
     '''
     p[0] = p[1]
 
-    print("p_func_state: " + str(p[0]))
+    # print("p_func_state: " + str(p[0]))
     # CHECA ESTADO
     # si ESTADO != FUNC DECLARATION
     if current_state.get_curr_state_table() != "funcD" :
@@ -246,7 +246,7 @@ def p_func_distruct(p):
     '''
     p[0] = p[1]
 
-    print("p_func_distruct: " + str(p[0]))
+    # print("p_func_distruct: " + str(p[0]))
 
     # ELIMINA CURR TABLA DE VAR if != state funcbuild
     if current_state.get_curr_state_table() != "funcD" :
@@ -312,7 +312,7 @@ def p_main_vartable_init(p):
 
     '''
     p[0] = p[1]
-    print("p_main_vartable_init: " + str(p[0]))
+    # print("p_main_vartable_init: " + str(p[0]))
 
 
     # CREA MAIN VAR TABLE
@@ -330,7 +330,7 @@ def p_main_vartable_distruct(p):
 
     '''
     p[0] = p[1]
-    print("main_vartable_distruct: " + str(p[0]))
+    # print("p_main_vartable_distruct: " + str(p[0]))
 
     # BORRA MAIN VAR TABLE
     # ESTADO: MAIN
@@ -347,7 +347,7 @@ def p_bloque(p):
     '''
     p[0] = [p[1], p[2]]
 
-    print("p_bloque: " + str(p[0]))
+    # print("p_bloque: " + str(p[0]))
 
     
 # TERMINAL Y NO TERMINAL
@@ -362,7 +362,7 @@ def p_bloque1(p):
     else: 
         p[0] = [p[1], p[2]]
 
-    print("p_bloque1: " + str(p[0]))
+    # print("p_bloque1: " + str(p[0]))
 
 
 # NO TERMINAL
@@ -384,7 +384,7 @@ def p_estatuto(p):
     else: 
         p[0] = [p[1], p[2]]
 
-    print("p_estatuto: " + str(p[0]))
+    # print("p_estatuto: " + str(p[0]))
 
 # NO TERMINAL
 # cambia estado  
@@ -395,7 +395,7 @@ def p_estado_no_var(p):
     '''
     p[0] = [p[1], p[2], p[3]]
     
-    print("p_estado_no_var " + str(p[0]))
+    # print("p_estado_no_var " + str(p[0]))
 
 # TERMINAL
 # CAMBIA ESTADO
@@ -406,7 +406,7 @@ def p_no_var_on(p):
     '''
     p[0] = p[1]
     
-    print("p_no_var_on " + str(p[0]))
+    # print("p_no_var_on " + str(p[0]))
      
     # CAMBIA DE ESTADO
     # ESTADO : Push no variables allowed
@@ -441,7 +441,7 @@ def p_estatuto_con_bloque(p):
     '''
     p[0] = p[1]
     
-    print("p_estatuto_con_bloque: " + str(p[0]))
+    # print("p_estatuto_con_bloque: " + str(p[0]))
 
 
 # NO TERMINAL
@@ -455,7 +455,7 @@ def p_asignatura(p):
     #quad_stack.push_list(quad_stack.solve_expression(expresion_to_string(p[3])))
     # 
     
-    print("p_asignatura: " + str(p[0]))
+    # print("p_asignatura: " + str(p[0]))
 
 # NO TERMINAL
 # Formato de if 

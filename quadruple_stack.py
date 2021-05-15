@@ -63,4 +63,5 @@ class QuadrupleStack(object):
 
     def print_quads(self):
         for k, v in self.qstack.items():
-            print( str(k) + " : " + str(v.operator) + " " + str(v.operand_1) + " " + str(v.operand_2) + " " + str(v.result_id))
+             
+            print(str(int(k)).zfill(2) + " | " + str(v.operator) + " " + str(v.operand_1) + " " + str(v.operand_2) + " " + str(v.result_id))
