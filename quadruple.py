@@ -109,7 +109,7 @@ class Quadruple(object):
         )
 
     def __not_consideration(stack_types):
-        return stack_types[-1] != "BOOL"
+        return "BOOL" if stack_types[-1] == "BOOL" else "error"
 
     def __type_consideration(stack_types, stack_operators):
         print("-------------__type_consideration------------")
@@ -143,6 +143,10 @@ class Quadruple(object):
     def __generate_not_quadruple(
         stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
     ):
+        print("-----------generate_not_quadruple----------")
+        print("stack_values:", stack_values)
+        print("stack_operators:", stack_operators)
+
         result_id = "T" + str(result_quadruple_id)
         consideration = Quadruple.__not_consideration(stack_types)
         operator = Symbol(stack_operators.pop(), "not")
@@ -151,11 +155,14 @@ class Quadruple(object):
 
         q = Quadruple(operator, value, None, quad_result)
 
+        print("consideration:", consideration)
+        print("quad_result.type:", quad_result.type)
+
         resulting_quads.append(q)
         stack_values.append(result_id)
 
     def __generate_assignment_quadruple(
-        stack_values, stack_operators, result_quadruple_id, resulting_quads
+        stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
     ):
 
         operator = Symbol(stack_operators.pop(), "assignment")
@@ -199,6 +206,8 @@ class Quadruple(object):
                 Quadruple.__generate_not_quadruple(
                     stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
                 )
+
+                print("resulting_quads[-1]:", resulting_quads[-1].result_id.type)
 
                 if resulting_quads[-1].result_id.type == "error":
                     return "error: non-compatible types"
@@ -454,7 +463,7 @@ class Quadruple(object):
                 result_quadruple_id += 1
 
             else:
-                Quadruple.__generate_eq_quadruple(
+                Quadruple.__generate_assignment_quadruple(
                     stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
                 )
 
@@ -521,12 +530,12 @@ quad = Quadruple(
 
 # expression = "A + B * (D - E)"        # Pass
 # expression = "!A + B * (D - E)"       # Fail
-# expression = "A + B * C == 0 || !A"       # Fail
-expression = "!A"                     # Pass but i think it should fail
-expression = [
-    Symbol("NOT", "not"),
-    Symbol("A", "INT"),
-]
+expression = "A + B * C == 0 || A == C"       # Fail
+# expression = "!A"                     # Pass but i think it should fail
+# expression = [
+#     Symbol("NOT", "not"),
+#     Symbol("A", "INT"),
+# ]
 
 # expression = "a = b"                  # Pass
 # expression = [                        # Pass
@@ -543,6 +552,8 @@ expression = [
 # ]
 
 quads = Quadruple.arithmetic_expression(expression, 1)
+
+print(quads)
 
 for quad in quads:
     print(quad.format_quadruple())
