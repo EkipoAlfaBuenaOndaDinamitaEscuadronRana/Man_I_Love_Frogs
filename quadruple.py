@@ -112,10 +112,6 @@ class Quadruple(object):
         return "BOOL" if stack_types[-1] == "BOOL" else "error"
 
     def __type_consideration(stack_types, stack_operators):
-        print("-------------__type_consideration------------")
-        print("stack_types: ", stack_types)
-        print("stack_types: ", stack_operators)
-
         return SemanticTable.considerate(
             stack_types[-2], stack_operators[-1], stack_types[-1]
         )
@@ -143,10 +139,6 @@ class Quadruple(object):
     def __generate_not_quadruple(
         stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
     ):
-        print("-----------generate_not_quadruple----------")
-        print("stack_values:", stack_values)
-        print("stack_operators:", stack_operators)
-
         result_id = "T" + str(result_quadruple_id)
         consideration = Quadruple.__not_consideration(stack_types)
         operator = Symbol(stack_operators.pop(), "not")
@@ -154,9 +146,6 @@ class Quadruple(object):
         quad_result = Symbol(result_id, consideration)
 
         q = Quadruple(operator, value, None, quad_result)
-
-        print("consideration:", consideration)
-        print("quad_result.type:", quad_result.type)
 
         resulting_quads.append(q)
         stack_values.append(result_id)
@@ -183,13 +172,6 @@ class Quadruple(object):
         s_type = symbol.type
         s_name = symbol.name
 
-        print("-------------------Start-------------------")
-        print("stack_values: ", stack_values)
-        print("stack_operators: ", stack_operators)
-        print("s_type: ", s_type)
-        print("s_name: ", s_name)
-
-
         # is it is a ! operator
         if s_type == "not":
             stack_operators.append("NOT")
@@ -206,8 +188,6 @@ class Quadruple(object):
                 Quadruple.__generate_not_quadruple(
                     stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
                 )
-
-                print("resulting_quads[-1]:", resulting_quads[-1].result_id.type)
 
                 if resulting_quads[-1].result_id.type == "error":
                     return "error: non-compatible types"
@@ -417,8 +397,6 @@ class Quadruple(object):
         else:
             return "error: type {} not found".format(s_type)
 
-        print("--------------------end--------------------\n\n")
-
         return result_quadruple_id
 
     def arithmetic_expression(expression, result_quadruple_id):
@@ -520,40 +498,19 @@ class Quadruple(object):
 
         return response
 
-quad = Quadruple(
+expression_in_symbols = [
+    Symbol("A", "INT"),
     Symbol("ADD", "operation"),
-    Symbol("A", "FLT"),
     Symbol("B", "FLT"),
-    Symbol("T1", "FLT")
-)
-# print(quad.format_quadruple())
+    Symbol("MUL", "operation"),
+    Symbol("C", "FLT"),
+    Symbol("DIV", "operation"),
+    Symbol("D", "FLT"),
+    Symbol("SUB", "operation"),
+    Symbol("E", "FLT"),
+    Symbol("MUL", "operation"),
+    Symbol("F", "FLT"),
+]
 
-# expression = "A + B * (D - E)"        # Pass
-# expression = "!A + B * (D - E)"       # Fail
-expression = "A + B * C == 0 || A == C"       # Fail
-# expression = "!A"                     # Pass but i think it should fail
-# expression = [
-#     Symbol("NOT", "not"),
-#     Symbol("A", "INT"),
-# ]
-
-# expression = "a = b"                  # Pass
-# expression = [                        # Pass
-#     Symbol("NOT", "not"),
-#     Symbol("A", "FLT")
-# ]
-
-# expression = [  
-#     Symbol("A", "FLT"),
-#     Symbol("ADD", "operation"),
-#     Symbol("B", "FLT"),
-#     Symbol("LT", "comparison"),
-#     Symbol("C", "FLT"),
-# ]
-
-quads = Quadruple.arithmetic_expression(expression, 1)
-
-print(quads)
-
-for quad in quads:
-    print(quad.format_quadruple())
+for quad in Quadruple.arithmetic_expression(expression_in_symbols, 1):
+    response.append(quad.format_quadruple())
