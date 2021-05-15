@@ -7,18 +7,20 @@ class SemanticTable:
     #                  <     >     <=     >=
     comparison_op = {"LT", "GT", "LTE", "GTE"}
 
-    #                    +      -      +=       -=       *=     /=     %      *=       /=       %=
     __operations_op = {
-        "ADD",
-        "SUB",
-        "ADDEQ",
-        "SUBEQ",
-        "MUL",
-        "DIV",
-        "MOD",
-        "MULEQ",
-        "DIVEQ",
-        "MODEQ",
+        "ADD",  # +
+        "SUB",  # -
+        "MUL",  # *
+        "DIV",  # /
+        "MOD",  # %
+    }
+
+    __assignment_operations_op = {
+        "ADDEQ",  # +=
+        "SUBEQ",  # -=
+        "MULEQ",  # *=
+        "DIVEQ",  # /=
+        "MODEQ",  # %=
     }
 
     #                ==     !=      ||    &&
@@ -148,6 +150,8 @@ class SemanticTable:
                 symbol_op = "comparison"
             elif symbol_op in ["BEQ", "BNEQ", "OR", "AND"]:
                 symbol_op = "matching"
+            elif symbol_op == "EQ":
+                symbol_op = "assignment"
 
         # When input is in symbol
         else:
@@ -168,6 +172,9 @@ class SemanticTable:
 
         elif symbol_op == "matching":
             return "BOOL"
+
+        elif symbol_op == "assignment":
+            return True
 
         else:
             return "error"
