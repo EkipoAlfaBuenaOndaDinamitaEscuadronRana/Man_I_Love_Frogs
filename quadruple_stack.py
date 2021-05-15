@@ -22,14 +22,29 @@ class QuadrupleStack(object):
     def solve_expression(self, expresion):
         return Quadruple.arithmetic_expression(expresion, self.count)
 
+    def ciclo_1(self):
+        # Esta va antes de las expresiones del while
+        self.jumpStack.append(self.count)
+
+    def ciclo_2(self):
+        # TYPE CHECK (checa que el ultimo quad si sea un bool)
+        # lo siguiente va en un else
+        # Combinar con el de abajo tentativamente?
+        result = self.qstack[self.count_prev].result_id
+        self.push_quad(Quadruple("GOTOF", result, '-', 'MISSING_ADDRESS'))
+        self.jumpStack.append(self.count_prev)
+
+    def ciclo_3(self):
+        # Le avisa al inicio a donde ir si se acaba y al final a donde ir si sigue
+        end = self.jumpStack.pop()
+        ret = self.jumpStack.pop()
+        self.push_quad(Quadruple("GOTO", '-', '-', ret))
+        self.fill(end)
+
     def if_1(self):
         # ESTE VA DESPUES DEL COLON
-        # > A C T1
         #TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
-        if self.count > 20:
-            sys.exit()
-
         result = self.qstack[self.count_prev].result_id
         self.push_quad(Quadruple("GOTOF", result, '-', 'MISSING_ADDRESS'))
         self.jumpStack.append(self.count_prev)

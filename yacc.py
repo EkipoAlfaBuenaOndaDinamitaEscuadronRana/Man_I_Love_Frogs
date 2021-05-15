@@ -423,7 +423,7 @@ def p_no_var_off(p):
     '''
     p[0] = p[1]
     
-    print("no_var_off " + str(p[0]))
+    # print("p_no_var_off " + str(p[0]))
      
     # CAMBIA DE ESTADO
     # ESTADO : POP no variables allowed
@@ -535,9 +535,37 @@ def p_ciclo(p):
 # Formato general de un while
 def p_while(p):
     '''
-    while : WHILE OP expresion CP bloque
+    while : WHILE ciclo_uno expresion ciclo_dos bloque ciclo_tres
     '''
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
+
+# TERMINAL
+# Indica a donde regresar a validar la condicion del ciclo
+def p_ciclo_uno(p):
+    '''
+    ciclo_uno : OP
+    '''
+    p[0] = p[1]
+    quad_stack.ciclo_1()
+
+# TERMINAL
+# Cuadruplo de GOTOF si la condicion es falsa
+def p_ciclo_dos(p):
+    '''
+    ciclo_dos : CP
+    '''
+    p[0] = p[1]
+    quad_stack.ciclo_2()
+
+# TERMINAL
+# Le dice al final a donde regresar a validar
+# y al inicio a donde ir si no es verdad
+def p_ciclo_tres(p):
+    '''
+    ciclo_tres : empty
+    '''
+    p[0] = p[1]
+    quad_stack.ciclo_3()
 
 # NO TERMINAL
 # Formato general de un for
