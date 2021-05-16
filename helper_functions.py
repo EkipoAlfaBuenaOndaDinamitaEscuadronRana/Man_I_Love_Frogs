@@ -3,28 +3,29 @@ import sys
 import re
 
 operators = {
-            "+": Symbol("ADD", "operation"),
-            "-": Symbol("SUB", "operation"),
-            "*": Symbol("MUL", "operation"),
-            "/": Symbol("DIV", "operation"),
-            "%": Symbol("MOD", "operation"),
-            "(": Symbol("OP", "parentheses"),
-            ")": Symbol("CP", "parentheses"),
-            "!": Symbol("NOT", "not"),
-            "=": Symbol("EQ", "assignment"),
-            "<": Symbol("LT", "comparison"),
-            ">": Symbol("GT", "comparison"),
-            "<=": Symbol("LTE", "comparison"),
-            ">=": Symbol("GTE", "comparison"),
-            "==": Symbol("BEQ", "matching"),
-            "!=": Symbol("BNEQ", "matching"),
-            "||": Symbol("OR", "matching"),
-            "+=": Symbol("ADDEQ", "assignment_operation"),
-            "-=": Symbol("SUBEQ", "assignment_operation"),
-            "*=": Symbol("MULEQ", "assignment_operation"),
-            "/=": Symbol("DIVEQ", "assignment_operation"),
-            "%=": Symbol("MODEQ", "assignment_operation"),
-    }
+    "+": Symbol("ADD", "operation"),
+    "-": Symbol("SUB", "operation"),
+    "*": Symbol("MUL", "operation"),
+    "/": Symbol("DIV", "operation"),
+    "%": Symbol("MOD", "operation"),
+    "(": Symbol("OP", "parentheses"),
+    ")": Symbol("CP", "parentheses"),
+    "!": Symbol("NOT", "not"),
+    "=": Symbol("EQ", "assignment"),
+    "<": Symbol("LT", "comparison"),
+    ">": Symbol("GT", "comparison"),
+    "<=": Symbol("LTE", "comparison"),
+    ">=": Symbol("GTE", "comparison"),
+    "==": Symbol("BEQ", "matching"),
+    "!=": Symbol("BNEQ", "matching"),
+    "||": Symbol("OR", "matching"),
+    "+=": Symbol("ADDEQ", "assignment_operation"),
+    "-=": Symbol("SUBEQ", "assignment_operation"),
+    "*=": Symbol("MULEQ", "assignment_operation"),
+    "/=": Symbol("DIVEQ", "assignment_operation"),
+    "%=": Symbol("MODEQ", "assignment_operation"),
+}
+
 
 def get_parameters(line):
     paramlist = []
@@ -62,8 +63,9 @@ def expresion_to_string(expression):
 
         return str_exp
 
+
 def get_variables(type, line):
-    #print("INPUT: " + str(line))
+    # print("INPUT: " + str(line))
     line = flatten_list(line)
     varList = {}
     while line[0] != ";":
@@ -78,57 +80,67 @@ def get_variables(type, line):
             currSymbol = Symbol(line[0], type)
             varList.update({currSymbol: None})
             line.pop(0)
-    
-    #for e in varList:
-        #print("OUTPUT: " + str(e.name) + " " + str(e.type) + " " + str(varList[e]))
+
+    # for e in varList:
+    # print("OUTPUT: " + str(e.name) + " " + str(e.type) + " " + str(varList[e]))
     return varList
+
 
 def dec_to_as(exp):
     exp.pop()
-    if ',' in exp:
-        loc = exp.index(',')
-        while ',' in exp:
-            exp = exp[loc + 1:]
-            if ',' in exp:
-                loc = exp.index(',')
+    if "," in exp:
+        loc = exp.index(",")
+        while "," in exp:
+            exp = exp[loc + 1 :]
+            if "," in exp:
+                loc = exp.index(",")
     return exp
+
 
 def constant_eval(const):
     patterns = {
-    'INT' : '[0-9]*',
-    'FLT' : '[0-9]* | ([0-9]* . [0-9]*)',
-    'CHAR' : '\"([ ^ \" | ^\' ])\"',
-    'BOOL' : '(true | false)',
-    'NULL' : 'null',
-    'STR' :  '\"([ ^ \" | ^\' ])*\"'
+        "INT": "[0-9]*",
+        "FLT": "[0-9]* | ([0-9]* . [0-9]*)",
+        "CHAR": '"([ ^ " | ^\' ])"',
+        "BOOL": "(true | false)",
+        "NULL": "null",
+        "STR": '"([ ^ " | ^\' ])*"',
     }
-    
+
     for type, reg in patterns.items():
         if re.match(reg, str(const)):
             return type
-    
+
     return None
-    
+
+
 def expresion_to_symbols(exp, ft, s, d=None):
     exp = flatten_list(exp)
     sym_list = []
     if d:
-       exp = dec_to_as(exp)
+        exp = dec_to_as(exp)
     for e in exp:
         if e in operators:
             sym_list.append(operators[e])
-        elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(e):
-            sym_list.append(ft.get_function_variable_table(s.get_curr_state_table()).get_var_symbol(e))
+        elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
+            e
+        ):
+            sym_list.append(
+                ft.get_function_variable_table(s.get_curr_state_table()).get_var_symbol(
+                    e
+                )
+            )
         elif ft.get_function_variable_table(s.get_global_table()).lookup_variable(e):
-            sym_list.append(ft.get_function_variable_table(s.get_global_table()).get_var_symbol(e))
-        else: 
+            sym_list.append(
+                ft.get_function_variable_table(s.get_global_table()).get_var_symbol(e)
+            )
+        else:
             c_type = constant_eval(e)
-            if c_type !=  None:
+            if c_type != None:
                 sym_list.append(Symbol(e, c_type))
             else:
-                print("ERROR: token \" " + str(e) + " \" not valid or not found")
+                print('ERROR: token " ' + str(e) + ' " not valid or not found')
                 sys.exit()
-   # for e in sym_list:
-        #print(str(e.name) + " " + str(e.type))
+    # for e in sym_list:
+    # print(str(e.name) + " " + str(e.type))
     return sym_list
-

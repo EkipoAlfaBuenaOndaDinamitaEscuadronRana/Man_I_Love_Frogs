@@ -156,10 +156,10 @@ def p_var(p):
 
     # manda parametros tipo y var1 y lo formatea en una vartable
     curr_vars = get_variables(p[1], p[2])
-    #for symbol in curr_vars.keys():
-       # print("VARS START")
-        # print(str(symbol.get_name()) + " " + str(symbol.get_type()) + " " + str(curr_vars[symbol]))
-        #print("VARS END")
+    # for symbol in curr_vars.keys():
+    # print("VARS START")
+    # print(str(symbol.get_name()) + " " + str(symbol.get_type()) + " " + str(curr_vars[symbol]))
+    # print("VARS END")
 
     if current_state.get_curr_state_opt() == "noVar":
         print("ERROR: Can't declare variable(s) in this scope")
@@ -181,14 +181,22 @@ def p_var(p):
                 global_func_table.get_function_variable_table(
                     current_state.get_curr_state_table()
                 ).set_variable(symbol, curr_vars[symbol])
-                if  current_state.get_curr_state_opt() == "as_on":
-                    a = expresion_to_symbols(p[2], global_func_table, current_state, True)
-                    #print("start--------")
-                    #print(p[2])
-                    #for e in a:
-                        #print(str(e.name) + " " + str(e.type))
-                    
-                    quad_stack.push_list(quad_stack.solve_expression(expresion_to_symbols(p[2], global_func_table, current_state, True)))
+                if current_state.get_curr_state_opt() == "as_on":
+                    a = expresion_to_symbols(
+                        p[2], global_func_table, current_state, True
+                    )
+                    # print("start--------")
+                    # print(p[2])
+                    # for e in a:
+                    # print(str(e.name) + " " + str(e.type))
+
+                    quad_stack.push_list(
+                        quad_stack.solve_expression(
+                            expresion_to_symbols(
+                                p[2], global_func_table, current_state, True
+                            )
+                        )
+                    )
                     current_state.pop_curr_state()
 
         # ESTADO: POP VAR DEC PERO NO LA VARTABLE
@@ -210,6 +218,7 @@ def p_var1(p):
         p[0] = [p[1], p[2], p[3]]
 
     # print("p_var1: " + str(p[0]))
+
 
 # NO TERMINAL
 # Hace el header y cuerpo de una funcion
@@ -516,10 +525,13 @@ def p_asignatura(p):
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
     # print("p_asignatura: " + str(p[0]))
     if current_state.get_curr_state_opt() != "varD":
-        quad_stack.push_list(quad_stack.solve_expression(expresion_to_symbols(p[0], global_func_table, current_state)))
+        quad_stack.push_list(
+            quad_stack.solve_expression(
+                expresion_to_symbols(p[0], global_func_table, current_state)
+            )
+        )
     else:
         current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
-
 
 
 # TERMINAL
@@ -741,7 +753,12 @@ def p_expresion(p):
     else:
         p[0] = [p[1], p[2], p[3]]
     if current_state.get_curr_state_opt() != "as_on":
-        quad_stack.push_list(quad_stack.solve_expression(expresion_to_symbols(p[0], global_func_table, current_state)))
+        quad_stack.push_list(
+            quad_stack.solve_expression(
+                expresion_to_symbols(p[0], global_func_table, current_state)
+            )
+        )
+
 
 # TERMINAL
 # Regresa +=, -=, *=, /=. %=

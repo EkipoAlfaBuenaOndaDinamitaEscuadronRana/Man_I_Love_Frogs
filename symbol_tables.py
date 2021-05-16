@@ -12,7 +12,7 @@ class VariableTable(object):
 
     def get_variable(self, name):
         return self.variables[name]
-    
+
     def get_var_symbol(self, name):
         return Symbol(name, self.variables[name][0])
 

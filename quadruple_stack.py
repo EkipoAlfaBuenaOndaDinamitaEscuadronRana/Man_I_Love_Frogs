@@ -24,7 +24,6 @@ class QuadrupleStack(object):
     def solve_expression(self, expresion):
         return Quadruple.arithmetic_expression(expresion, self.count)
 
-
     def ciclo_1(self):
         # Esta va antes de las expresiones del while
         self.jumpStack.append(self.count)
