@@ -1,4 +1,4 @@
-program test_no; 
+program test; 
 
 int a;
 int b = 2;
