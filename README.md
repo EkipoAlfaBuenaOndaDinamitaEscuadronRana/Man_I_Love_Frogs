@@ -1,4 +1,4 @@
-# Super-Compi
+# Man I Love Frogs
 Compilador de Rosamaría Martínez y Adrián García
 
 ## Documentación
