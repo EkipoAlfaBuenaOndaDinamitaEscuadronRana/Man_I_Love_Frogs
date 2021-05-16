@@ -15,7 +15,6 @@ def get_parameters(line):
     return paramlist
 
 
-
 def flatten_list(data):
     flat_list = []
     for element in data:
@@ -24,6 +23,7 @@ def flatten_list(data):
         else:
             flat_list.append(element)
     return flat_list
+
 
 def get_variables(type, line):
     line = flatten_list(line)
@@ -37,7 +37,7 @@ def get_variables(type, line):
             currSymbol.set_name(line[0])
             line.pop(1)
             line.pop(0)
-            while line[0] != ';':
+            while line[0] != ";":
                 varList[currSymbol] = line[0]
                 line.pop(0)
         else:
@@ -45,6 +45,7 @@ def get_variables(type, line):
             varList[currSymbol] = None
             line.pop(0)
     return varList
+
 
 def expresion_to_string(expression):
     if type(expression) != list:
@@ -55,7 +56,5 @@ def expresion_to_string(expression):
         for ele in expression:
             if ele is not None:
                 str_exp += str(ele)
-        
+
         return str_exp
-
-

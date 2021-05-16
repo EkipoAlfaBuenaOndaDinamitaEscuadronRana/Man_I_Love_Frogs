@@ -14,6 +14,6 @@ def parser_file(file_name, test=None):
         if test:
             line = ":" + line
         quads = parser.parse(line)
-        
-    file.close()  
-    return quads  
+
+    file.close()
+    return quads

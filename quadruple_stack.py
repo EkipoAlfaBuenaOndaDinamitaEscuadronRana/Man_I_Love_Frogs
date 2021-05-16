@@ -1,6 +1,7 @@
 from quadruple import *
 import sys
 
+
 class QuadrupleStack(object):
     def __init__(self):
         self.qstack = {}
@@ -14,11 +15,11 @@ class QuadrupleStack(object):
         # self.print_quads()
         self.count_prev += 1
         self.count += 1
-    
-    def  push_list(self, list):
+
+    def push_list(self, list):
         for elem in list:
             self.push_quad(elem)
-        
+
     def solve_expression(self, expresion):
         return Quadruple.arithmetic_expression(expresion, self.count)
 
@@ -31,22 +32,22 @@ class QuadrupleStack(object):
         # lo siguiente va en un else
         # Combinar con el de abajo tentativamente?
         result = self.qstack[self.count_prev].result_id
-        self.push_quad(Quadruple("GOTOF", result, None, 'MISSING_ADDRESS'))
+        self.push_quad(Quadruple("GOTOF", result, None, "MISSING_ADDRESS"))
         self.jumpStack.append(self.count_prev)
 
     def ciclo_3(self):
         # Le avisa al inicio a donde ir si se acaba y al final a donde ir si sigue
         end = self.jumpStack.pop()
         ret = self.jumpStack.pop()
-        self.push_quad(Quadruple("GOTO", None , None, ret))
+        self.push_quad(Quadruple("GOTO", None, None, ret))
         self.fill(end)
 
     def if_1(self):
         # ESTE VA DESPUES DEL COLON
-        #TYPE CHECK (checa que el ultimo quad si sea un bool)
+        # TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
         result = self.qstack[self.count_prev].result_id
-        self.push_quad(Quadruple("GOTOF", result, None, 'MISSING_ADDRESS'))
+        self.push_quad(Quadruple("GOTOF", result, None, "MISSING_ADDRESS"))
         self.jumpStack.append(self.count_prev)
         # print("if_1")
         # self.print_quads()
@@ -60,7 +61,7 @@ class QuadrupleStack(object):
 
     def if_3(self):
         # ESTE VA EN EL ELSE
-        self.push_quad(Quadruple("GOTO", None, None, 'MISSING_ADDRESS'))
+        self.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
         not_true = self.jumpStack.pop()
         self.jumpStack.append(self.count_prev)
         self.fill(not_true)
@@ -68,7 +69,7 @@ class QuadrupleStack(object):
         # self.print_quads()
 
     def fill(self, index):
-        if self.qstack[index].result_id == 'MISSING_ADDRESS':
+        if self.qstack[index].result_id == "MISSING_ADDRESS":
             self.qstack[index].result_id = self.count
             # print("fill")
             # self.print_quads()
@@ -79,33 +80,47 @@ class QuadrupleStack(object):
     def print_quads(self):
         for k, v in self.qstack.items():
             print(
-                str(int(k)).zfill(2) + " | " + 
-                str('-' if v.operator == None else v.operator) + " " + 
-                str('-' if v.operand_1 == None else v.operand_1) + " " + 
-                str('-' if v.operand_2 == None else v.operand_2) + " " + 
-                str('-' if v.result_id == None else v.result_id)
-                )
+                str(int(k)).zfill(2)
+                + " | "
+                + str("-" if v.operator == None else v.operator)
+                + " "
+                + str("-" if v.operand_1 == None else v.operand_1)
+                + " "
+                + str("-" if v.operand_2 == None else v.operand_2)
+                + " "
+                + str("-" if v.result_id == None else v.result_id)
+            )
+
     def return_quads(self):
-        rq = ''
+        rq = ""
         for k, v in self.qstack.items():
-            rq += (str(int(k)).zfill(2) + " | " + 
-                str('-' if v.operator == None else v.operator) + " " + 
-                str('-' if v.operand_1 == None else v.operand_1) + " " + 
-                str('-' if v.operand_2 == None else v.operand_2) + " " + 
-                str('-' if v.result_id == None else v.result_id) + "\n" 
-                )
+            rq += (
+                str(int(k)).zfill(2)
+                + " | "
+                + str("-" if v.operator == None else v.operator)
+                + " "
+                + str("-" if v.operand_1 == None else v.operand_1)
+                + " "
+                + str("-" if v.operand_2 == None else v.operand_2)
+                + " "
+                + str("-" if v.result_id == None else v.result_id)
+                + "\n"
+            )
         return rq
 
     def return_quads_test(self):
-        rq = ''
+        rq = ""
         for k, v in self.qstack.items():
-            rq += (str(int(k)).zfill(2) + " | " + 
-                str('-' if v.operator == None else v.operator) + " " + 
-                str('-' if v.operand_1 == None else v.operand_1) + " " + 
-                str('-' if v.operand_2 == None else v.operand_2) + " " + 
-                str('-' if v.result_id == None else v.result_id) + r"\n" 
-                )
+            rq += (
+                str(int(k)).zfill(2)
+                + " | "
+                + str("-" if v.operator == None else v.operator)
+                + " "
+                + str("-" if v.operand_1 == None else v.operand_1)
+                + " "
+                + str("-" if v.operand_2 == None else v.operand_2)
+                + " "
+                + str("-" if v.result_id == None else v.result_id)
+                + r"\n"
+            )
         return rq
-
-
-

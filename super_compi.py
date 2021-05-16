@@ -6,7 +6,7 @@ if len(sys.argv) > 1:
     while i < len(sys.argv):
         print(sys.argv[i])
         print(parser_file(sys.argv[i]))
-        i += 1  
+        i += 1
 else:
     print("DEFAULT: tests/test_7.txt")
     print(parser_file("tests/test_7.txt"))
