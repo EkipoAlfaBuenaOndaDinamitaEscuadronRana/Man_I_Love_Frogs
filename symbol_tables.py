@@ -1,5 +1,6 @@
 import collections
 from symbol import *
+import symbol
 
 
 class VariableTable(object):
@@ -11,6 +12,9 @@ class VariableTable(object):
 
     def get_variable(self, name):
         return self.variables[name]
+
+    def get_var_symbol(self, name):
+        return Symbol(name, self.variables[name][0])
 
     def lookup_variable(self, name):
         if name in self.variables:
@@ -127,7 +131,7 @@ class StateTable(object):
         return self.states.count() == 0
 
     def isValidState(self, state, functiontable):
-        otherValidStates = ["funcD", "funcC", "noVar"]
+        otherValidStates = ["funcD", "funcC", "noVar", "as_on"]
         if not state.isEmpty():
             if state.table not in functiontable.keys():
                 if state.table not in otherValidStates:
