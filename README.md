@@ -83,3 +83,8 @@ python3 -m black {nombre_de_archivo.py}
 1. Uso de operadores comparativos en expresiones aritmeticas
 2. Consideraciones semanticas implementadas
 3. Game engine
+
+### Avances de entrega 6
+1. Quadruplos hacen asignaciones
+2. Se instauró un code styler
+3. Expresiones aritmeticas con tipos
