@@ -1,3 +1,6 @@
+import symbol
+
+
 class Symbol(object):
     type_dictionary = {
         "int": "INT",
@@ -28,7 +31,12 @@ class Symbol(object):
         )
 
     def __eq__(self, quad):
-        return self.name == quad.name and self.type == quad.type
+        if type(self) is Symbol and type(quad) is Symbol:
+            return self.name == quad.name and self.type == quad.type
+        elif self is None and quad is None:
+            return True
+        else: 
+            return False
 
     def __hash__(self):
         return id(self)

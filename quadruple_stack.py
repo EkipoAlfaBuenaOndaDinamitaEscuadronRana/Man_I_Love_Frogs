@@ -22,7 +22,12 @@ class QuadrupleStack(object):
             self.push_quad(elem)
 
     def solve_expression(self, expresion):
-        return Quadruple.arithmetic_expression(expresion, self.count)
+        sol = Quadruple.arithmetic_expression(expresion, self.count)
+        if type(sol) == str:
+            print(sol)
+            sys.exit()
+        else:  
+            return sol
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while
@@ -32,9 +37,13 @@ class QuadrupleStack(object):
         # TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
         # Combinar con el de abajo tentativamente?
-        result = self.qstack[self.count_prev].result_id
-        self.push_quad(Quadruple("GOTOF", result, None, "MISSING_ADDRESS"))
-        self.jumpStack.append(self.count_prev)
+        if self.qstack[self.count_prev].result_id.type != 'BOOL':
+            print("ERROR: Expresion in loop is not a boolean")
+            sys.exit()
+        else:
+            result = self.qstack[self.count_prev].result_id
+            self.push_quad(Quadruple("GOTOF", result, None, "MISSING_ADDRESS"))
+            self.jumpStack.append(self.count_prev)
 
     def ciclo_3(self):
         # Le avisa al inicio a donde ir si se acaba y al final a donde ir si sigue
@@ -47,9 +56,13 @@ class QuadrupleStack(object):
         # ESTE VA DESPUES DEL COLON
         # TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
-        result = self.qstack[self.count_prev].result_id
-        self.push_quad(Quadruple("GOTOF", result, None, "MISSING_ADDRESS"))
-        self.jumpStack.append(self.count_prev)
+        if self.qstack[self.count_prev].result_id.type != 'BOOL':
+            print("ERROR: Expresion in loop is not a boolean")
+            sys.exit()
+        else:
+            result = self.qstack[self.count_prev].result_id
+            self.push_quad(Quadruple("GOTOF", result, None, "MISSING_ADDRESS"))
+            self.jumpStack.append(self.count_prev)
         # print("if_1")
         # self.print_quads()
 
@@ -83,13 +96,13 @@ class QuadrupleStack(object):
             print(
                 str(int(k)).zfill(2)
                 + " | "
-                + str("-" if v.operator == None else v.operator)
+                + str("-" if v.operator == None else (v.operator.name if type(v.operator) == symbol.Symbol else v.operator))
                 + " "
-                + str("-" if v.operand_1 == None else v.operand_1)
+                + str("-" if v.operand_1 == None else (v.operand_1.name if type(v.operand_1) == symbol.Symbol else v.operand_1))
                 + " "
-                + str("-" if v.operand_2 == None else v.operand_2)
+                + str("-" if v.operand_2 == None else (v.operand_2.name if type(v.operand_2) == symbol.Symbol else v.operand_2))
                 + " "
-                + str("-" if v.result_id == None else v.result_id)
+                + str("-" if v.result_id == None else (v.result_id.name if type(v.result_id) == symbol.Symbol else v.result_id))
             )
 
     def return_quads(self):
@@ -98,13 +111,13 @@ class QuadrupleStack(object):
             rq += (
                 str(int(k)).zfill(2)
                 + " | "
-                + str("-" if v.operator == None else v.operator)
+                + str("-" if v.operator == None else (v.operator.name if type(v.operator) == symbol.Symbol else v.operator))
                 + " "
-                + str("-" if v.operand_1 == None else v.operand_1)
+                + str("-" if v.operand_1 == None else (v.operand_1.name if type(v.operand_1) == symbol.Symbol else v.operand_1))
                 + " "
-                + str("-" if v.operand_2 == None else v.operand_2)
+                + str("-" if v.operand_2 == None else (v.operand_2.name if type(v.operand_2) == symbol.Symbol else v.operand_2))
                 + " "
-                + str("-" if v.result_id == None else v.result_id)
+                + str("-" if v.result_id == None else (v.result_id.name if type(v.result_id) == symbol.Symbol else v.result_id))
                 + "\n"
             )
         return rq
@@ -115,13 +128,13 @@ class QuadrupleStack(object):
             rq += (
                 str(int(k)).zfill(2)
                 + " | "
-                + str("-" if v.operator == None else v.operator)
+                + str("-" if v.operator == None else (v.operator.name if type(v.operator) == symbol.Symbol else v.operator))
                 + " "
-                + str("-" if v.operand_1 == None else v.operand_1)
+                + str("-" if v.operand_1 == None else (v.operand_1.name if type(v.operand_1) == symbol.Symbol else v.operand_1))
                 + " "
-                + str("-" if v.operand_2 == None else v.operand_2)
+                + str("-" if v.operand_2 == None else (v.operand_2.name if type(v.operand_2) == symbol.Symbol else v.operand_2))
                 + " "
-                + str("-" if v.result_id == None else v.result_id)
+                + str("-" if v.result_id == None else (v.result_id.name if type(v.result_id) == symbol.Symbol else v.result_id))
                 + r"\n"
             )
         return rq
