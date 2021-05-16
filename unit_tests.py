@@ -2,6 +2,7 @@ from symbol_tables import *
 from lexer import *
 from yacc import *
 from quadruple import *
+from virtual_machine_map import *
 
 import unittest
 
@@ -381,3 +382,36 @@ class TestQuadruple(unittest.TestCase):
     def test_format_quadruple(self):
         q = Quadruple("MUL", "B", "C", "T1")
         self.assertEqual(q.format_quadruple(), "MUL B C T1")
+
+class TestMemorySegment(unittest.TestCase):
+    def test_insert_symbol(self):
+        ms = MemorySegment("Data Segment", 4)
+
+        a_int = Symbol("a", "INT")
+        b_int = Symbol("b", "INT")
+
+        self.assertEqual(ms.insert_symbol(a_int), True)
+        self.assertEqual(ms.insert_symbol(b_int), False)
+
+class TestVirtualMachineMap(unittest.TestCase):
+    def test_insert_symbol_in_segment(self):
+        vmm = VirtualMachineMap(4, 8, 20, 4)
+
+        a_int = Symbol("a", "INT")
+        b_int = Symbol("b", "INT")
+        c_int = Symbol("c", "INT", [4])
+
+        print("-------------")
+        print(c_int.memory_size())
+
+        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", b_int), False)
+
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", b_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", c_int), False)
+
+        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", b_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", c_int), True)
+

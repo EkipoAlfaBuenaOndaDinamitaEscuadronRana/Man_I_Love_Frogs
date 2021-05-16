@@ -1,5 +1,3 @@
-import sys
-sys.path.append('../')
 from memory_segment import *
 
 
@@ -25,8 +23,3 @@ class VirtualMachineMap(object):
 
     else:
       return False
-
-
-vmm = VirtualMachineMap(4, 4, 4, 4)
-a_int = Symbol("a", "INT")
-print(vmm.insert_symbol_in_segment("Data Segment", a_int))

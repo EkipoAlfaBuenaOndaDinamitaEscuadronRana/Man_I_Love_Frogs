@@ -1,3 +1,5 @@
+import numpy as np
+
 class Symbol(object):
     # All memory sizes are expressed in bytes.
     __memory_sizes = { 
@@ -45,5 +47,6 @@ class Symbol(object):
         if self.direction:
             print("DIRECTION: ", self.direction)
 
+    # TODO: No calcula bien las dimensiones
     def memory_size(self):
-        return memory_sizes[self.type] * (self.dimensions + 1)
+        return Symbol.__memory_sizes[self.type] * (np.prod(self.dimension_sizes) + 1)
