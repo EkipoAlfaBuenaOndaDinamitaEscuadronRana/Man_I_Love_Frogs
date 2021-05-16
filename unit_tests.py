@@ -50,7 +50,7 @@ class TestSymbol(unittest.TestCase):
     def test_symbol(self):
         s = Symbol("variable", "int")
         self.assertEqual(s.name, "variable")
-        self.assertEqual(s.type, "int")
+        self.assertEqual(s.type, "INT")
 
 
 class TestVarTable(unittest.TestCase):
@@ -59,11 +59,11 @@ class TestVarTable(unittest.TestCase):
 
         s = Symbol("variable", "int")
         vt.set_variable(s, 12)
-        self.assertEqual(vt.variables[s.name], ["int", 12])
+        self.assertEqual(vt.variables[s.name], ["INT", 12])
 
         s = Symbol("variable", "int")
         vt.set_variable(s, 23)
-        self.assertEqual(vt.variables[s.name], ["int", 23])
+        self.assertEqual(vt.variables[s.name], ["INT", 23])
 
 
 class TestFuncTable(unittest.TestCase):
