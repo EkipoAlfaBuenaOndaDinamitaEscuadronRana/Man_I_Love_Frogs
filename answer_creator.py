@@ -1,6 +1,6 @@
 import sys
-from root.file_parser import *
- 
+from file_parser import *
+# Este archivo funciona para tener los cuadruplos "correctos"
 f = open("test_answers.txt", "w")
 
 if len(sys.argv) > 1:
