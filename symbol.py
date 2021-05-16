@@ -35,7 +35,7 @@ class Symbol(object):
             return self.name == quad.name and self.type == quad.type
         elif self is None and quad is None:
             return True
-        else: 
+        else:
             return False
 
     def __hash__(self):
