@@ -47,6 +47,8 @@ class Symbol(object):
         if self.direction:
             print("DIRECTION: ", self.direction)
 
-    # TODO: No calcula bien las dimensiones
     def memory_size(self):
-        return Symbol.__memory_sizes[self.type] * (np.prod(self.dimension_sizes) + 1)
+        if self.dimensions:
+            return Symbol.__memory_sizes[self.type] * (np.prod(self.dimension_sizes))
+
+        return Symbol.__memory_sizes[self.type]

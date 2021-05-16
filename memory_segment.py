@@ -15,6 +15,10 @@ class MemorySegment(object):
   def insert_symbol(self, symbol):
     symbol_space = self.__calculate_symbol_space(symbol)
 
+    print("symbol.name: ", symbol.name)
+    print("symbol.size: ", symbol.memory_size())
+    print()
+
     if symbol_space <= self.__size:
       direction = self.__last_memory_loc
       symbol.direction = direction
