@@ -116,7 +116,6 @@ class QuadrupleStack(object):
         self.jumpStackR.append(self.count_prev)
 
     def return_jump_fill(self):
-        print(self.jumpStackR)
         if len(self.jumpStackR) > 0:
             if self.jumpStackR[-1] == self.count_prev:
                 self.qstack.pop(self.count_prev)
