@@ -167,10 +167,12 @@ class Quadruple(object):
         stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
     ):
 
+        consideration = Quadruple.__type_consideration(stack_types, stack_operators)
         operator = Symbol(stack_operators.pop(), "assignment")
         value = Symbol(stack_values.pop(), stack_types[-1])
         quad_result = Symbol(stack_values.pop(), stack_types[-1])
 
+        stack_types.append(consideration)
         q = Quadruple(operator, value, None, quad_result)
         resulting_quads.append(q)
 
@@ -189,6 +191,7 @@ class Quadruple(object):
         if s_type == "not":
             stack_operators.append("NOT")
 
+        # is an assignment or an assignment operator
         elif s_type in ["assignment", "assignment_operation"]:
             stack_operators.append(s_name)
 
@@ -445,6 +448,9 @@ class Quadruple(object):
                     stack_types,
                     resulting_quads,
                 )
+
+                if stack_types[-1] == "error":
+                    return "error: non-compatible types"
 
             else:
                 Quadruple.__generate_quadruple(

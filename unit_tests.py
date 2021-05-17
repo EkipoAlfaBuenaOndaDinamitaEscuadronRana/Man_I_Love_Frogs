@@ -41,7 +41,7 @@ class TestYacc(unittest.TestCase):
         # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
         test_results.append(test_file("tests/test_9.txt", test_answers[9]))
         if "F" in test_results:
-            result = "Failed" 
+            result = "Failed"
         else:
             result = "Passed"
 
@@ -153,6 +153,8 @@ class TestSemanticTable(unittest.TestCase):
         s_sub = Symbol("SUB", "operation")
         s_lt = Symbol("LT", "comparison")
         s_beq = Symbol("BEQ", "matching")
+        s_addeq = Symbol("ADDEQ", "assignment_operation")
+        s_eq = Symbol("ADDEQ", "assignment")
 
         # Non-existent type
         s_doub = Symbol("double", "DOUBLE")
@@ -163,6 +165,10 @@ class TestSemanticTable(unittest.TestCase):
         self.assertEqual(SemanticTable.considerate(s_char, s_lt, s_str), "BOOL")
         self.assertEqual(SemanticTable.considerate(s_null, s_beq, s_bool), "BOOL")
         self.assertEqual(SemanticTable.considerate(s_doub, s_add, s_char), "error")
+        self.assertEqual(SemanticTable.considerate(s_int, s_addeq, s_int), "INT")
+        self.assertEqual(SemanticTable.considerate(s_int, s_addeq, s_null), "error")
+        self.assertEqual(SemanticTable.considerate(s_flt, s_eq, s_flt), "FLT")
+        self.assertEqual(SemanticTable.considerate(s_flt, s_eq, s_int), "error")
 
         # Consideration with strings
         self.assertEqual(SemanticTable.considerate("FLT", "ADD", "INT"), "FLT")
@@ -170,6 +176,10 @@ class TestSemanticTable(unittest.TestCase):
         self.assertEqual(SemanticTable.considerate("CHAR", "LT", "STR"), "BOOL")
         self.assertEqual(SemanticTable.considerate("NULL", "BEQ", "BOOL"), "BOOL")
         self.assertEqual(SemanticTable.considerate("DOUBLE", "ADD", "CHAR"), "error")
+        self.assertEqual(SemanticTable.considerate("INT", "ADDEQ", "INT"), "INT")
+        self.assertEqual(SemanticTable.considerate("INT", "ADDEQ", "NULL"), "error")
+        self.assertEqual(SemanticTable.considerate("FLT", "EQ", "FLT"), "FLT")
+        self.assertEqual(SemanticTable.considerate("FLT", "EQ", "INT"), "error")
 
 
 class TestQuadruple(unittest.TestCase):
@@ -335,6 +345,15 @@ class TestQuadruple(unittest.TestCase):
             "SUBEQ T1 None A",
         ]
         self.assertEqual(response, expected_response)
+
+        wrong_type_assignation = [
+            Symbol("A", "INT"),
+            Symbol("EQ", "assignment"),
+            Symbol("B", "FLT")
+        ]
+
+        response = Quadruple.arithmetic_expression(wrong_type_assignation, 1)
+        self.assertEqual(response, "error: non-compatible types")
 
     def test_format_expression(self):
         in_string_with_spaces = "Ab = B >= C / ( D - E ) * F < G || H"
