@@ -276,7 +276,7 @@ def p_func_distruct(p):
     global_func_table.set_function_size_at(
             current_state.get_curr_state_table()
         )
-    global_func_table.print_FuncTable()
+    #global_func_table.print_FuncTable()
     # Elimina la tabla de var de la funcion actual
     global_func_table.erase_function_variable_table(
             current_state.get_curr_state_table()
@@ -594,6 +594,11 @@ def p_escritura(p):
     escritura : WRITE OP expresion CP
     """
     p[0] = [p[1], p[2], p[3]]
+    '''
+    quad_stack.solve_expression(
+                expresion_to_symbols(p[0], global_func_table, current_state)
+            )
+'''
 
 
 # TERMINAL
@@ -603,7 +608,11 @@ def p_lectura(p):
     lectura : READ OP CP
     """
     p[0] = [p[1], p[2], p[3]]
-
+    '''
+    quad_stack.solve_expression(
+            expresion_to_symbols(p[0], global_func_table, current_state)
+        )
+'''
 
 # NO TERMINAL
 # Regresa el tipo de ciclo que se usa

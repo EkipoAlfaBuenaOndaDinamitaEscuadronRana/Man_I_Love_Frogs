@@ -32,8 +32,7 @@ class QuadrupleStack(object):
 
     def set_function_location(self, name):
         self.funcjump[name] = self.count
-        self.count_prev += 1
-        self.count += 1
+
 
 
     def ciclo_1(self):

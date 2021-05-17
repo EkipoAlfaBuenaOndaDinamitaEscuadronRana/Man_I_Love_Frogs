@@ -3,28 +3,31 @@ import sys
 import re
 
 operators = {
-    "+": Symbol("ADD", "operation"),
-    "-": Symbol("SUB", "operation"),
-    "*": Symbol("MUL", "operation"),
-    "/": Symbol("DIV", "operation"),
-    "%": Symbol("MOD", "operation"),
-    "(": Symbol("OP", "parentheses"),
-    ")": Symbol("CP", "parentheses"),
-    "!": Symbol("NOT", "not"),
-    "=": Symbol("EQ", "assignment"),
-    "<": Symbol("LT", "comparison"),
-    ">": Symbol("GT", "comparison"),
-    "<=": Symbol("LTE", "comparison"),
-    ">=": Symbol("GTE", "comparison"),
-    "==": Symbol("BEQ", "matching"),
-    "!=": Symbol("BNEQ", "matching"),
-    "||": Symbol("OR", "matching"),
-    "+=": Symbol("ADDEQ", "assignment_operation"),
-    "-=": Symbol("SUBEQ", "assignment_operation"),
-    "*=": Symbol("MULEQ", "assignment_operation"),
-    "/=": Symbol("DIVEQ", "assignment_operation"),
-    "%=": Symbol("MODEQ", "assignment_operation"),
+    "+"     : Symbol("ADD", "operation"),
+    "-"     : Symbol("SUB", "operation"),
+    "*"     : Symbol("MUL", "operation"),
+    "/"     : Symbol("DIV", "operation"),
+    "%"     : Symbol("MOD", "operation"),
+    "("     : Symbol("OP", "parentheses"),
+    ")"     : Symbol("CP", "parentheses"),
+    "!"     : Symbol("NOT", "not"),
+    "="     : Symbol("EQ", "assignment"),
+    "<"     : Symbol("LT", "comparison"),
+    ">"     : Symbol("GT", "comparison"),
+    "<="    : Symbol("LTE", "comparison"),
+    ">="    : Symbol("GTE", "comparison"),
+    "=="    : Symbol("BEQ", "matching"),
+    "!="    : Symbol("BNEQ", "matching"),
+    "||"    : Symbol("OR", "matching"),
+    "+="    : Symbol("ADDEQ", "assignment_operation"),
+    "-="    : Symbol("SUBEQ", "assignment_operation"),
+    "*="    : Symbol("MULEQ", "assignment_operation"),
+    "/="    : Symbol("DIVEQ", "assignment_operation"),
+    "%="    : Symbol("MODEQ", "assignment_operation"),
+    "read"  : Symbol("READ", "in_out"),
+    "write" : Symbol("WRITE", "in_out"),
 }
+
 
 def flatten_list(data):
     flat_list = []
@@ -95,20 +98,20 @@ def dec_to_as(exp):
 
 def constant_eval(const):
     patterns = {
-        "INT": "[0-9]*",
-        "FLT": "[0-9]* | ([0-9]* . [0-9]*)",
-        "CHAR": '"([ ^ " | ^\' ])"',
-        "BOOL": "(true | false)",
-        "NULL": "null",
-        "STR": '"([ ^ " | ^\' ])*"',
+        "INT":  r"\d+",
+        "FLT": r"\d+\.\d+",
+        "CHAR": r'("|\')([^\"|^\'])("|\')',
+        "BOOL": r'(?:true|false)',
+        "NULL": r'null',
+        "STR": r'("|\')([^\"|^\'])*("|\')',
     }
-
     for type, reg in patterns.items():
-        if re.match(reg, str(const)):
-            return type
+        result = re.match(reg, str(const))
+        if result:
+            if result.start() == 0 and result.end() == (len(str(const))):
+                return type
 
     return None
-
 
 def expresion_to_symbols(exp, ft, s, d=None):
     exp = flatten_list(exp)

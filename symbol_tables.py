@@ -144,7 +144,7 @@ class StateTable(object):
         return self.states.count() == 0
 
     def isValidState(self, state, functiontable):
-        otherValidStates = ["funcD", "funcC", "noVar", "as_on"]
+        otherValidStates = ["funcD", "noVar", "as_on"]
         if not state.isEmpty():
             if state.table not in functiontable.keys():
                 if state.table not in otherValidStates:

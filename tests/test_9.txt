@@ -1,0 +1,14 @@
+program functions; 
+
+func void hola(string nombre, string edad){
+    string saludo = "hola me llamo";
+    saludo = saludo + nombre;
+    saludo = saludo + "y mi edad es ";
+    saludo = saludo + edad;
+}
+
+{
+    string n = "Rosita";
+    string e = "22";
+    hola(n,e);
+}
