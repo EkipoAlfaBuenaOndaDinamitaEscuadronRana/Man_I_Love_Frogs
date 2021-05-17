@@ -349,7 +349,7 @@ class TestQuadruple(unittest.TestCase):
         wrong_type_assignation = [
             Symbol("A", "INT"),
             Symbol("EQ", "assignment"),
-            Symbol("B", "FLT")
+            Symbol("B", "FLT"),
         ]
 
         response = Quadruple.arithmetic_expression(wrong_type_assignation, 1)
