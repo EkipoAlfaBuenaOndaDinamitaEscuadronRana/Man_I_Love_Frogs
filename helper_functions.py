@@ -26,21 +26,6 @@ operators = {
     "%=": Symbol("MODEQ", "assignment_operation"),
 }
 
-
-def get_parameters(line):
-    paramlist = []
-    currlist = line
-    if len(line) > 0:
-        while len(currlist) > 0:
-            paramlist.append(Symbol(currlist[0], currlist[1]))
-            currlist.pop(1)
-            currlist.pop(0)
-            if len(currlist) > 0:
-                currlist = currlist[0]
-
-    return paramlist
-
-
 def flatten_list(data):
     flat_list = []
     for element in data:
@@ -50,6 +35,17 @@ def flatten_list(data):
             flat_list.append(element)
     return flat_list
 
+def get_parameters(line):
+    paramlist = []
+    line = flatten_list(line)
+    currlist = line
+    if len(line) > 0:
+        while len(currlist) > 0:
+            paramlist.append(Symbol(currlist[1], currlist[0]))
+            currlist.pop(1)
+            currlist.pop(0)
+
+    return paramlist
 
 def expresion_to_string(expression):
     if type(expression) != list:

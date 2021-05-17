@@ -237,60 +237,30 @@ def p_func(p):
 def p_func_init(p):
 
     """
-    func_init : func_state tipo_func id_func OP func_parameters CP
+    func_init : tipo_func id_func OP func_parameters CP
     """
-    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
+    p[0] = [p[1], p[2], p[3], p[4], p[5]]
 
     # print("p_func_init: " + str(p[0]))
     # INSERTA FUNCION A TABLA
-    # ESTADO: func building o func dec
+    # ESTADO: func dec
     # FUNCDEC:
     if current_state.get_curr_state_table() == "funcD":
         # Valida que no existan
-        if global_func_table.lookup_function(p[3]):
+        if global_func_table.lookup_function(p[2]):
             print("ERROR: New declaration of existing function: " + str(p[3]))
             sys.exit()
         else:
             # Inserta a functable global
             # manda tipo, ID y lista de parametros
-            global_func_table.set_function(p[3], p[2], get_parameters(p[5]), None)
-            global_func_table.set_function_variable_table_at(p[3])
-            quad_stack.set_function_location(p[3])
-
-        # ESTADO:func dec
-
-    # FUNCBUILD:
-    elif current_state.get_curr_state_table() == "funcC":
-        # valida que exista
-        if not global_func_table.lookup_function(p[3]):
-            print("ERROR: Call of undeclaration function: " + str(p[3]))
-            sys.exit()
-        else:
-            # inserta vartable con parameteos en la funcion con ese id
-            # manda ID
-            global_func_table.set_function_variable_table_at(p[3])
-
-    # ESTADO: pop funcC o funcD
-    current_state.pop_curr_state()
-    # ESTADO: push functable id
-    current_state.push_state(State(p[3]))
-
-
-# NO TERMINAL
-# Validación e insersion de funcion a symboltable
-def p_func_state(p):
-
-    """
-    func_state : empty
-    """
-    p[0] = p[1]
-
-    # print("p_func_state: " + str(p[0]))
-    # CHECA ESTADO
-    # si ESTADO != FUNC DECLARATION
-    if current_state.get_curr_state_table() != "funcD":
-        # push FUNC BUILD -> no podemos saber como se llama sin pasar al siguiente paso so temporal
-        current_state.push_state(State("funcC"))
+            global_func_table.set_function(p[2], p[1], get_parameters(p[4]), None)
+            # crea tabla de variables actual
+            global_func_table.set_function_variable_table_at(p[2])
+            quad_stack.set_function_location(p[2])
+            # ESTADO: pop funcD
+            current_state.pop_curr_state()
+            # ESTADO: push functable id
+            current_state.push_state(State(p[2]))
 
 
 def p_func_distruct(p):
@@ -302,13 +272,20 @@ def p_func_distruct(p):
 
     # print("p_func_distruct: " + str(p[0]))
 
-    # ELIMINA CURR TABLA DE VAR 
+    #Guarda el tamaño de la funcion
+    global_func_table.set_function_size_at(
+            current_state.get_curr_state_table()
+        )
+    global_func_table.print_FuncTable()
     # Elimina la tabla de var de la funcion actual
     global_func_table.erase_function_variable_table(
             current_state.get_curr_state_table()
         )
+
     # pop del estado actual (la tabla de la funcion que se llamo)
     current_state.pop_curr_state()
+
+    # Mete el quad de end func
     quad_stack.push_quad(Quadruple("ENDFUNC", None, None, None))
 
 
