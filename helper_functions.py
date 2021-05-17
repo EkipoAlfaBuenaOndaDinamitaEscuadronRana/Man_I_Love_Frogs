@@ -124,9 +124,6 @@ def expresion_to_symbols(exp, ft, s, d=None):
     for e in exp:
         if e in operators:
             sym_list.append(operators[e])
-        elif e == ",":
-            # NO SE SI ESTO SEA UNA MEXICANADA
-            pass
 
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e

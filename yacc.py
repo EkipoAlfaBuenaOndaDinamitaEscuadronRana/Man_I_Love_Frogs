@@ -984,21 +984,6 @@ def p_id_var(p):
             ).lookup_variable(p[1]):
                 print("ERROR: Variable " + str(p[1] + " not declared"))
                 sys.exit()
-        # else:
-        #     save_state = current_state.get_curr_state()
-        #     current_state.pop_curr_state()
-        #     # Checa que la variable exista en la current table
-
-        #     if not global_func_table.get_function_variable_table(
-        #         current_state.get_curr_state_table()
-        #     ).lookup_variable(p[1]):
-        #         # Checa que exista en la global table
-        #         if not global_func_table.get_function_variable_table(
-        #             current_state.get_global_table()
-        #         ).lookup_variable(p[1]):
-        #             print("ERROR: Variable " + str(p[1] + " not declared"))
-        #             sys.exit()
-        #     current_state.push_state(save_state)
 
 
 # NO TERMINAL

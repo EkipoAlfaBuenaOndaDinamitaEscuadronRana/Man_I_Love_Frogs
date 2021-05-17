@@ -80,7 +80,6 @@ class FunctionTable(object):
             return False
 
     def print_FuncTable(self):
-        # print("name, type, parameters, variable_table")
         print()
         for name in self.functions:
             print(
