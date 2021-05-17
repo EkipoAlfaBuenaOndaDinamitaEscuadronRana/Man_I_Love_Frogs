@@ -129,14 +129,14 @@ def expresion_to_symbols(exp, ft, s, d=None):
     for e in exp:
         if e in operators:
             sym_list.append(operators[e])
-        elif ft.lookup_function(e) and ('(' in exp and ')'in exp):
-            sym_list.append(
-                Symbol(e, ft.get_function_type(e))
-            )
+        elif ft.lookup_function(e) and ("(" in exp and ")" in exp):
+            sym_list.append(Symbol(e, ft.get_function_type(e)))
             start = exp.index("(")
             end = exp.index(")") + 1
             del exp[start:end]
-        elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(e):
+        elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
+            e
+        ):
             sym_list.append(
                 ft.get_function_variable_table(s.get_curr_state_table()).get_var_symbol(
                     e

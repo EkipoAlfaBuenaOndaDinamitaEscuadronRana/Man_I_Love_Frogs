@@ -54,20 +54,34 @@ class QuadrupleStack(object):
 
     def expresion_or_id(self, param, type, error_message):
         if len(param) == 1:
-                param = param[0]
-                # Busca que los tipos sean iguales pero pues podrian ser compatibles? si le mando un int a
-                # un float deberia de funcionar creo?? hmmm dificil dificil
-                if symbol.Symbol.check_type_compatibility(type, param.type):
-                    return True
-                else:
-                    print("ERROR: " + error_message + " sent isn't same type as " + error_message + " declared")
-                    sys.exit()
-        else:
-        
-            if symbol.Symbol.check_type_compatibility(type, self.qstack[self.count_prev].result_id.type):
-                    return False
+            param = param[0]
+            # Busca que los tipos sean iguales pero pues podrian ser compatibles? si le mando un int a
+            # un float deberia de funcionar creo?? hmmm dificil dificil
+            if symbol.Symbol.check_type_compatibility(type, param.type):
+                return True
             else:
-                print("ERROR: " + error_message + " sent isn't same type as "+ error_message + " declared")
+                print(
+                    "ERROR: "
+                    + error_message
+                    + " sent isn't same type as "
+                    + error_message
+                    + " declared"
+                )
+                sys.exit()
+        else:
+
+            if symbol.Symbol.check_type_compatibility(
+                type, self.qstack[self.count_prev].result_id.type
+            ):
+                return False
+            else:
+                print(
+                    "ERROR: "
+                    + error_message
+                    + " sent isn't same type as "
+                    + error_message
+                    + " declared"
+                )
                 sys.exit()
 
     def validate_parameters(self, func_param, sent_param):
@@ -76,21 +90,22 @@ class QuadrupleStack(object):
             if self.expresion_or_id(sent_param, current_func_param.type, "Parameter"):
                 sent_param = sent_param[0]
                 self.param_count += 1
-                return Quadruple("param", sent_param.name, None, "param" + str(self.param_count))
+                return Quadruple(
+                    "param", sent_param.name, None, "param" + str(self.param_count)
+                )
             else:
                 self.param_count += 1
                 return Quadruple(
-                        "param",
-                        self.qstack[self.count_prev].result_id.name,
-                        None,
-                        "param" + str(self.param_count),
-                    )
-            
+                    "param",
+                    self.qstack[self.count_prev].result_id.name,
+                    None,
+                    "param" + str(self.param_count),
+                )
+
         else:
             print("ERROR: sent a numer of parameters greater than declared")
             sys.exit()
 
-        
     def return_in_function(self, type, exp=None):
         if exp:
             # esto es si no es un void
@@ -98,20 +113,22 @@ class QuadrupleStack(object):
                 exp = exp[0]
                 self.push_quad(Quadruple("RETURN", exp.name, None, None))
             else:
-               self.push_quad(Quadruple(
+                self.push_quad(
+                    Quadruple(
                         "RETURN",
                         self.qstack[self.count_prev].result_id.name,
                         None,
-                        None
-                    ))
+                        None,
+                    )
+                )
         else:
             # esto es si si es void
             self.push_quad(Quadruple("RETURN", None, None, None))
             # PARA IR AL FINAL
             # Pensamientos que no quiero olvidar
-            # validar el si en este spectrum no paso por un return y deberia 
-            # Preguntar si its okay si le digo gotonext 
-        
+            # validar el si en este spectrum no paso por un return y deberia
+            # Preguntar si its okay si le digo gotonext
+
         self.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
         self.jumpStackR.append(self.count_prev)
 
@@ -123,10 +140,9 @@ class QuadrupleStack(object):
                 self.count -= 1
                 self.jumpStackR.pop()
 
-            while len(self.jumpStackR)> 0:
+            while len(self.jumpStackR) > 0:
                 end = self.jumpStackR.pop()
                 self.fill(end)
-                
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while
@@ -136,7 +152,9 @@ class QuadrupleStack(object):
         # TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
         # Combinar con el de abajo tentativamente?
-        if not symbol.Symbol.check_type_compatibility("BOOL",  self.qstack[self.count_prev].result_id.type):
+        if not symbol.Symbol.check_type_compatibility(
+            "BOOL", self.qstack[self.count_prev].result_id.type
+        ):
             print("ERROR: Expresion in loop is not a boolean")
             sys.exit()
         else:
@@ -155,7 +173,9 @@ class QuadrupleStack(object):
         # ESTE VA DESPUES DEL COLON
         # TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
-        if not symbol.Symbol.check_type_compatibility("BOOL",  self.qstack[self.count_prev].result_id.type):
+        if not symbol.Symbol.check_type_compatibility(
+            "BOOL", self.qstack[self.count_prev].result_id.type
+        ):
             print("ERROR: Expresion in loop is not a boolean")
             sys.exit()
         else:
@@ -191,46 +211,46 @@ class QuadrupleStack(object):
             sys.exit()
 
     def print_quad(self, v):
-        print(str(
-                    "-"
-                    if v.operator == None
-                    else (
-                        v.operator.name
-                        if type(v.operator) == symbol.Symbol
-                        else v.operator
-                    )
-                )
-                + " "
-                + str(
-                    "-"
-                    if v.operand_1 == None
-                    else (
-                        v.operand_1.name
-                        if type(v.operand_1) == symbol.Symbol
-                        else v.operand_1
-                    )
-                )
-                + " "
-                + str(
-                    "-"
-                    if v.operand_2 == None
-                    else (
-                        v.operand_2.name
-                        if type(v.operand_2) == symbol.Symbol
-                        else v.operand_2
-                    )
-                )
-                + " "
-                + str(
-                    "-"
-                    if v.result_id == None
-                    else (
-                        v.result_id.name
-                        if type(v.result_id) == symbol.Symbol
-                        else v.result_id
-                    )
+        print(
+            str(
+                "-"
+                if v.operator == None
+                else (
+                    v.operator.name if type(v.operator) == symbol.Symbol else v.operator
                 )
             )
+            + " "
+            + str(
+                "-"
+                if v.operand_1 == None
+                else (
+                    v.operand_1.name
+                    if type(v.operand_1) == symbol.Symbol
+                    else v.operand_1
+                )
+            )
+            + " "
+            + str(
+                "-"
+                if v.operand_2 == None
+                else (
+                    v.operand_2.name
+                    if type(v.operand_2) == symbol.Symbol
+                    else v.operand_2
+                )
+            )
+            + " "
+            + str(
+                "-"
+                if v.result_id == None
+                else (
+                    v.result_id.name
+                    if type(v.result_id) == symbol.Symbol
+                    else v.result_id
+                )
+            )
+        )
+
     def print_quads(self):
         for k, v in self.qstack.items():
             print(

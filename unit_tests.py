@@ -41,7 +41,7 @@ class TestYacc(unittest.TestCase):
         # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
         test_results.append(test_file("tests/test_9.txt", test_answers[9]))
         if "F" in test_results:
-            result = "Failed" 
+            result = "Failed"
         else:
             result = "Passed"
 
