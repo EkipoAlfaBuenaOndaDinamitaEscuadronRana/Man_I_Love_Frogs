@@ -1,17 +1,12 @@
-from yacc import *
+import sys
+from file_parser import *
 
-lexer = lex.lex()
-parser = yacc.yacc()
-
-
-def parser_file(file_name):
-
-    file = open(file_name, "r")
-
-    line = file.read()
-
-    if line:
-        parser.parse(line)
-
-
-parser_file("tests/test_3.txt")
+if len(sys.argv) > 1:
+    i = 1
+    while i < len(sys.argv):
+        print(sys.argv[i])
+        print(parser_file(sys.argv[i]))
+        i += 1
+else:
+    print("DEFAULT: tests/test_9.txt")
+    print(parser_file("tests/test_9.txt"))

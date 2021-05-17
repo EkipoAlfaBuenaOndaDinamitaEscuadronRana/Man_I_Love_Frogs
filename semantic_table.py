@@ -128,30 +128,28 @@ class SemanticTable:
         },
     }
 
+    def clasify_symbol_op(symbol_op):
+        if symbol_op in SemanticTable.__operations_op:
+            return "operation"
+
+        elif symbol_op in SemanticTable.__assignment_operations_op:
+            return "assignment_operation"
+
+        elif symbol_op in SemanticTable.comparison_op:
+            return "comparison"
+
+        elif symbol_op in SemanticTable.matching_op:
+            return "matching"
+
+        elif symbol_op == "EQ":
+            return "assignment"
+
     def considerate(symbol_1, symbol_op, symbol_2):
         # When input is in string
         if [type(symbol_1), type(symbol_op), type(symbol_2)] == [str, str, str]:
 
             # Convert symbol into correct type
-            if symbol_op in [
-                "ADD",
-                "SUB",
-                "DIV",
-                "MUL",
-                "MOD",
-                "ADDEQ",
-                "SUBEQ",
-                "DIVEQ",
-                "MODEQ",
-                "MODEQ",
-            ]:
-                symbol_op = "operation"
-            elif symbol_op in ["LT", "GT", "LTE", "GTE"]:
-                symbol_op = "comparison"
-            elif symbol_op in ["BEQ", "BNEQ", "OR", "AND"]:
-                symbol_op = "matching"
-            elif symbol_op == "EQ":
-                symbol_op = "assignment"
+            symbol_op = SemanticTable.clasify_symbol_op(symbol_op)
 
         # When input is in symbol
         else:

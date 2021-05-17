@@ -1,5 +1,6 @@
 import collections
 from symbol import *
+import symbol
 
 
 class VariableTable(object):
@@ -11,6 +12,12 @@ class VariableTable(object):
 
     def get_variable(self, name):
         return self.variables[name]
+
+    def get_var_symbol(self, name):
+        return Symbol(name, self.variables[name][0])
+
+    def get_size(self):
+        return len(self.variables)
 
     def lookup_variable(self, name):
         if name in self.variables:
@@ -32,12 +39,20 @@ class FunctionTable(object):
         self.functions = {}
 
     def set_function(self, name, type, parameters, variable_table):
-        self.functions[name] = {"t": type, "p": parameters, "vt": variable_table}
+        self.functions[name] = {
+            "t": type,
+            "p": parameters,
+            "s": 0,
+            "vt": variable_table,
+        }
 
     def set_function_variable_table_at(self, name):
         self.functions[name]["vt"] = VariableTable()
         for symbol in self.functions[name]["p"]:
             self.functions[name]["vt"].set_variable(symbol, None)
+
+    def set_function_size_at(self, name):
+        self.functions[name]["s"] = self.functions[name]["vt"].get_size()
 
     def get_function(self, name):
         return self.functions[name]
@@ -47,6 +62,9 @@ class FunctionTable(object):
 
     def get_function_parameters(self, name):
         return self.functions[name]["p"]
+
+    def get_function_size(self, name):
+        return self.functions[name]["s"]
 
     def get_function_variable_table(self, name):
         return self.functions[name]["vt"]
@@ -62,15 +80,19 @@ class FunctionTable(object):
             return False
 
     def print_FuncTable(self):
-        print("name, type, parameters, variable_table")
+        print()
         for name in self.functions:
             print(
                 name
-                + "   "
+                + " "
                 + str(self.functions[name]["t"])
                 + " "
-                + str(self.functions[name]["p"])
+                + str(self.functions[name]["s"])
             )
+            print("PARAMS")
+            for p in self.functions[name]["p"]:
+                print(str(p.name) + " " + str(p.type))
+
             print("VARTABLE")
             if self.functions[name]["vt"] != None:
                 self.functions[name]["vt"].print_VariableTable()
@@ -100,7 +122,6 @@ class StateTable(object):
         return self.states[-1]
 
     def get_curr_state_table(self):
-        curr = State()
         return self.states[-1].table
 
     def get_curr_state_opt(self):
@@ -127,7 +148,7 @@ class StateTable(object):
         return self.states.count() == 0
 
     def isValidState(self, state, functiontable):
-        otherValidStates = ["funcD", "funcC", "noVar"]
+        otherValidStates = ["funcD", "noVar", "as_on"]
         if not state.isEmpty():
             if state.table not in functiontable.keys():
                 if state.table not in otherValidStates:

@@ -3,15 +3,57 @@ from lexer import *
 from yacc import *
 from quadruple import *
 from virtual_machine import *
+from file_parser import *
 
 import unittest
+
+
+class TestYacc(unittest.TestCase):
+    def test_yacc(self):
+        def test_file(file_name, answer):
+            result = parser_file(file_name)
+            if result == answer:
+                return "."
+            else:
+                return "F"
+
+        test_answers = [
+            "NO EXISTE",
+            "01 | ENDOF - - -\n",
+            "01 | EQ 1 - a\n02 | ENDOF - - -\n",
+            "NOT READY",
+            "01 | EQ 10 - x\n02 | EQ 2 - y\n03 | MUL x y T3\n04 | EQ T3 - a\n05 | ADD x y T5\n06 | EQ T5 - b\n07 | DIV x y T7\n08 | EQ T7 - c\n09 | SUB x y T9\n10 | EQ T9 - d\n11 | ENDOF - - -\n",
+            "01 | EQ 1 - a\n02 | EQ 2 - b\n03 | EQ 0 - c\n04 | GT a b T4\n05 | GOTOF T4 - 9\n06 | ADD a 1 T6\n07 | EQ T6 - c\n08 | GOTO - - 16\n09 | BEQ b a T9\n10 | GOTOF T9 - 14\n11 | ADD b 1 T11\n12 | EQ T11 - c\n13 | GOTO - - 16\n14 | ADD 1 2 T14\n15 | EQ T14 - c\n16 | ENDOF - - -\n",
+            "01 | EQ 1 - a\n02 | EQ 2 - b\n03 | EQ 0 - c\n04 | GT a b T4\n05 | GOTOF T4 - 9\n06 | ADD a b T6\n07 | EQ T6 - c\n08 | GOTO - - 4\n09 | ENDOF - - -\n",
+            "01 | EQ 10 - b\n02 | EQ 0 - c\n03 | EQ 0 - a\n04 | LT a b T4\n05 | GOTOF T4 - 11\n06 | ADD a 1 T6\n07 | EQ T6 - a\n08 | ADD c 1 T8\n09 | EQ T8 - c\n10 | GOTO - - 4\n11 | ADD b c T11\n12 | EQ T11 - b\n13 | ENDOF - - -\n",
+            "NOT READY",
+            '01 | EQ 0 - a\n02 | EQ "hola me llamo" - saludo\n03 | ADD saludo nombre T3\n04 | EQ T3 - saludo\n05 | ADD saludo "y mi edad es " T5\n06 | EQ T5 - saludo\n07 | ADD saludo edad T7\n08 | EQ T7 - saludo\n09 | ENDFUNC - - -\n10 | EQ "Rosita" - n\n11 | EQ "22" - e\n12 | ERA hola - -\n13 | param n - param1\n14 | param e - param2\n15 | ADD a 1 T15\n16 | param T15 - param3\n17 | GOSUB hola - 2\n18 | ENDOF - - -\n',
+        ]
+        test_results = []
+        test_results.append(test_file("tests/test_1.txt", test_answers[1]))
+        test_results.append(test_file("tests/test_2.txt", test_answers[2]))
+        # Pendiente -> return y asignación de funciones? creo?
+        # test_results.append(test_file("tests/test_3.txt", test_answers[3]))
+        test_results.append(test_file("tests/test_4.txt", test_answers[4]))
+        test_results.append(test_file("tests/test_5.txt", test_answers[5]))
+        test_results.append(test_file("tests/test_6.txt", test_answers[6]))
+        test_results.append(test_file("tests/test_7.txt", test_answers[7]))
+        # Pendiente -> Simple For
+        # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
+        test_results.append(test_file("tests/test_9.txt", test_answers[9]))
+        if "F" in test_results:
+            result = "Failed" 
+        else:
+            result = "Passed"
+
+        self.assertEqual(result, "Passed")
 
 
 class TestSymbol(unittest.TestCase):
     def test_symbol(self):
         s = Symbol("variable", "int")
         self.assertEqual(s.name, "variable")
-        self.assertEqual(s.type, "int")
+        self.assertEqual(s.type, "INT")
 
     def test_memory_size(self):
         var = Symbol("var", "INT")
@@ -27,11 +69,11 @@ class TestVarTable(unittest.TestCase):
 
         s = Symbol("variable", "int")
         vt.set_variable(s, 12)
-        self.assertEqual(vt.variables[s.name], ["int", 12])
+        self.assertEqual(vt.variables[s.name], ["INT", 12])
 
         s = Symbol("variable", "int")
         vt.set_variable(s, 23)
-        self.assertEqual(vt.variables[s.name], ["int", 23])
+        self.assertEqual(vt.variables[s.name], ["INT", 23])
 
 
 class TestFuncTable(unittest.TestCase):
@@ -43,12 +85,13 @@ class TestFuncTable(unittest.TestCase):
         vt.set_variable(s, 12)
         ft.set_function("print_something", "void", [s], vt)
         self.assertEqual(
-            ft.functions["print_something"], {"t": "void", "p": [s], "vt": vt}
+            ft.functions["print_something"], {"t": "void", "p": [s], "s": 0, "vt": vt}
         )
 
         ft.set_function("calculate_something", "float", [], None)
         self.assertEqual(
-            ft.functions["calculate_something"], {"t": "float", "p": [], "vt": None}
+            ft.functions["calculate_something"],
+            {"t": "float", "p": [], "s": 0, "vt": None},
         )
 
 
@@ -387,7 +430,12 @@ class TestQuadruple(unittest.TestCase):
         self.assertEqual(resulting_quads_formatted, ["ADD A B T1"])
 
     def test_format_quadruple(self):
-        q = Quadruple("MUL", "B", "C", "T1")
+        q = Quadruple(
+            Symbol("MUL", "operation"),
+            Symbol("B", "FLT"),
+            Symbol("C", "FLT"),
+            Symbol("T1", "FLT"),
+        )
         self.assertEqual(q.format_quadruple(), "MUL B C T1")
 
 
