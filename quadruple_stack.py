@@ -96,10 +96,10 @@ class QuadrupleStack(object):
                return Quadruple("RETURN", exp.name, None, None)
             else:
                 return Quadruple(
-                        "param",
+                        "RETURN",
                         self.qstack[self.count_prev].result_id.name,
                         None,
-                        "param" + str(self.param_count),
+                        None
                     )
         else:
             # esto es si si es void
@@ -108,9 +108,10 @@ class QuadrupleStack(object):
             # Pensamientos que no quiero olvidar
             # validar el si en este spectrum no paso por un return y deberia 
             # Preguntar si its okay si le digo gotonext 
-            self.jumpStack.append(self.count)
-            self.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
-
+        
+        self.jumpStack.append(self.count)
+        self.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
+        
 
 
     def ciclo_1(self):
