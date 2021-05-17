@@ -400,28 +400,21 @@ class TestMemorySegment(unittest.TestCase):
         self.assertEqual(ms.insert_symbol(a_int), True)
         self.assertEqual(ms.insert_symbol(b_int), False)
 
-class TestVirtualMachineMap(unittest.TestCase):
+class TestVirtualMachine(unittest.TestCase):
     def test_insert_symbol_in_segment(self):
-        vmm = VirtualMachineMap(4, 8, 20, 4)
+        vmm = VirtualMachine(4, 8, 20, 4)
 
         a_int = Symbol("a", "INT")
         b_int = Symbol("b", "INT")
         c_int = Symbol("c", "INT", [3])
 
-        print("\n-------------START-------------")
-        # print("c_int size: ", c_int.memory_size())
-        # print("b_int size: ", b_int.memory_size())
-        # print("a_int size: ", a_int.memory_size())
+        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", b_int), False)
 
-
-        # self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", a_int), True)
-        # self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", b_int), False)
-
-        # self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", a_int), True)
-        # self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", b_int), True)
-        # self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", c_int), False)
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", b_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", c_int), False)
 
         self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", a_int), True)
         self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", b_int), True)
         self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", c_int), True)
-
