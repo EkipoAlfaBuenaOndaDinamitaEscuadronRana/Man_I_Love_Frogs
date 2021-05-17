@@ -51,39 +51,67 @@ class QuadrupleStack(object):
     def get_param_count(self):
         return self.param_count
 
+
+    def expresion_or_id(self, param, type, error_message):
+        if len(param) == 1:
+                sent_param = param[0]
+                # Busca que los tipos sean iguales pero pues podrian ser compatibles? si le mando un int a
+                # un float deberia de funcionar creo?? hmmm dificil dificil
+                if param.type == type:
+                    self.param_count += 1
+                    return True
+                else:
+                    print("ERROR: " + error_message + "sent isn't same type as " + error_message + " declared")
+                    sys.exit()
+        else:
+            if (self.qstack[self.count_prev].result_id.type == type):
+                    self.param_count += 1
+                    return False
+            else:
+                print("ERROR: " + error_message + " sent isn't same type as "+ error_message + " declared")
+                sys.exit()
+
     def validate_parameters(self, func_param, sent_param):
         if self.param_count < len(func_param):
             current_func_param = func_param[self.param_count]
-            if len(sent_param) == 1:
-                sent_param = sent_param[0]
-                # Busca que los tipos sean iguales pero pues podrian ser compatibles? si le mando un int a
-                # un float deberia de funcionar creo?? hmmm dificil dificil
-                if sent_param.type == current_func_param.type:
-                    self.param_count += 1
-                    return Quadruple(
-                        "param", sent_param.name, None, "param" + str(self.param_count)
-                    )
-                else:
-                    print("ERROR: Parameter sent isn't same type as parameter declared")
-                    sys.exit()
+            if self.expresion_or_id(sent_param, current_func_param.type, "Parameter"):
+               return Quadruple("param", sent_param.name, None, "param" + str(self.param_count))
             else:
-                if (
-                    self.qstack[self.count_prev].result_id.type
-                    == current_func_param.type
-                ):
-                    self.param_count += 1
-                    return Quadruple(
+                return Quadruple(
                         "param",
                         self.qstack[self.count_prev].result_id.name,
                         None,
                         "param" + str(self.param_count),
                     )
-                else:
-                    print("ERROR: Parameter sent isn't same type as parameter declared")
-                    sys.exit()
+            
         else:
             print("ERROR: sent a numer of parameters greater than declared")
             sys.exit()
+
+        
+    def return_in_function(self, type, exp=None):
+        if exp:
+            # esto es si no es un void
+            if self.expresion_or_id(exp, type, "Return"):
+               return Quadruple("RETURN", exp.name, None, None)
+            else:
+                return Quadruple(
+                        "param",
+                        self.qstack[self.count_prev].result_id.name,
+                        None,
+                        "param" + str(self.param_count),
+                    )
+        else:
+            # esto es si si es void
+            self.push_quad(Quadruple("RETURN", None, None, None))
+            # PARA IR AL FINAL
+            # Pensamientos que no quiero olvidar
+            # validar el si en este spectrum no paso por un return y deberia 
+            # Preguntar si its okay si le digo gotonext 
+            self.jumpStack.append(self.count)
+            self.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
+
+
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while

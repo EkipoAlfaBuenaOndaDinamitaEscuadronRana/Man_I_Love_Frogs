@@ -1,0 +1,12 @@
+program functionsReturn; 
+
+func int random(int a, int b, int c){
+    int respuesta = 0;
+    respuesta = a + b * c;
+    return respuesta;
+}
+
+{
+    int a;
+    a = random(5, 10, 4);
+}

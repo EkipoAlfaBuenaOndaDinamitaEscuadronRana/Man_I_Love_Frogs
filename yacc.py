@@ -422,8 +422,39 @@ def p_return(p):
     """
     if len(p) == 3:
         p[0] = [p[1], p[2]]
+        if global_func_table.get_function_type(current_state.get_curr_state_table()) != "void":
+            print("ERROR: No return in a non void function")
+            sys.exit()
+        else:  
+            quad_stack.push_quad(
+                quad_stack.return_in_function(
+                    global_func_table.get_function_type(
+                        current_state.get_curr_state_opt()
+                    ) 
+                )
+            )
+
     else:
         p[0] = [p[1], p[2], p[3]]
+        if global_func_table.get_function_type(current_state.get_curr_state_table()) == "void":
+            print("ERROR: Tyring to return a value in a void function")
+            sys.exit()
+        else: 
+            quad_stack.push_quad(
+                quad_stack.return_in_function(
+                    global_func_table.get_function_type(
+                        current_state.get_curr_state_opt()
+                    ),
+                    expresion_to_symbols(p[2], global_func_table, current_state)
+                )
+            )
+
+    
+
+    # if current_state.get_curr_state_table().
+    #     print("ERROR: Tyring to return outside a function")
+    #         sys.exit()
+
 
 
 # NO TERMINAL
