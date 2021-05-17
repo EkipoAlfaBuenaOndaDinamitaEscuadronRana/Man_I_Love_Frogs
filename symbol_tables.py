@@ -15,6 +15,9 @@ class VariableTable(object):
 
     def get_var_symbol(self, name):
         return Symbol(name, self.variables[name][0])
+    
+    def get_size(self, name):
+        return len(self.variables)
 
     def lookup_variable(self, name):
         if name in self.variables:
@@ -35,13 +38,16 @@ class FunctionTable(object):
     def __init__(self):
         self.functions = {}
 
-    def set_function(self, name, type, parameters, variable_table):
-        self.functions[name] = {"t": type, "p": parameters, "vt": variable_table}
+    def set_function(self, name, type, parameters, size, variable_table):
+        self.functions[name] = {"t": type, "p": parameters, "s": size, "vt": variable_table}
 
     def set_function_variable_table_at(self, name):
         self.functions[name]["vt"] = VariableTable()
         for symbol in self.functions[name]["p"]:
             self.functions[name]["vt"].set_variable(symbol, None)
+
+    def set_function_size_at(self, name, size):
+        self.functions[name]["s"] = self.functions[name]["vt"].get_size()
 
     def get_function(self, name):
         return self.functions[name]
@@ -51,6 +57,9 @@ class FunctionTable(object):
 
     def get_function_parameters(self, name):
         return self.functions[name]["p"]
+    
+    def get_function_size(self, name):
+        return self.functions[name]["s"]
 
     def get_function_variable_table(self, name):
         return self.functions[name]["vt"]

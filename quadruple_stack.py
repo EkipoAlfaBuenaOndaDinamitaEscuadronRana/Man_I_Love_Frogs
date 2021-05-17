@@ -9,6 +9,7 @@ class QuadrupleStack(object):
         self.count_prev = 0
         self.count = 1
         self.jumpStack = []
+        self.funcjump = {}
 
     def push_quad(self, quadruple):
         self.qstack[self.count] = quadruple
@@ -28,6 +29,12 @@ class QuadrupleStack(object):
             sys.exit()
         else:
             return sol
+
+    def set_function_location(self, name):
+        self.funcjump[name] = self.count
+        self.count_prev += 1
+        self.count += 1
+
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while

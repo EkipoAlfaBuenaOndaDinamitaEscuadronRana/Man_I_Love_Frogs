@@ -122,6 +122,7 @@ def p_func_declar_init(p):
     current_state.push_state(State("funcD", "varD"))
 
 
+
 # NO TERMINAL
 # Empieza declaración de variable
 def p_var_dec(p):
@@ -253,6 +254,8 @@ def p_func_init(p):
             # Inserta a functable global
             # manda tipo, ID y lista de parametros
             global_func_table.set_function(p[3], p[2], get_parameters(p[5]), None)
+            global_func_table.set_function_variable_table_at(p[3])
+            quad_stack.set_function_location(p[3])
 
         # ESTADO:func dec
 
@@ -267,10 +270,10 @@ def p_func_init(p):
             # manda ID
             global_func_table.set_function_variable_table_at(p[3])
 
-        # ESTADO: pop funcCall
-        current_state.pop_curr_state()
-        # ESTADO: push functable id
-        current_state.push_state(State(p[3]))
+    # ESTADO: pop funcC o funcD
+    current_state.pop_curr_state()
+    # ESTADO: push functable id
+    current_state.push_state(State(p[3]))
 
 
 # NO TERMINAL
@@ -299,15 +302,15 @@ def p_func_distruct(p):
 
     # print("p_func_distruct: " + str(p[0]))
 
-    # ELIMINA CURR TABLA DE VAR if != state funcbuild
-    if current_state.get_curr_state_table() != "funcD":
-        # Elimina la tabla de var de la funcion actual
-        global_func_table.erase_function_variable_table(
+    # ELIMINA CURR TABLA DE VAR 
+    # Elimina la tabla de var de la funcion actual
+    global_func_table.erase_function_variable_table(
             current_state.get_curr_state_table()
         )
-
-    # pop del estado actual (sea funcDec o la tabla de la funcion que se llamo)
+    # pop del estado actual (la tabla de la funcion que se llamo)
     current_state.pop_curr_state()
+    quad_stack.push_quad(Quadruple("ENDFUNC", None, None, None))
+
 
 
 # NO TERMINAL
@@ -954,8 +957,10 @@ def p_id_var(p):
     # VALIDA ID
     # ESTADO : CURRENT VAR TABLE
     # Checa que no se este declarando la variable
+
     if current_state.get_curr_state_opt() != "varD":
         # Checa que la variable exista en la current table
+        #print(global_func_table.get_function_variable_table(current_state.get_curr_state_table()))
         if not global_func_table.get_function_variable_table(
             current_state.get_curr_state_table()
         ).lookup_variable(p[1]):

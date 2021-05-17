@@ -10,6 +10,6 @@ func int square(int a){
 {
     int x = 10;
     if (x == 10){
-        a = b;
+        b = square(a);
     }
 }
