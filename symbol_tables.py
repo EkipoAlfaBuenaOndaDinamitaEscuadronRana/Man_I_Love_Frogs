@@ -15,7 +15,7 @@ class VariableTable(object):
 
     def get_var_symbol(self, name):
         return Symbol(name, self.variables[name][0])
-    
+
     def get_size(self):
         return len(self.variables)
 
@@ -39,7 +39,12 @@ class FunctionTable(object):
         self.functions = {}
 
     def set_function(self, name, type, parameters, variable_table):
-        self.functions[name] = {"t": type, "p": parameters, "s": 0, "vt": variable_table}
+        self.functions[name] = {
+            "t": type,
+            "p": parameters,
+            "s": 0,
+            "vt": variable_table,
+        }
 
     def set_function_variable_table_at(self, name):
         self.functions[name]["vt"] = VariableTable()
@@ -57,7 +62,7 @@ class FunctionTable(object):
 
     def get_function_parameters(self, name):
         return self.functions[name]["p"]
-    
+
     def get_function_size(self, name):
         return self.functions[name]["s"]
 
@@ -75,7 +80,7 @@ class FunctionTable(object):
             return False
 
     def print_FuncTable(self):
-        #print("name, type, parameters, variable_table")
+        # print("name, type, parameters, variable_table")
         print()
         for name in self.functions:
             print(
@@ -83,11 +88,12 @@ class FunctionTable(object):
                 + " "
                 + str(self.functions[name]["t"])
                 + " "
-                + str(self.functions[name]["s"]))
-            print("PARAMS")   
+                + str(self.functions[name]["s"])
+            )
+            print("PARAMS")
             for p in self.functions[name]["p"]:
                 print(str(p.name) + " " + str(p.type))
-            
+
             print("VARTABLE")
             if self.functions[name]["vt"] != None:
                 self.functions[name]["vt"].print_VariableTable()
@@ -117,7 +123,6 @@ class StateTable(object):
         return self.states[-1]
 
     def get_curr_state_table(self):
-        curr = State()
         return self.states[-1].table
 
     def get_curr_state_opt(self):

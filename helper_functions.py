@@ -3,29 +3,29 @@ import sys
 import re
 
 operators = {
-    "+"     : Symbol("ADD", "operation"),
-    "-"     : Symbol("SUB", "operation"),
-    "*"     : Symbol("MUL", "operation"),
-    "/"     : Symbol("DIV", "operation"),
-    "%"     : Symbol("MOD", "operation"),
-    "("     : Symbol("OP", "parentheses"),
-    ")"     : Symbol("CP", "parentheses"),
-    "!"     : Symbol("NOT", "not"),
-    "="     : Symbol("EQ", "assignment"),
-    "<"     : Symbol("LT", "comparison"),
-    ">"     : Symbol("GT", "comparison"),
-    "<="    : Symbol("LTE", "comparison"),
-    ">="    : Symbol("GTE", "comparison"),
-    "=="    : Symbol("BEQ", "matching"),
-    "!="    : Symbol("BNEQ", "matching"),
-    "||"    : Symbol("OR", "matching"),
-    "+="    : Symbol("ADDEQ", "assignment_operation"),
-    "-="    : Symbol("SUBEQ", "assignment_operation"),
-    "*="    : Symbol("MULEQ", "assignment_operation"),
-    "/="    : Symbol("DIVEQ", "assignment_operation"),
-    "%="    : Symbol("MODEQ", "assignment_operation"),
-    "read"  : Symbol("READ", "in_out"),
-    "write" : Symbol("WRITE", "in_out"),
+    "+": Symbol("ADD", "operation"),
+    "-": Symbol("SUB", "operation"),
+    "*": Symbol("MUL", "operation"),
+    "/": Symbol("DIV", "operation"),
+    "%": Symbol("MOD", "operation"),
+    "(": Symbol("OP", "parentheses"),
+    ")": Symbol("CP", "parentheses"),
+    "!": Symbol("NOT", "not"),
+    "=": Symbol("EQ", "assignment"),
+    "<": Symbol("LT", "comparison"),
+    ">": Symbol("GT", "comparison"),
+    "<=": Symbol("LTE", "comparison"),
+    ">=": Symbol("GTE", "comparison"),
+    "==": Symbol("BEQ", "matching"),
+    "!=": Symbol("BNEQ", "matching"),
+    "||": Symbol("OR", "matching"),
+    "+=": Symbol("ADDEQ", "assignment_operation"),
+    "-=": Symbol("SUBEQ", "assignment_operation"),
+    "*=": Symbol("MULEQ", "assignment_operation"),
+    "/=": Symbol("DIVEQ", "assignment_operation"),
+    "%=": Symbol("MODEQ", "assignment_operation"),
+    "read": Symbol("READ", "in_out"),
+    "write": Symbol("WRITE", "in_out"),
 }
 
 
@@ -38,6 +38,7 @@ def flatten_list(data):
             flat_list.append(element)
     return flat_list
 
+
 def get_parameters(line):
     paramlist = []
     line = flatten_list(line)
@@ -49,6 +50,7 @@ def get_parameters(line):
             currlist.pop(0)
 
     return paramlist
+
 
 def expresion_to_string(expression):
     if type(expression) != list:
@@ -98,11 +100,11 @@ def dec_to_as(exp):
 
 def constant_eval(const):
     patterns = {
-        "INT":  r"\d+",
+        "INT": r"\d+",
         "FLT": r"\d+\.\d+",
         "CHAR": r'("|\')([^\"|^\'])("|\')',
-        "BOOL": r'(?:true|false)',
-        "NULL": r'null',
+        "BOOL": r"(?:true|false)",
+        "NULL": r"null",
         "STR": r'("|\')([^\"|^\'])*("|\')',
     }
     for type, reg in patterns.items():
@@ -113,6 +115,7 @@ def constant_eval(const):
 
     return None
 
+
 def expresion_to_symbols(exp, ft, s, d=None):
     exp = flatten_list(exp)
     sym_list = []
@@ -121,6 +124,10 @@ def expresion_to_symbols(exp, ft, s, d=None):
     for e in exp:
         if e in operators:
             sym_list.append(operators[e])
+        elif e == ",":
+            # NO SE SI ESTO SEA UNA MEXICANADA
+            pass
+
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e
         ):

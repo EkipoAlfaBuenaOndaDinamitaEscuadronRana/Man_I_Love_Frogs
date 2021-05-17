@@ -1,6 +1,8 @@
 program functions; 
 
-func void hola(string nombre, string edad){
+int a = 0;
+
+func void hola(string nombre, string edad, int prueba){
     string saludo = "hola me llamo";
     saludo = saludo + nombre;
     saludo = saludo + "y mi edad es ";
@@ -10,5 +12,5 @@ func void hola(string nombre, string edad){
 {
     string n = "Rosita";
     string e = "22";
-    hola(n,e);
+    hola(n, e, a + 1);
 }
