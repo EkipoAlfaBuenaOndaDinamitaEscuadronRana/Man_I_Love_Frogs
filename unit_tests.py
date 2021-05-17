@@ -2,7 +2,7 @@ from symbol_tables import *
 from lexer import *
 from yacc import *
 from quadruple import *
-from virtual_machine_map import *
+from virtual_machine import *
 
 import unittest
 
@@ -390,6 +390,7 @@ class TestQuadruple(unittest.TestCase):
         q = Quadruple("MUL", "B", "C", "T1")
         self.assertEqual(q.format_quadruple(), "MUL B C T1")
 
+
 class TestMemorySegment(unittest.TestCase):
     def test_insert_symbol(self):
         ms = MemorySegment("Data Segment", 4)
@@ -399,6 +400,7 @@ class TestMemorySegment(unittest.TestCase):
 
         self.assertEqual(ms.insert_symbol(a_int), True)
         self.assertEqual(ms.insert_symbol(b_int), False)
+
 
 class TestVirtualMachine(unittest.TestCase):
     def test_insert_symbol_in_segment(self):

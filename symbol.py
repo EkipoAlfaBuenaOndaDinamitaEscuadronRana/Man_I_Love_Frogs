@@ -16,11 +16,12 @@ class Symbol(object):
     You need to send the size of the dimensions in your parameters as follows:
         Symbol("arr", "FLT", [5])
         Symbol("mat", "FLT", [3][10])
-    
-    It is also possible to specify a memory address. 
+
+    It is also possible to specify a memory address.
     However, this value is expected to be assigned by the virtual machine.
     """
-    __memory_sizes = { 
+
+    __memory_sizes = {
         "INT": 4,
         "FLT": 4,
         "CHAR": 1,
