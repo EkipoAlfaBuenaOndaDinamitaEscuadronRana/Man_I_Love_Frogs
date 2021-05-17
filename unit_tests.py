@@ -77,13 +77,13 @@ class TestFuncTable(unittest.TestCase):
         vt.set_variable(s, 12)
         ft.set_function("print_something", "void", [s], vt)
         self.assertEqual(
-            ft.functions["print_something"], {"t": "void", "p": [s], "s": 0, "vt": vt}
+            ft.functions["print_something"], {"t": "VOID", "p": [s], "s": 0, "vt": vt}
         )
 
         ft.set_function("calculate_something", "float", [], None)
         self.assertEqual(
             ft.functions["calculate_something"],
-            {"t": "float", "p": [], "s": 0, "vt": None},
+            {"t": "FLT", "p": [], "s": 0, "vt": None},
         )
 
 
