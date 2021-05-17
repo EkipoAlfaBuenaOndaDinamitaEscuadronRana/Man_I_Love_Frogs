@@ -402,7 +402,7 @@ class TestMemorySegment(unittest.TestCase):
 
 class TestVirtualMachineMap(unittest.TestCase):
     def test_insert_symbol_in_segment(self):
-        vmm = VirtualMachineMap(4, 8, 24, 4)
+        vmm = VirtualMachineMap(4, 8, 20, 4)
 
         a_int = Symbol("a", "INT")
         b_int = Symbol("b", "INT")

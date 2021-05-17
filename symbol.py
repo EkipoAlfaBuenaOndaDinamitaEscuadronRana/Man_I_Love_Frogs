@@ -1,7 +1,25 @@
 import numpy as np
 
+
 class Symbol(object):
-    # All memory sizes are expressed in bytes.
+    """docstring for Symbol
+    A symbol represents a memory space, for example:
+        int A;
+
+    It would be represented like this
+        Symbol("A", "INT")
+
+    To represent non-scalar values as vectors or arrays, such as the following:
+        float arr[5];
+        float mat[3][10];
+
+    You need to send the size of the dimensions in your parameters as follows:
+        Symbol("arr", "FLT", [5])
+        Symbol("mat", "FLT", [3][10])
+    
+    It is also possible to specify a memory address. 
+    However, this value is expected to be assigned by the virtual machine.
+    """
     __memory_sizes = { 
         "INT": 4,
         "FLT": 4,

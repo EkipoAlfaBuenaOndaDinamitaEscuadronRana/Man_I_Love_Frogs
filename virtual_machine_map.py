@@ -23,3 +23,20 @@ class VirtualMachineMap(object):
 
     else:
       return False
+
+vmm = VirtualMachineMap(4, 8, 20, 4)
+
+a_int = Symbol("a", "INT")
+b_int = Symbol("b", "INT")
+c_int = Symbol("c", "INT", [3])
+
+a = vmm.insert_symbol_in_segment("Stack Segment", a_int)
+b = vmm.insert_symbol_in_segment("Stack Segment", b_int)
+c = vmm.insert_symbol_in_segment("Stack Segment", c_int)
+
+
+# print()
+# print("a_size:", a_int.memory_size())
+# print("b_size:", b_int.memory_size())
+# print("c_size:", c_int.memory_size())
+# print(a, b, c)
