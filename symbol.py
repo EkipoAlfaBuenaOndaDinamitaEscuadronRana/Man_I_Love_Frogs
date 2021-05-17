@@ -26,6 +26,15 @@ class Symbol(object):
         "assignment_operation": "assignment_operation",
     }
 
+    type_translation = {
+        "INT": ["INT", "NULL"],
+        "FLT": ["INT", "FLT", "NULL"],
+        "CHAR": ["CHAR", "NULL"],
+        "BOOL": ["INT", "FLT", "BOOL", "NULL"],
+        "NULL": ["NULL"],
+        "STR": ["STR", "CHAR", "NULL"]
+    }
+
     def __init__(self, name=None, type=None):
         self.name = name
         self.type = (
@@ -57,6 +66,9 @@ class Symbol(object):
     def get_type(self):
         return self.type
 
+    def check_type_compatibility(type_recipient, type_sender):
+        return type_sender in Symbol.type_translation[type_recipient]
+            
     def print_symbol(self):
         print("VAR: " + self.name)
         print("TYPE: " + self.type)

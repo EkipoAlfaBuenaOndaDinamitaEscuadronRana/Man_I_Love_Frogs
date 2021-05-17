@@ -57,14 +57,14 @@ class QuadrupleStack(object):
                 param = param[0]
                 # Busca que los tipos sean iguales pero pues podrian ser compatibles? si le mando un int a
                 # un float deberia de funcionar creo?? hmmm dificil dificil
-                if param.type == type:
+                if symbol.Symbol.check_type_compatibility(type, param.type):
                     return True
                 else:
                     print("ERROR: " + error_message + " sent isn't same type as " + error_message + " declared")
                     sys.exit()
         else:
         
-            if (self.qstack[self.count_prev].result_id.type == type):
+            if symbol.Symbol.check_type_compatibility(type, self.qstack[self.count_prev].result_id.type):
                     return False
             else:
                 print("ERROR: " + error_message + " sent isn't same type as "+ error_message + " declared")
@@ -136,7 +136,7 @@ class QuadrupleStack(object):
         # TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
         # Combinar con el de abajo tentativamente?
-        if self.qstack[self.count_prev].result_id.type != "BOOL":
+        if not symbol.Symbol.check_type_compatibility("BOOL",  self.qstack[self.count_prev].result_id.type):
             print("ERROR: Expresion in loop is not a boolean")
             sys.exit()
         else:
@@ -155,7 +155,7 @@ class QuadrupleStack(object):
         # ESTE VA DESPUES DEL COLON
         # TYPE CHECK (checa que el ultimo quad si sea un bool)
         # lo siguiente va en un else
-        if self.qstack[self.count_prev].result_id.type != "BOOL":
+        if not symbol.Symbol.check_type_compatibility("BOOL",  self.qstack[self.count_prev].result_id.type):
             print("ERROR: Expresion in loop is not a boolean")
             sys.exit()
         else:

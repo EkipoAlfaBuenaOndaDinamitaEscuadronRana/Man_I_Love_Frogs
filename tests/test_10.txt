@@ -1,7 +1,7 @@
 program functionsReturn; 
 
-func int random(int a, int b, int c){
-    int respuesta = 0;
+func bool random(float a, int b, int c){
+    float respuesta = 0;
     respuesta = a + b * c;
     if (a > b){
         return respuesta;
