@@ -3,7 +3,14 @@ program functionsReturn;
 func int random(int a, int b, int c){
     int respuesta = 0;
     respuesta = a + b * c;
-    return respuesta;
+    if (a > b){
+        return respuesta;
+    } else{
+        respuesta = respuesta + c;
+        return respuesta;
+    }
+    a = a + b - c;
+    return a;
 }
 
 {

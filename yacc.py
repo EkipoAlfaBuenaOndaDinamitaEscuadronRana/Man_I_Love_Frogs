@@ -275,6 +275,7 @@ def p_func_distruct(p):
     current_state.pop_curr_state()
 
     # Mete el quad de end func
+    quad_stack.return_jump_fill()
     quad_stack.push_quad(Quadruple("ENDFUNC", None, None, None))
 
 
@@ -426,27 +427,24 @@ def p_return(p):
             print("ERROR: No return in a non void function")
             sys.exit()
         else:  
-            quad_stack.push_quad(
-                quad_stack.return_in_function(
-                    global_func_table.get_function_type(
-                        current_state.get_curr_state_opt()
-                    ) 
-                )
+            quad_stack.return_in_function(
+                global_func_table.get_function_type(
+                    current_state.get_curr_state_table()
+                ) 
             )
 
     else:
         p[0] = [p[1], p[2], p[3]]
+
         if global_func_table.get_function_type(current_state.get_curr_state_table()) == "void":
             print("ERROR: Tyring to return a value in a void function")
             sys.exit()
         else: 
-            quad_stack.push_quad(
-                quad_stack.return_in_function(
-                    global_func_table.get_function_type(
-                        current_state.get_curr_state_opt()
-                    ),
-                    expresion_to_symbols(p[2], global_func_table, current_state)
-                )
+            quad_stack.return_in_function(
+                global_func_table.get_function_type(
+                    current_state.get_curr_state_table()
+                ),
+                expresion_to_symbols(p[2], global_func_table, current_state)
             )
 
     

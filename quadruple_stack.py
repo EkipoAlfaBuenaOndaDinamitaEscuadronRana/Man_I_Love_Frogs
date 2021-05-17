@@ -9,6 +9,7 @@ class QuadrupleStack(object):
         self.count_prev = 0
         self.count = 1
         self.jumpStack = []
+        self.jumpStackR = []
         self.funcjump = {}
         self.param_count = 0
 
@@ -51,21 +52,19 @@ class QuadrupleStack(object):
     def get_param_count(self):
         return self.param_count
 
-
     def expresion_or_id(self, param, type, error_message):
         if len(param) == 1:
-                sent_param = param[0]
+                param = param[0]
                 # Busca que los tipos sean iguales pero pues podrian ser compatibles? si le mando un int a
                 # un float deberia de funcionar creo?? hmmm dificil dificil
                 if param.type == type:
-                    self.param_count += 1
                     return True
                 else:
-                    print("ERROR: " + error_message + "sent isn't same type as " + error_message + " declared")
+                    print("ERROR: " + error_message + " sent isn't same type as " + error_message + " declared")
                     sys.exit()
         else:
+        
             if (self.qstack[self.count_prev].result_id.type == type):
-                    self.param_count += 1
                     return False
             else:
                 print("ERROR: " + error_message + " sent isn't same type as "+ error_message + " declared")
@@ -75,8 +74,11 @@ class QuadrupleStack(object):
         if self.param_count < len(func_param):
             current_func_param = func_param[self.param_count]
             if self.expresion_or_id(sent_param, current_func_param.type, "Parameter"):
-               return Quadruple("param", sent_param.name, None, "param" + str(self.param_count))
+                sent_param = sent_param[0]
+                self.param_count += 1
+                return Quadruple("param", sent_param.name, None, "param" + str(self.param_count))
             else:
+                self.param_count += 1
                 return Quadruple(
                         "param",
                         self.qstack[self.count_prev].result_id.name,
@@ -93,14 +95,15 @@ class QuadrupleStack(object):
         if exp:
             # esto es si no es un void
             if self.expresion_or_id(exp, type, "Return"):
-               return Quadruple("RETURN", exp.name, None, None)
+                exp = exp[0]
+                self.push_quad(Quadruple("RETURN", exp.name, None, None))
             else:
-                return Quadruple(
+               self.push_quad(Quadruple(
                         "RETURN",
                         self.qstack[self.count_prev].result_id.name,
                         None,
                         None
-                    )
+                    ))
         else:
             # esto es si si es void
             self.push_quad(Quadruple("RETURN", None, None, None))
@@ -109,10 +112,22 @@ class QuadrupleStack(object):
             # validar el si en este spectrum no paso por un return y deberia 
             # Preguntar si its okay si le digo gotonext 
         
-        self.jumpStack.append(self.count)
         self.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
-        
+        self.jumpStackR.append(self.count_prev)
 
+    def return_jump_fill(self):
+        print(self.jumpStackR)
+        if len(self.jumpStackR) > 0:
+            if self.jumpStackR[-1] == self.count_prev:
+                self.qstack.pop(self.count_prev)
+                self.count_prev -= 1
+                self.count -= 1
+                self.jumpStackR.pop()
+
+            while len(self.jumpStackR)> 0:
+                end = self.jumpStackR.pop()
+                self.fill(end)
+                
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while
@@ -176,6 +191,47 @@ class QuadrupleStack(object):
             print("ERROR: Error filling jump quadruple")
             sys.exit()
 
+    def print_quad(self, v):
+        print(str(
+                    "-"
+                    if v.operator == None
+                    else (
+                        v.operator.name
+                        if type(v.operator) == symbol.Symbol
+                        else v.operator
+                    )
+                )
+                + " "
+                + str(
+                    "-"
+                    if v.operand_1 == None
+                    else (
+                        v.operand_1.name
+                        if type(v.operand_1) == symbol.Symbol
+                        else v.operand_1
+                    )
+                )
+                + " "
+                + str(
+                    "-"
+                    if v.operand_2 == None
+                    else (
+                        v.operand_2.name
+                        if type(v.operand_2) == symbol.Symbol
+                        else v.operand_2
+                    )
+                )
+                + " "
+                + str(
+                    "-"
+                    if v.result_id == None
+                    else (
+                        v.result_id.name
+                        if type(v.result_id) == symbol.Symbol
+                        else v.result_id
+                    )
+                )
+            )
     def print_quads(self):
         for k, v in self.qstack.items():
             print(

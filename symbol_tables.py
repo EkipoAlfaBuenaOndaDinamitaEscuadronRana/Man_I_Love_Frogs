@@ -40,12 +40,11 @@ class FunctionTable(object):
 
     def set_function(self, name, type, parameters, variable_table):
         self.functions[name] = {
-            "t": type,
+            "t": (symbol.Symbol.type_dictionary[type] if type in symbol.Symbol.type_dictionary else None),
             "p": parameters,
             "s": 0,
             "vt": variable_table,
         }
-
     def set_function_variable_table_at(self, name):
         self.functions[name]["vt"] = VariableTable()
         for symbol in self.functions[name]["p"]:
