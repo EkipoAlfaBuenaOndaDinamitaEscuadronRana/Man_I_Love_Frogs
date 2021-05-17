@@ -21,6 +21,7 @@ class Symbol(object):
     It is also possible to specify a memory address.
     However, this value is expected to be assigned by the virtual machine.
     """
+
     type_dictionary = {
         "int": "INT",
         "float": "FLT",
