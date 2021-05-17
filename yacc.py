@@ -88,6 +88,8 @@ def p_global_vartable(p):
     # LLAMAR FUNCION PARA METER TABLA GLOBAL A FUNCTION TABLE
     # CREA VAR TABLE
     global_func_table.set_function(p[0], "void", [], VariableTable())
+    # Limpea la quad_stack
+    quad_stack.reset_quad()
 
 
 # NO TERMINAL Y TERMINAL
@@ -181,24 +183,14 @@ def p_var(p):
                 global_func_table.get_function_variable_table(
                     current_state.get_curr_state_table()
                 ).set_variable(symbol, curr_vars[symbol])
-                if current_state.get_curr_state_opt() == "as_on":
-                    a = expresion_to_symbols(
-                        p[2], global_func_table, current_state, True
-                    )
-                    # print("start--------")
-                    # print(p[2])
-                    # for e in a:
-                    # print(str(e.name) + " " + str(e.type))
 
-                    quad_stack.push_list(
-                        quad_stack.solve_expression(
-                            expresion_to_symbols(
-                                p[2], global_func_table, current_state, True
-                            )
-                        )
-                    )
-                    current_state.pop_curr_state()
-
+        if current_state.get_curr_state_opt() == "as_on":
+            quad_stack.push_list(
+                quad_stack.solve_expression(
+                    expresion_to_symbols(p[2], global_func_table, current_state, True)
+                )
+            )
+            current_state.pop_curr_state()
         # ESTADO: POP VAR DEC PERO NO LA VARTABLE
         current_state.remove_curr_state_opt()
 
@@ -236,58 +228,30 @@ def p_func(p):
 def p_func_init(p):
 
     """
-    func_init : func_state tipo_func id_func OP func_parameters CP
+    func_init : tipo_func id_func OP func_parameters CP
     """
-    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
+    p[0] = [p[1], p[2], p[3], p[4], p[5]]
 
     # print("p_func_init: " + str(p[0]))
     # INSERTA FUNCION A TABLA
-    # ESTADO: func building o func dec
+    # ESTADO: func dec
     # FUNCDEC:
     if current_state.get_curr_state_table() == "funcD":
         # Valida que no existan
-        if global_func_table.lookup_function(p[3]):
+        if global_func_table.lookup_function(p[2]):
             print("ERROR: New declaration of existing function: " + str(p[3]))
             sys.exit()
         else:
             # Inserta a functable global
             # manda tipo, ID y lista de parametros
-            global_func_table.set_function(p[3], p[2], get_parameters(p[5]), None)
-
-        # ESTADO:func dec
-
-    # FUNCBUILD:
-    elif current_state.get_curr_state_table() == "funcC":
-        # valida que exista
-        if not global_func_table.lookup_function(p[3]):
-            print("ERROR: Call of undeclaration function: " + str(p[3]))
-            sys.exit()
-        else:
-            # inserta vartable con parameteos en la funcion con ese id
-            # manda ID
-            global_func_table.set_function_variable_table_at(p[3])
-
-        # ESTADO: pop funcCall
-        current_state.pop_curr_state()
-        # ESTADO: push functable id
-        current_state.push_state(State(p[3]))
-
-
-# NO TERMINAL
-# Validación e insersion de funcion a symboltable
-def p_func_state(p):
-
-    """
-    func_state : empty
-    """
-    p[0] = p[1]
-
-    # print("p_func_state: " + str(p[0]))
-    # CHECA ESTADO
-    # si ESTADO != FUNC DECLARATION
-    if current_state.get_curr_state_table() != "funcD":
-        # push FUNC BUILD -> no podemos saber como se llama sin pasar al siguiente paso so temporal
-        current_state.push_state(State("funcC"))
+            global_func_table.set_function(p[2], p[1], get_parameters(p[4]), None)
+            # crea tabla de variables actual
+            global_func_table.set_function_variable_table_at(p[2])
+            quad_stack.set_function_location(p[2])
+            # ESTADO: pop funcD
+            current_state.pop_curr_state()
+            # ESTADO: push functable id
+            current_state.push_state(State(p[2]))
 
 
 def p_func_distruct(p):
@@ -299,15 +263,19 @@ def p_func_distruct(p):
 
     # print("p_func_distruct: " + str(p[0]))
 
-    # ELIMINA CURR TABLA DE VAR if != state funcbuild
-    if current_state.get_curr_state_table() != "funcD":
-        # Elimina la tabla de var de la funcion actual
-        global_func_table.erase_function_variable_table(
-            current_state.get_curr_state_table()
-        )
+    # Guarda el tamaño de la funcion
+    global_func_table.set_function_size_at(current_state.get_curr_state_table())
+    # global_func_table.print_FuncTable()
+    # Elimina la tabla de var de la funcion actual
+    global_func_table.erase_function_variable_table(
+        current_state.get_curr_state_table()
+    )
 
-    # pop del estado actual (sea funcDec o la tabla de la funcion que se llamo)
+    # pop del estado actual (la tabla de la funcion que se llamo)
     current_state.pop_curr_state()
+
+    # Mete el quad de end func
+    quad_stack.push_quad(Quadruple("ENDFUNC", None, None, None))
 
 
 # NO TERMINAL
@@ -614,6 +582,11 @@ def p_escritura(p):
     escritura : WRITE OP expresion CP
     """
     p[0] = [p[1], p[2], p[3]]
+    """
+    quad_stack.solve_expression(
+                expresion_to_symbols(p[0], global_func_table, current_state)
+            )
+"""
 
 
 # TERMINAL
@@ -623,6 +596,11 @@ def p_lectura(p):
     lectura : READ OP CP
     """
     p[0] = [p[1], p[2], p[3]]
+    """
+    quad_stack.solve_expression(
+            expresion_to_symbols(p[0], global_func_table, current_state)
+        )
+"""
 
 
 # NO TERMINAL
@@ -722,9 +700,28 @@ def p_for_complex(p):
 # inicia una llamada a una funcion
 def p_llamada(p):
     """
-    llamada : id_func OP expresion llamada1
+    llamada : id_func OP llamada1 CP
     """
     p[0] = [p[1], p[2], p[3], p[4]]
+
+    if quad_stack.get_param_count() == len(
+        global_func_table.get_function_parameters(current_state.get_curr_state_opt())
+    ):
+        quad_stack.reset_param_count()
+        quad_stack.push_quad(
+            Quadruple(
+                "GOSUB",
+                p[1],
+                None,
+                quad_stack.get_function_location(current_state.get_curr_state_opt()),
+            )
+        )
+        current_state.remove_curr_state_opt()
+    else:
+        print("ERROR: Number of parameters sent is less than parameters asked")
+        sys.exit()
+
+    # quitar opt de funcion call
 
 
 # TERMINAL Y  NO TERMINAL
@@ -732,13 +729,34 @@ def p_llamada(p):
 # dentro de la llamada
 def p_llamada1(p):
     """
-    llamada1 : CP
-             | COMMA expresion llamada1
+    llamada1 : parametro
+             | parametro COMMA llamada1
     """
     if len(p) == 2:
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3]]
+
+
+def p_parametro(p):
+    """
+    parametro : expresion
+              | empty
+    """
+    p[0] = p[1]
+    if current_state.get_curr_state_opt != None:
+        if p[1] != None:
+            quad_stack.push_quad(
+                quad_stack.validate_parameters(
+                    global_func_table.get_function_parameters(
+                        current_state.get_curr_state_opt()
+                    ),
+                    expresion_to_symbols(p[1], global_func_table, current_state),
+                )
+            )
+    else:
+        print("ERROR: Error trying to validate parameters")
+        sys.exit()
 
 
 # NO TERMINAL
@@ -955,6 +973,7 @@ def p_id_var(p):
     # ESTADO : CURRENT VAR TABLE
     # Checa que no se este declarando la variable
     if current_state.get_curr_state_opt() != "varD":
+        # if current_state.get_curr_state_opt() != "funcC":
         # Checa que la variable exista en la current table
         if not global_func_table.get_function_variable_table(
             current_state.get_curr_state_table()
@@ -988,7 +1007,14 @@ def p_id_func(p):
     """
     p[0] = p[1]
 
-    # Esto es principalmente llamadas so creo qeu todavia no tengo que poner aqui las validaciones
+    if current_state.get_curr_state_table() != "funcD":
+        if not global_func_table.lookup_function(p[1]):
+            print("ERROR: Call of undeclaration function: " + str(p[1]))
+            sys.exit()
+        else:
+            # Se mete el ERA quad
+            quad_stack.push_quad(Quadruple("ERA", p[1], None, None))
+            current_state.set_curr_state_opt(p[1])
 
 
 # TERMINAL Y NO TERMINAL

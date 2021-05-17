@@ -132,13 +132,13 @@ def t_CFLT(t):
 
 
 def t_CCHAR(t):
-    r'"([^\"|^\'])"'
+    r'("|\')([^\"|^\'])("|\')'
     t.value = str(t.value)
     return t
 
 
 def t_CSTRING(t):
-    r'"([^\"|^\'])*"'
+    r'("|\')([^\"|^\'])*("|\')'
     t.value = str(t.value)
     return t
 

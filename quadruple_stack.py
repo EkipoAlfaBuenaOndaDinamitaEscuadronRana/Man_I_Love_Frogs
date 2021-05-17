@@ -9,6 +9,16 @@ class QuadrupleStack(object):
         self.count_prev = 0
         self.count = 1
         self.jumpStack = []
+        self.funcjump = {}
+        self.param_count = 0
+
+    def reset_quad(self):
+        self.qstack = {}
+        self.count_prev = 0
+        self.count = 1
+        self.jumpStack = []
+        self.funcjump = {}
+        self.param_count = 0
 
     def push_quad(self, quadruple):
         self.qstack[self.count] = quadruple
@@ -28,6 +38,52 @@ class QuadrupleStack(object):
             sys.exit()
         else:
             return sol
+
+    def set_function_location(self, name):
+        self.funcjump[name] = self.count
+
+    def get_function_location(self, name):
+        return self.funcjump[name]
+
+    def reset_param_count(self):
+        self.param_count = 0
+
+    def get_param_count(self):
+        return self.param_count
+
+    def validate_parameters(self, func_param, sent_param):
+        if self.param_count < len(func_param):
+            current_func_param = func_param[self.param_count]
+            if len(sent_param) == 1:
+                sent_param = sent_param[0]
+                # Busca que los tipos sean iguales pero pues podrian ser compatibles? si le mando un int a
+                # un float deberia de funcionar creo?? hmmm dificil dificil
+                if sent_param.type == current_func_param.type:
+                    self.param_count += 1
+                    return Quadruple(
+                        "param", sent_param.name, None, "param" + str(self.param_count)
+                    )
+                else:
+                    print("ERROR: Parameter sent isn't same type as parameter declared")
+                    sys.exit()
+            else:
+                if (
+                    self.qstack[self.count_prev].result_id.type
+                    == current_func_param.type
+                ):
+                    self.param_count += 1
+                    return Quadruple(
+                        "param",
+                        self.qstack[self.count_prev].result_id.name,
+                        None,
+                        "param" + str(self.param_count),
+                    )
+                else:
+                    print("ERROR: Parameter sent isn't same type as parameter declared")
+                    sys.exit()
+        else:
+            print("ERROR: sent a numer of parameters greater than declared")
+            sys.exit()
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while

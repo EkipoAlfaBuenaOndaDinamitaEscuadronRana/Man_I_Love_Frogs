@@ -24,21 +24,9 @@ operators = {
     "*=": Symbol("MULEQ", "assignment_operation"),
     "/=": Symbol("DIVEQ", "assignment_operation"),
     "%=": Symbol("MODEQ", "assignment_operation"),
+    "read": Symbol("READ", "in_out"),
+    "write": Symbol("WRITE", "in_out"),
 }
-
-
-def get_parameters(line):
-    paramlist = []
-    currlist = line
-    if len(line) > 0:
-        while len(currlist) > 0:
-            paramlist.append(Symbol(currlist[0], currlist[1]))
-            currlist.pop(1)
-            currlist.pop(0)
-            if len(currlist) > 0:
-                currlist = currlist[0]
-
-    return paramlist
 
 
 def flatten_list(data):
@@ -49,6 +37,19 @@ def flatten_list(data):
         elif element is not None:
             flat_list.append(element)
     return flat_list
+
+
+def get_parameters(line):
+    paramlist = []
+    line = flatten_list(line)
+    currlist = line
+    if len(line) > 0:
+        while len(currlist) > 0:
+            paramlist.append(Symbol(currlist[1], currlist[0]))
+            currlist.pop(1)
+            currlist.pop(0)
+
+    return paramlist
 
 
 def expresion_to_string(expression):
@@ -99,17 +100,18 @@ def dec_to_as(exp):
 
 def constant_eval(const):
     patterns = {
-        "INT": "[0-9]*",
-        "FLT": "[0-9]* | ([0-9]* . [0-9]*)",
-        "CHAR": '"([ ^ " | ^\' ])"',
-        "BOOL": "(true | false)",
-        "NULL": "null",
-        "STR": '"([ ^ " | ^\' ])*"',
+        "INT": r"\d+",
+        "FLT": r"\d+\.\d+",
+        "CHAR": r'("|\')([^\"|^\'])("|\')',
+        "BOOL": r"(?:true|false)",
+        "NULL": r"null",
+        "STR": r'("|\')([^\"|^\'])*("|\')',
     }
-
     for type, reg in patterns.items():
-        if re.match(reg, str(const)):
-            return type
+        result = re.match(reg, str(const))
+        if result:
+            if result.start() == 0 and result.end() == (len(str(const))):
+                return type
 
     return None
 
@@ -122,6 +124,7 @@ def expresion_to_symbols(exp, ft, s, d=None):
     for e in exp:
         if e in operators:
             sym_list.append(operators[e])
+
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e
         ):
