@@ -1,4 +1,5 @@
 import collections
+from printer import *
 from symbol import *
 import symbol
 
@@ -26,12 +27,7 @@ class VariableTable(object):
             return False
 
     def print_VariableTable(self):
-        print("NAME TYPE VALUE ")
-        for s in self.variables:
-            print(
-                s + "   " + self.variables[s][0] + "     " + str(self.variables[s][1])
-            )
-            print()
+        print(get_vartable_formatted(self.variables))
 
 
 class FunctionTable(object):
@@ -84,25 +80,8 @@ class FunctionTable(object):
             return False
 
     def print_FuncTable(self):
-        print()
-        for name in self.functions:
-            print(
-                name
-                + " "
-                + str(self.functions[name]["t"])
-                + " "
-                + str(self.functions[name]["s"])
-            )
-            print("PARAMS")
-            for p in self.functions[name]["p"]:
-                print(str(p.name) + " " + str(p.type))
+        print(get_functable_formatted(self.functions))
 
-            print("VARTABLE")
-            if self.functions[name]["vt"] != None:
-                self.functions[name]["vt"].print_VariableTable()
-            else:
-                print(self.functions[name]["vt"])
-            print()
 
 
 class State(object):
@@ -165,7 +144,4 @@ class StateTable(object):
             return False
 
     def print_StateTable(self):
-        print("name, opt")
-        for name in self.states:
-            print(str(name.table) + "   " + str(name.opt))
-            print()
+        print(get_statetable_formatted(self.states))

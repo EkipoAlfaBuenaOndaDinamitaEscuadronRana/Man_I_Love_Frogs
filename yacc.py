@@ -52,8 +52,6 @@ def p_global_vartable_distruct(p):
     # ESTADO: pop main
     current_state.pop_curr_state()
     quad_stack.push_quad(Quadruple("ENDOF", None, None, None))
-    # print("FINAL QUAD STACK")
-    # quad_stack.print_quads()
 
 
 # TERMINAL Y NO TERMINAL
@@ -194,7 +192,6 @@ def p_var(p):
         # ESTADO: POP VAR DEC PERO NO LA VARTABLE
         current_state.remove_curr_state_opt()
 
-
 # NO TERMINAL
 # Permite poner asignarle el valor a una variable cuando la declaras
 # o declarar una o mas variables sin valor
@@ -265,7 +262,6 @@ def p_func_distruct(p):
 
     # Guarda el tamaño de la funcion
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
-    # global_func_table.print_FuncTable()
     # Elimina la tabla de var de la funcion actual
     global_func_table.erase_function_variable_table(
         current_state.get_curr_state_table()

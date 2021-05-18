@@ -210,92 +210,12 @@ class QuadrupleStack(object):
             print("ERROR: Error filling jump quadruple")
             sys.exit()
 
-    def print_quad(self, v):
-        print(
-            str(
-                "-"
-                if v.operator == None
-                else (
-                    v.operator.name if type(v.operator) == symbol.Symbol else v.operator
-                )
-            )
-            + " "
-            + str(
-                "-"
-                if v.operand_1 == None
-                else (
-                    v.operand_1.name
-                    if type(v.operand_1) == symbol.Symbol
-                    else v.operand_1
-                )
-            )
-            + " "
-            + str(
-                "-"
-                if v.operand_2 == None
-                else (
-                    v.operand_2.name
-                    if type(v.operand_2) == symbol.Symbol
-                    else v.operand_2
-                )
-            )
-            + " "
-            + str(
-                "-"
-                if v.result_id == None
-                else (
-                    v.result_id.name
-                    if type(v.result_id) == symbol.Symbol
-                    else v.result_id
-                )
-            )
-        )
+    def print_quad(self, q):
+        print(get_quad_formatted(q))
 
     def print_quads(self):
-        for k, v in self.qstack.items():
-            print(
-                str(int(k)).zfill(2)
-                + " | "
-                + str(
-                    "-"
-                    if v.operator == None
-                    else (
-                        v.operator.name
-                        if type(v.operator) == symbol.Symbol
-                        else v.operator
-                    )
-                )
-                + " "
-                + str(
-                    "-"
-                    if v.operand_1 == None
-                    else (
-                        v.operand_1.name
-                        if type(v.operand_1) == symbol.Symbol
-                        else v.operand_1
-                    )
-                )
-                + " "
-                + str(
-                    "-"
-                    if v.operand_2 == None
-                    else (
-                        v.operand_2.name
-                        if type(v.operand_2) == symbol.Symbol
-                        else v.operand_2
-                    )
-                )
-                + " "
-                + str(
-                    "-"
-                    if v.result_id == None
-                    else (
-                        v.result_id.name
-                        if type(v.result_id) == symbol.Symbol
-                        else v.result_id
-                    )
-                )
-            )
+        print(get_quad_stack_formatted(self.qstack))
+            
 
     def return_quads(self):
         rq = ""
