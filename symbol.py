@@ -54,8 +54,8 @@ class Symbol(object):
         "BOOL": 1,
         "NULL": 1,
     }
-  
-      type_translation = {
+
+    type_translation = {
         "INT": ["INT", "NULL"],
         "FLT": ["INT", "FLT", "NULL"],
         "CHAR": ["CHAR", "NULL"],
@@ -63,7 +63,6 @@ class Symbol(object):
         "NULL": ["NULL"],
         "STR": ["STR", "CHAR", "NULL"],
     }
-
 
     def __init__(self, name=None, type=None, dimension_sizes=[], direction=None):
         self.name = name
@@ -74,10 +73,10 @@ class Symbol(object):
         self.dimensions = len(dimension_sizes)
         self.direction = direction
 
-    def __eq__(self, quad):
-        if type(self) is Symbol and type(quad) is Symbol:
-            return self.name == quad.name and self.type == quad.type
-        elif self is None and quad is None:
+    def __eq__(self, other):
+        if type(self) is Symbol and type(other) is Symbol:
+            return self.name == other.name and self.type == other.type
+        elif self is None and other is None:
             return True
         else:
             return False
