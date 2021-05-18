@@ -1,34 +1,58 @@
 from tabulate import tabulate
 from symbol import *
 
+
 def get_quad_stack_formatted(qs):
-    
-    quads =[]
+
+    quads = []
     for k, v in qs.items():
         row = []
         row.append(str(int(k)).zfill(2))
         row.append(get_quad_formatted(v))
         quads.append(row)
-    return tabulate(quads,tablefmt="fancy_grid")
+    return tabulate(quads, tablefmt="fancy_grid")
 
 
 def get_quad_formatted(q):
-    headers = ["None","None","None", "None"]
+    headers = ["None", "None", "None", "None"]
     quad = []
-    quad.append(str("-" if q.operator == None 
-                else (q.operator.name if type(q.operator) == symbol.Symbol 
-                else q.operator)))
-    quad.append(str("-" if q.operand_1 == None
-                else (q.operand_1.name if type(q.operand_1) == symbol.Symbol 
-                else q.operand_1)))
-    quad.append(str("-" if q.operand_2 == None
-                else (q.operand_2.name if type(q.operand_2) == symbol.Symbol 
-                else q.operand_2)))
-    quad.append(str("-" if q.result_id == None
-                else (q.result_id.name if type(q.result_id) == symbol.Symbol 
-                else q.result_id)))
+    quad.append(
+        str(
+            "-"
+            if q.operator == None
+            else (q.operator.name if type(q.operator) == symbol.Symbol else q.operator)
+        )
+    )
+    quad.append(
+        str(
+            "-"
+            if q.operand_1 == None
+            else (
+                q.operand_1.name if type(q.operand_1) == symbol.Symbol else q.operand_1
+            )
+        )
+    )
+    quad.append(
+        str(
+            "-"
+            if q.operand_2 == None
+            else (
+                q.operand_2.name if type(q.operand_2) == symbol.Symbol else q.operand_2
+            )
+        )
+    )
+    quad.append(
+        str(
+            "-"
+            if q.result_id == None
+            else (
+                q.result_id.name if type(q.result_id) == symbol.Symbol else q.result_id
+            )
+        )
+    )
 
-    return tabulate([quad],tablefmt="plain", colalign=("center","center"))
+    return tabulate([quad], tablefmt="plain", colalign=("center", "center"))
+
 
 def get_functable_formatted(ft):
     headers = ["Name", "Type", "Parameters", "Size", "Variable Table"]
@@ -44,6 +68,7 @@ def get_functable_formatted(ft):
 
     return tabulate(values, headers, tablefmt="fancy_grid")
 
+
 def get_vartable_formatted(vt):
     headers = ["Name", "Type", "Value"]
     values = []
@@ -56,6 +81,7 @@ def get_vartable_formatted(vt):
 
     return tabulate(values, headers, tablefmt="fancy_grid")
 
+
 def get_symbol_formatted(s):
     headers = ["Name", "Type"]
     values = []
@@ -65,6 +91,7 @@ def get_symbol_formatted(s):
         row.append(v.type)
         values.append(row)
     return tabulate(values, headers, tablefmt="fancy_grid")
+
 
 def get_statetable_formatted(st):
     headers = ["Table", "Optional"]

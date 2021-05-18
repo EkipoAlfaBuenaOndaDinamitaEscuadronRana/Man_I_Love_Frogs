@@ -192,6 +192,7 @@ def p_var(p):
         # ESTADO: POP VAR DEC PERO NO LA VARTABLE
         current_state.remove_curr_state_opt()
 
+
 # NO TERMINAL
 # Permite poner asignarle el valor a una variable cuando la declaras
 # o declarar una o mas variables sin valor

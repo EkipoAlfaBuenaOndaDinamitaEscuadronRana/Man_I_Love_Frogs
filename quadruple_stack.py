@@ -215,7 +215,6 @@ class QuadrupleStack(object):
 
     def print_quads(self):
         print(get_quad_stack_formatted(self.qstack))
-            
 
     def return_quads(self):
         rq = ""

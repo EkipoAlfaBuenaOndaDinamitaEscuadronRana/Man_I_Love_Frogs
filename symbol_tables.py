@@ -83,7 +83,6 @@ class FunctionTable(object):
         print(get_functable_formatted(self.functions))
 
 
-
 class State(object):
     def __init__(self, table=None, opt=None):
         self.table = table
