@@ -84,6 +84,10 @@ class QuadrupleStack(object):
                 )
                 sys.exit()
 
+    def go_to_main(self):
+        end = self.jumpStack.pop()
+        self.fill(end)
+
     def validate_parameters(self, func_param, sent_param):
         if self.param_count < len(func_param):
             current_func_param = func_param[self.param_count]

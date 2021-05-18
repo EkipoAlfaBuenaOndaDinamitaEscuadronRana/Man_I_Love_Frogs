@@ -46,12 +46,12 @@ def p_global_vartable_distruct(p):
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
     # Elimina la tabla de var de global
-    global_func_table.erase_function_variable_table(
-        current_state.get_curr_state_table()
-    )
     # ESTADO: pop main
+    global_func_table.set_function_size_at(current_state.get_curr_state_table())
+
     current_state.pop_curr_state()
     quad_stack.push_quad(Quadruple("ENDOF", None, None, None))
+    # global_func_table.print_FuncTable()
 
 
 # TERMINAL Y NO TERMINAL
@@ -59,13 +59,13 @@ def p_global_vartable_distruct(p):
 def p_program(p):
     """
     program : PROGRAM global_vartable SCOL bloque_g main_vartable_init bloque main_vartable_distruct
-            | PROGRAM global_vartable SCOL
+            | PROGRAM global_vartable SCOL main_vartable_init main_vartable_distruct
     """
 
-    if len(p) == 4:
-        p[0] = [p[1], p[2], p[3]]
+    if len(p) == 6:
+        p[0] = [p[1], p[2], p[3], p[4], p[5]]
     else:
-        p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
+        p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
 
     # print("p_program: " + str(p[0]))
     # for i in range(len(p)):
@@ -79,7 +79,9 @@ def p_global_vartable(p):
     """
     p[0] = p[1]
     # print("p_global_vartable: " + str(p[0]))
-
+    quad_stack.reset_quad()
+    current_state.reset_states()
+    global_func_table.reset_functionTable()
     # GLOBAL VAR TABLE INIT
     # ESTADO: global var table
     current_state.push_state(State(p[0]))
@@ -87,7 +89,8 @@ def p_global_vartable(p):
     # CREA VAR TABLE
     global_func_table.set_function(p[0], "void", [], VariableTable())
     # Limpea la quad_stack
-    quad_stack.reset_quad()
+    quad_stack.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
+    quad_stack.jumpStack.append(quad_stack.count_prev)
 
 
 # NO TERMINAL Y TERMINAL
@@ -264,9 +267,6 @@ def p_func_distruct(p):
     # Guarda el tamaño de la funcion
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
     # Elimina la tabla de var de la funcion actual
-    global_func_table.erase_function_variable_table(
-        current_state.get_curr_state_table()
-    )
 
     # pop del estado actual (la tabla de la funcion que se llamo)
     current_state.pop_curr_state()
@@ -339,6 +339,7 @@ def p_main_vartable_init(p):
     # LLAMAR FUNCION PARA METER TABLA de main A  GLOBAL FUNCTION TABLE y crea su VAR TABLE
     global_func_table.set_function("main", "void", [], VariableTable())
     current_state.push_state(State("main"))
+    quad_stack.go_to_main()
     # Estado: MAIN # no se popea hasta que se acabe el programa
 
 
@@ -354,11 +355,8 @@ def p_main_vartable_distruct(p):
 
     # BORRA MAIN VAR TABLE
     # ESTADO: MAIN
-    # Elimina la tabla de var de main
-    global_func_table.erase_function_variable_table(
-        current_state.get_curr_state_table()
-    )
     # ESTADO: pop main
+    global_func_table.set_function_size_at(current_state.get_curr_state_table())
     current_state.pop_curr_state()
 
 

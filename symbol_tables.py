@@ -8,6 +8,9 @@ class VariableTable(object):
     def __init__(self):
         self.variables = {}
 
+    def reset_functionTable(self):
+        self.variables = {}
+
     def set_variable(self, symbol, value):
         self.variables[symbol.name] = [symbol.type, value]
 
@@ -32,6 +35,9 @@ class VariableTable(object):
 
 class FunctionTable(object):
     def __init__(self):
+        self.functions = {}
+
+    def reset_functionTable(self):
         self.functions = {}
 
     def set_function(self, name, type, parameters, variable_table):
@@ -95,6 +101,9 @@ class State(object):
 
 class StateTable(object):
     def __init__(self):
+        self.states = []
+
+    def reset_states(self):
         self.states = []
 
     def push_state(self, state):
