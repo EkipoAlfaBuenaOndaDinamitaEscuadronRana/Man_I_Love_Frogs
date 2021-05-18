@@ -23,7 +23,7 @@ class SemanticTable:
         "MODEQ",  # %=
     }
 
-    #                ==     !=      ||    &&
+    #               ==     !=      ||    &&
     matching_op = {"BEQ", "BNEQ", "OR", "AND"}
 
     __operations = {

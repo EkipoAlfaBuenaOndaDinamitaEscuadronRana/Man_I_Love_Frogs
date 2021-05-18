@@ -2,6 +2,7 @@ from symbol_tables import *
 from lexer import *
 from yacc import *
 from quadruple import *
+from virtual_machine import *
 from file_parser import *
 
 import unittest
@@ -55,6 +56,13 @@ class TestSymbol(unittest.TestCase):
         s = Symbol("variable", "int")
         self.assertEqual(s.name, "variable")
         self.assertEqual(s.type, "INT")
+
+    def test_memory_size(self):
+        var = Symbol("var", "INT")
+        self.assertEqual(var.memory_size(), 4)
+
+        arr = Symbol("arr", "INT", [3])
+        self.assertEqual(arr.memory_size(), 12)
 
 
 class TestVarTable(unittest.TestCase):
@@ -453,3 +461,34 @@ class TestQuadruple(unittest.TestCase):
             Symbol("T1", "FLT"),
         )
         self.assertEqual(q.format_quadruple(), "MUL B C T1")
+
+
+class TestMemorySegment(unittest.TestCase):
+    def test_insert_symbol(self):
+        ms = MemorySegment("Data Segment", 4)
+
+        a_int = Symbol("a", "INT")
+        b_int = Symbol("b", "INT")
+
+        self.assertEqual(ms.insert_symbol(a_int), True)
+        self.assertEqual(ms.insert_symbol(b_int), False)
+
+
+class TestVirtualMachine(unittest.TestCase):
+    def test_insert_symbol_in_segment(self):
+        vmm = VirtualMachine(4, 8, 20, 4)
+
+        a_int = Symbol("a", "INT")
+        b_int = Symbol("b", "INT")
+        c_int = Symbol("c", "INT", [3])
+
+        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", b_int), False)
+
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", b_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", c_int), False)
+
+        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", a_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", b_int), True)
+        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", c_int), True)
