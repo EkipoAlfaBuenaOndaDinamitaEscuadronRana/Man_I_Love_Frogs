@@ -8,5 +8,5 @@ if len(sys.argv) > 1:
         print(parser_file(sys.argv[i]))
         i += 1
 else:
-    print("DEFAULT: tests/test_9.txt")
-    print(parser_file("tests/test_9.txt"))
+    print("DEFAULT: tests/test_10.txt")
+    print(parser_file("tests/test_10.txt"))

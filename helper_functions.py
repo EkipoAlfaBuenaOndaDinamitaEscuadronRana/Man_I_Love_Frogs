@@ -31,6 +31,8 @@ operators = {
 
 def flatten_list(data):
     flat_list = []
+    if type(data) != list:
+        return flat_list
     for element in data:
         if type(element) == list:
             flat_list += flatten_list(element)
@@ -117,14 +119,21 @@ def constant_eval(const):
 
 
 def expresion_to_symbols(exp, ft, s, d=None):
-    exp = flatten_list(exp)
+    if type(exp) != list:
+        exp = [exp]
+    else:
+        exp = flatten_list(exp)
     sym_list = []
     if d:
         exp = dec_to_as(exp)
     for e in exp:
         if e in operators:
             sym_list.append(operators[e])
-
+        elif ft.lookup_function(e) and ("(" in exp and ")" in exp):
+            sym_list.append(Symbol(e, ft.get_function_type(e)))
+            start = exp.index("(")
+            end = exp.index(")") + 1
+            del exp[start:end]
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e
         ):
@@ -139,11 +148,11 @@ def expresion_to_symbols(exp, ft, s, d=None):
             )
         else:
             c_type = constant_eval(e)
+
             if c_type != None:
                 sym_list.append(Symbol(e, c_type))
             else:
                 print('ERROR: token " ' + str(e) + ' " not valid or not found')
                 sys.exit()
-    # for e in sym_list:
-    # print(str(e.name) + " " + str(e.type))
+
     return sym_list

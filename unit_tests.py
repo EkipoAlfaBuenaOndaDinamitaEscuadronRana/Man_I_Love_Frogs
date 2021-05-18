@@ -17,22 +17,22 @@ class TestYacc(unittest.TestCase):
                 return "F"
 
         test_answers = [
-            "NO EXISTE",
-            "01 | ENDOF - - -\n",
-            "01 | EQ 1 - a\n02 | ENDOF - - -\n",
-            "NOT READY",
-            "01 | EQ 10 - x\n02 | EQ 2 - y\n03 | MUL x y T3\n04 | EQ T3 - a\n05 | ADD x y T5\n06 | EQ T5 - b\n07 | DIV x y T7\n08 | EQ T7 - c\n09 | SUB x y T9\n10 | EQ T9 - d\n11 | ENDOF - - -\n",
-            "01 | EQ 1 - a\n02 | EQ 2 - b\n03 | EQ 0 - c\n04 | GT a b T4\n05 | GOTOF T4 - 9\n06 | ADD a 1 T6\n07 | EQ T6 - c\n08 | GOTO - - 16\n09 | BEQ b a T9\n10 | GOTOF T9 - 14\n11 | ADD b 1 T11\n12 | EQ T11 - c\n13 | GOTO - - 16\n14 | ADD 1 2 T14\n15 | EQ T14 - c\n16 | ENDOF - - -\n",
-            "01 | EQ 1 - a\n02 | EQ 2 - b\n03 | EQ 0 - c\n04 | GT a b T4\n05 | GOTOF T4 - 9\n06 | ADD a b T6\n07 | EQ T6 - c\n08 | GOTO - - 4\n09 | ENDOF - - -\n",
-            "01 | EQ 10 - b\n02 | EQ 0 - c\n03 | EQ 0 - a\n04 | LT a b T4\n05 | GOTOF T4 - 11\n06 | ADD a 1 T6\n07 | EQ T6 - a\n08 | ADD c 1 T8\n09 | EQ T8 - c\n10 | GOTO - - 4\n11 | ADD b c T11\n12 | EQ T11 - b\n13 | ENDOF - - -\n",
-            "NOT READY",
-            '01 | EQ 0 - a\n02 | EQ "hola me llamo" - saludo\n03 | ADD saludo nombre T3\n04 | EQ T3 - saludo\n05 | ADD saludo "y mi edad es " T5\n06 | EQ T5 - saludo\n07 | ADD saludo edad T7\n08 | EQ T7 - saludo\n09 | ENDFUNC - - -\n10 | EQ "Rosita" - n\n11 | EQ "22" - e\n12 | ERA hola - -\n13 | param n - param1\n14 | param e - param2\n15 | ADD a 1 T15\n16 | param T15 - param3\n17 | GOSUB hola - 2\n18 | ENDOF - - -\n',
+            "*",
+            "01 | GOTO - - 2\n02 | ENDOF - - -\n",
+            "01 | GOTO - - 2\n02 | EQ 1 - a\n03 | ENDOF - - -\n",
+            "01 | GOTO - - 6\n02 | EQ 2 - b\n03 | MUL a a T3\n04 | RETURN T3 - -\n05 | ENDFUNC - - -\n06 | EQ 10 - x\n07 | BEQ x 10 T7\n08 | GOTOF T7 - 13\n09 | ERA square - -\n10 | param a - param1\n11 | GOSUB square - 3\n12 | EQ square - b\n13 | ENDOF - - -\n",
+            "01 | GOTO - - 2\n02 | EQ 10 - x\n03 | EQ 2 - y\n04 | MUL x y T4\n05 | EQ T4 - a\n06 | ADD x y T6\n07 | EQ T6 - b\n08 | DIV x y T8\n09 | EQ T8 - c\n10 | SUB x y T10\n11 | EQ T10 - d\n12 | ENDOF - - -\n",
+            "01 | GOTO - - 5\n02 | EQ 1 - a\n03 | EQ 2 - b\n04 | EQ 0 - c\n05 | GT a b T5\n06 | GOTOF T5 - 10\n07 | ADD a 1 T7\n08 | EQ T7 - c\n09 | GOTO - - 17\n10 | BEQ b a T10\n11 | GOTOF T10 - 15\n12 | ADD b 1 T12\n13 | EQ T12 - c\n14 | GOTO - - 17\n15 | ADD 1 2 T15\n16 | EQ T15 - c\n17 | ENDOF - - -\n",
+            "01 | GOTO - - 5\n02 | EQ 1 - a\n03 | EQ 2 - b\n04 | EQ 0 - c\n05 | GT a b T5\n06 | GOTOF T5 - 10\n07 | ADD a b T7\n08 | EQ T7 - c\n09 | GOTO - - 5\n10 | ENDOF - - -\n",
+            "01 | GOTO - - 4\n02 | EQ 10 - b\n03 | EQ 0 - c\n04 | EQ 0 - a\n05 | LT a b T5\n06 | GOTOF T5 - 12\n07 | ADD a 1 T7\n08 | EQ T7 - a\n09 | ADD c 1 T9\n10 | EQ T9 - c\n11 | GOTO - - 5\n12 | ADD b c T12\n13 | EQ T12 - b\n14 | ENDOF - - -\n",
+            "*",
+            '01 | GOTO - - 11\n02 | EQ 0 - a\n03 | EQ "hola me llamo" - saludo\n04 | ADD saludo nombre T4\n05 | EQ T4 - saludo\n06 | ADD saludo "y mi edad es " T6\n07 | EQ T6 - saludo\n08 | ADD saludo edad T8\n09 | EQ T8 - saludo\n10 | ENDFUNC - - -\n11 | EQ "Rosita" - n\n12 | EQ "22" - e\n13 | ERA hola - -\n14 | param n - param1\n15 | param e - param2\n16 | ADD a 1 T16\n17 | param T16 - param3\n18 | GOSUB hola - 3\n19 | ENDOF - - -\n',
+            "01 | GOTO - - 20\n02 | EQ 0 - respuesta\n03 | MUL b c T3\n04 | ADD a T3 T4\n05 | EQ T4 - respuesta\n06 | GT a b T6\n07 | GOTOF T6 - 11\n08 | RETURN respuesta - -\n09 | GOTO - - 19\n10 | GOTO - - 15\n11 | ADD respuesta c T11\n12 | EQ T11 - respuesta\n13 | RETURN respuesta - -\n14 | GOTO - - 19\n15 | ADD a b T15\n16 | SUB T15 c T16\n17 | EQ T16 - a\n18 | RETURN a - -\n19 | ENDFUNC - - -\n20 | ERA random - -\n21 | param 5 - param1\n22 | param 10 - param2\n23 | param 4 - param3\n24 | GOSUB random - 2\n25 | EQ random - a\n26 | ENDOF - - -\n",
         ]
         test_results = []
         test_results.append(test_file("tests/test_1.txt", test_answers[1]))
         test_results.append(test_file("tests/test_2.txt", test_answers[2]))
-        # Pendiente -> return y asignación de funciones? creo?
-        # test_results.append(test_file("tests/test_3.txt", test_answers[3]))
+        test_results.append(test_file("tests/test_3.txt", test_answers[3]))
         test_results.append(test_file("tests/test_4.txt", test_answers[4]))
         test_results.append(test_file("tests/test_5.txt", test_answers[5]))
         test_results.append(test_file("tests/test_6.txt", test_answers[6]))
@@ -40,8 +40,10 @@ class TestYacc(unittest.TestCase):
         # Pendiente -> Simple For
         # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
         test_results.append(test_file("tests/test_9.txt", test_answers[9]))
+        test_results.append(test_file("tests/test_10.txt", test_answers[10]))
+
         if "F" in test_results:
-            result = "Failed" 
+            result = "Failed"
         else:
             result = "Passed"
 
@@ -77,13 +79,13 @@ class TestFuncTable(unittest.TestCase):
         vt.set_variable(s, 12)
         ft.set_function("print_something", "void", [s], vt)
         self.assertEqual(
-            ft.functions["print_something"], {"t": "void", "p": [s], "s": 0, "vt": vt}
+            ft.functions["print_something"], {"t": "VOID", "p": [s], "s": 0, "vt": vt}
         )
 
         ft.set_function("calculate_something", "float", [], None)
         self.assertEqual(
             ft.functions["calculate_something"],
-            {"t": "float", "p": [], "s": 0, "vt": None},
+            {"t": "FLT", "p": [], "s": 0, "vt": None},
         )
 
 
