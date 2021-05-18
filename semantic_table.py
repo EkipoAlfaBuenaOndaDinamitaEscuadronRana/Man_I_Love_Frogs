@@ -128,6 +128,57 @@ class SemanticTable:
         },
     }
 
+    __assignment_operations = {
+        "INT": {
+            "INT": "INT",
+            "FLT": "FLT",
+            "CHAR": "INT",
+            "STR": "error",
+            "BOOL": "error",
+            "NULL": "error",
+        },
+        "FLT": {
+            "INT": "FLT",
+            "FLT": "FLT",
+            "CHAR": "FLT",
+            "STR": "error",
+            "BOOL": "error",
+            "NULL": "error",
+        },
+        "CHAR": {
+            "INT": "CHAR",
+            "FLT": "error",
+            "CHAR": "error",
+            "STR": "error",
+            "BOOL": "error",
+            "NULL": "error",
+        },
+        "STR": {
+            "INT": "error",
+            "FLT": "error",
+            "CHAR": "STR",
+            "STR": "STR",
+            "BOOL": "error",
+            "NULL": "error",
+        },
+        "BOOL": {
+            "INT": "BOOL",
+            "FLT": "BOOL",
+            "CHAR": "error",
+            "STR": "error",
+            "BOOL": "BOOL",
+            "NULL": "error",
+        },
+        "NULL": {
+            "INT": "error",
+            "FLT": "error",
+            "CHAR": "error",
+            "STR": "error",
+            "BOOL": "error",
+            "NULL": "error",
+        },
+    }
+
     def clasify_symbol_op(symbol_op):
         if symbol_op in SemanticTable.__operations_op:
             return "operation"
@@ -157,9 +208,7 @@ class SemanticTable:
             symbol_2 = symbol_2.type
             symbol_op = symbol_op.type
 
-        if not (symbol_1 in SemanticTable.types) or not (
-            symbol_2 in SemanticTable.types
-        ):
+        if symbol_1 not in SemanticTable.types or symbol_2 not in SemanticTable.types:
             return "error"
 
         elif symbol_op == "operation":
@@ -168,11 +217,14 @@ class SemanticTable:
         elif symbol_op == "comparison":
             return SemanticTable.__comparison[symbol_1][symbol_2]
 
+        elif symbol_op == "assignment_operation":
+            return SemanticTable.__assignment_operations[symbol_1][symbol_2]
+
         elif symbol_op == "matching":
             return "BOOL"
 
         elif symbol_op == "assignment":
-            return True
+            return symbol_1 if symbol_1 == symbol_2 else "error"
 
         else:
             return "error"

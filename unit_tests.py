@@ -155,6 +155,8 @@ class TestSemanticTable(unittest.TestCase):
         s_sub = Symbol("SUB", "operation")
         s_lt = Symbol("LT", "comparison")
         s_beq = Symbol("BEQ", "matching")
+        s_addeq = Symbol("ADDEQ", "assignment_operation")
+        s_eq = Symbol("ADDEQ", "assignment")
 
         # Non-existent type
         s_doub = Symbol("double", "DOUBLE")
@@ -165,6 +167,10 @@ class TestSemanticTable(unittest.TestCase):
         self.assertEqual(SemanticTable.considerate(s_char, s_lt, s_str), "BOOL")
         self.assertEqual(SemanticTable.considerate(s_null, s_beq, s_bool), "BOOL")
         self.assertEqual(SemanticTable.considerate(s_doub, s_add, s_char), "error")
+        self.assertEqual(SemanticTable.considerate(s_int, s_addeq, s_int), "INT")
+        self.assertEqual(SemanticTable.considerate(s_int, s_addeq, s_null), "error")
+        self.assertEqual(SemanticTable.considerate(s_flt, s_eq, s_flt), "FLT")
+        self.assertEqual(SemanticTable.considerate(s_flt, s_eq, s_int), "error")
 
         # Consideration with strings
         self.assertEqual(SemanticTable.considerate("FLT", "ADD", "INT"), "FLT")
@@ -172,10 +178,24 @@ class TestSemanticTable(unittest.TestCase):
         self.assertEqual(SemanticTable.considerate("CHAR", "LT", "STR"), "BOOL")
         self.assertEqual(SemanticTable.considerate("NULL", "BEQ", "BOOL"), "BOOL")
         self.assertEqual(SemanticTable.considerate("DOUBLE", "ADD", "CHAR"), "error")
+        self.assertEqual(SemanticTable.considerate("INT", "ADDEQ", "INT"), "INT")
+        self.assertEqual(SemanticTable.considerate("INT", "ADDEQ", "NULL"), "error")
+        self.assertEqual(SemanticTable.considerate("FLT", "EQ", "FLT"), "FLT")
+        self.assertEqual(SemanticTable.considerate("FLT", "EQ", "INT"), "error")
 
 
 class TestQuadruple(unittest.TestCase):
     def test_arithmetic_expression(self):
+        def format_response(quad_response):
+            if type(quad_response) == str:
+                return quad_response
+
+            response = []
+            for quad in quad_response:
+                response.append(quad.format_quadruple())
+
+            return response
+
         expected_response = [
             "MUL B C T1",
             "DIV T1 D T2",
@@ -197,23 +217,24 @@ class TestQuadruple(unittest.TestCase):
             Symbol("MUL", "operation"),
             Symbol("F", "FLT"),
         ]
-        response = []
-        for quad in Quadruple.arithmetic_expression(expression_in_symbols, 1):
-            response.append(quad.format_quadruple())
+
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_in_symbols, 1)
+        )
         self.assertEqual(response, expected_response)
 
         expression_in_string = "A + B * C / D - E * F"
-        response = []
-        for quad in Quadruple.arithmetic_expression(expression_in_string, 1):
-            response.append(quad.format_quadruple())
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_in_string, 1)
+        )
         self.assertEqual(response, expected_response)
 
         expression_with_parentheses = "A + B * ( C - D )"
         expected_response_parentheses = ["SUB C D T1", "MUL B T1 T2", "ADD A T2 T3"]
 
-        response = []
-        for quad in Quadruple.arithmetic_expression(expression_with_parentheses, 1):
-            response.append(quad.format_quadruple())
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_with_parentheses, 1)
+        )
         self.assertEqual(response, expected_response_parentheses)
 
         expression_with_comparison_operators = "A + B >= C * D"
@@ -223,11 +244,9 @@ class TestQuadruple(unittest.TestCase):
             "GTE T1 T2 T3",
         ]
 
-        response = []
-        for quad in Quadruple.arithmetic_expression(
-            expression_with_comparison_operators, 1
-        ):
-            response.append(quad.format_quadruple())
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_with_comparison_operators, 1)
+        )
         self.assertEqual(response, expected_response_comparison_operators)
 
         expression_with_matching_operators = "A + B != C * D"
@@ -237,11 +256,9 @@ class TestQuadruple(unittest.TestCase):
             "BNEQ T1 T2 T3",
         ]
 
-        response = []
-        for quad in Quadruple.arithmetic_expression(
-            expression_with_matching_operators, 1
-        ):
-            response.append(quad.format_quadruple())
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_with_matching_operators, 1)
+        )
         self.assertEqual(response, expected_response_matching_operators)
 
         # !A || B < C + D * E && (F != G)
@@ -274,11 +291,9 @@ class TestQuadruple(unittest.TestCase):
             "OR T1 T6 T7",
         ]
 
-        response = []
-        for quad in Quadruple.arithmetic_expression(
-            expression_with_all_type_operators, 1
-        ):
-            response.append(quad.format_quadruple())
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_with_all_type_operators, 1)
+        )
         self.assertEqual(response, expected_response_with_all_type_operators)
 
         expression_with_uncompatible_types = [
@@ -287,8 +302,8 @@ class TestQuadruple(unittest.TestCase):
             Symbol("B", "BOOL"),
         ]
 
-        response = Quadruple.arithmetic_expression(
-            expression_with_uncompatible_types, 1
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_with_uncompatible_types, 1)
         )
         self.assertEqual(response, "error: non-compatible types")
 
@@ -297,8 +312,8 @@ class TestQuadruple(unittest.TestCase):
             Symbol("A", "INT"),
         ]
 
-        response = Quadruple.arithmetic_expression(
-            expression_with_uncompatible_types, 1
+        response = format_response(
+            Quadruple.arithmetic_expression(expression_with_uncompatible_types, 1)
         )
         self.assertEqual(response, "error: non-compatible types")
 
@@ -309,15 +324,13 @@ class TestQuadruple(unittest.TestCase):
             Symbol("ADD", "operation"),
             Symbol("C", "FLT"),
         ]
-
-        response = []
-        for quad in Quadruple.arithmetic_expression(assignment_expression, 1):
-            response.append(quad.format_quadruple())
-
         expected_response = [
             "ADD B C T1",
             "EQ T1 None A",
         ]
+        response = format_response(
+            Quadruple.arithmetic_expression(assignment_expression, 1)
+        )
         self.assertEqual(response, expected_response)
 
         assignment_sub_expression = [
@@ -327,16 +340,25 @@ class TestQuadruple(unittest.TestCase):
             Symbol("ADD", "operation"),
             Symbol("C", "FLT"),
         ]
-
-        response = []
-        for quad in Quadruple.arithmetic_expression(assignment_sub_expression, 1):
-            response.append(quad.format_quadruple())
-
         expected_response = [
             "ADD B C T1",
             "SUBEQ T1 None A",
         ]
+        response = format_response(
+            Quadruple.arithmetic_expression(assignment_sub_expression, 1)
+        )
         self.assertEqual(response, expected_response)
+
+        wrong_type_assignation = [
+            Symbol("A", "INT"),
+            Symbol("EQ", "assignment"),
+            Symbol("B", "FLT"),
+        ]
+
+        response = format_response(
+            Quadruple.arithmetic_expression(wrong_type_assignation, 1)
+        )
+        self.assertEqual(response, "error: non-compatible types")
 
     def test_format_expression(self):
         in_string_with_spaces = "Ab = B >= C / ( D - E ) * F < G || H"
