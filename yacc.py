@@ -608,12 +608,14 @@ def p_escritura(p):
     """
     escritura : WRITE OP expresion CP
     """
-    p[0] = [p[1], p[2], p[3]]
-    """
-    quad_stack.solve_expression(
-                expresion_to_symbols(p[0], global_func_table, current_state)
+    p[0] = [p[1], p[2], p[3], p[4]]
+
+    quad_stack.push_quad(
+        quad_stack.write_quad(
+            expresion_to_symbols(p[3], global_func_table, current_state)
             )
-"""
+        )
+
 
 
 # TERMINAL

@@ -24,8 +24,8 @@ operators = {
     "*=": Symbol("MULEQ", "assignment_operation"),
     "/=": Symbol("DIVEQ", "assignment_operation"),
     "%=": Symbol("MODEQ", "assignment_operation"),
-    "read": Symbol("READ", "in_out"),
-    "write": Symbol("WRITE", "in_out"),
+    "read": Symbol("READ", "read"),
+    "write": Symbol("WRITE", "write"),
 }
 
 
