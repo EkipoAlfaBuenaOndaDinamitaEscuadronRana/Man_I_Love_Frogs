@@ -1,10 +1,14 @@
 import collections
+from printer import *
 from symbol import *
 import symbol
 
 
 class VariableTable(object):
     def __init__(self):
+        self.variables = {}
+
+    def reset_functionTable(self):
         self.variables = {}
 
     def set_variable(self, symbol, value):
@@ -26,21 +30,23 @@ class VariableTable(object):
             return False
 
     def print_VariableTable(self):
-        print("NAME TYPE VALUE ")
-        for s in self.variables:
-            print(
-                s + "   " + self.variables[s][0] + "     " + str(self.variables[s][1])
-            )
-            print()
+        print(get_vartable_formatted(self.variables))
 
 
 class FunctionTable(object):
     def __init__(self):
         self.functions = {}
 
+    def reset_functionTable(self):
+        self.functions = {}
+
     def set_function(self, name, type, parameters, variable_table):
         self.functions[name] = {
-            "t": type,
+            "t": (
+                symbol.Symbol.type_dictionary[type]
+                if type in symbol.Symbol.type_dictionary
+                else None
+            ),
             "p": parameters,
             "s": 0,
             "vt": variable_table,
@@ -80,25 +86,7 @@ class FunctionTable(object):
             return False
 
     def print_FuncTable(self):
-        print()
-        for name in self.functions:
-            print(
-                name
-                + " "
-                + str(self.functions[name]["t"])
-                + " "
-                + str(self.functions[name]["s"])
-            )
-            print("PARAMS")
-            for p in self.functions[name]["p"]:
-                print(str(p.name) + " " + str(p.type))
-
-            print("VARTABLE")
-            if self.functions[name]["vt"] != None:
-                self.functions[name]["vt"].print_VariableTable()
-            else:
-                print(self.functions[name]["vt"])
-            print()
+        print(get_functable_formatted(self.functions))
 
 
 class State(object):
@@ -113,6 +101,9 @@ class State(object):
 
 class StateTable(object):
     def __init__(self):
+        self.states = []
+
+    def reset_states(self):
         self.states = []
 
     def push_state(self, state):
@@ -161,7 +152,4 @@ class StateTable(object):
             return False
 
     def print_StateTable(self):
-        print("name, opt")
-        for name in self.states:
-            print(str(name.table) + "   " + str(name.opt))
-            print()
+        print(get_statetable_formatted(self.states))
