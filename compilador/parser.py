@@ -1077,9 +1077,9 @@ def p_cte_atr_obj(p):
 # Llamada de un objeto a un metodo
 def p_llamada_obj(p):
     """
-    llamada_obj : ID DOT cte_mtd_obj OP CP
+    llamada_obj : ID DOT cte_mtd_obj OP var_cte CP
     """
-    p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
 
     # VALIDA ID
     # ESTADO : CURRENT VAR TABLE

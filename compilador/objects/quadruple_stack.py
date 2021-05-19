@@ -163,6 +163,8 @@ class QuadrupleStack(object):
             print("ERROR: Error in read asignation")
             sys.exit()
 
+    def object_method_quad(self, ):
+        a + b = c
     # LLena el go to cuando se llega al final de una funcion
     def return_jump_fill(self):
         if len(self.jumpStackR) > 0:
