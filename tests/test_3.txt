@@ -1,4 +1,4 @@
-program test_no; 
+program test; 
 
 int a;
 int b = 2;
@@ -10,6 +10,6 @@ func int square(int a){
 {
     int x = 10;
     if (x == 10){
-        a = b;
+        b = square(a);
     }
 }
