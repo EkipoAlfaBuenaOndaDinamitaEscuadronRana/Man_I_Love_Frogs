@@ -29,6 +29,7 @@ type_dictionary = {
     "write": "write",
 }
 
+# NOTE: This sizes are no longer real... But I don't want to delete them...
 memory_sizes = {
     "INT": 4,
     "FLT": 4,
@@ -115,6 +116,7 @@ class Symbol(object):
         if self.direction:
             print("DIRECTION: ", self.direction)
 
+    # NOTE: This funcion is no longer needed... But I don't want to delete it
     def memory_size(self):
         if self.dimensions:
             return memory_sizes[self.type] * (np.prod(self.dimension_sizes))
