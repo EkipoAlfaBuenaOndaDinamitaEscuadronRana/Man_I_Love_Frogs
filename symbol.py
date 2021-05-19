@@ -44,6 +44,8 @@ class Symbol(object):
         "comparison": "comparison",
         "matching": "matching",
         "assignment_operation": "assignment_operation",
+        "read": "read",
+        "write": "write",
     }
 
     __memory_sizes = {
@@ -56,12 +58,12 @@ class Symbol(object):
     }
 
     type_translation = {
-        "INT": ["INT", "NULL"],
-        "FLT": ["INT", "FLT", "NULL"],
-        "CHAR": ["CHAR", "NULL"],
-        "BOOL": ["INT", "FLT", "BOOL", "NULL"],
+        "INT": ["INT", "NULL", "read"],
+        "FLT": ["INT", "FLT", "NULL", "read"],
+        "CHAR": ["CHAR", "NULL", "read"],
+        "BOOL": ["INT", "FLT", "BOOL", "NULL", "read"],
         "NULL": ["NULL"],
-        "STR": ["STR", "CHAR", "NULL"],
+        "STR": ["STR", "CHAR", "NULL", "read"],
     }
 
     def __init__(self, name=None, type=None, dimension_sizes=[], direction=None):

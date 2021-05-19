@@ -4,7 +4,7 @@ import sys
 
 
 class QuadrupleStack(object):
-# INICIALIZACIÓN    
+    # INICIALIZACIÓN
     # init
     def __init__(self):
         self.qstack = {}
@@ -14,7 +14,7 @@ class QuadrupleStack(object):
         self.jumpStackR = []
         self.funcjump = {}
         self.param_count = 0
-    
+
     # para borrar el contendio cuando se empieza a leer un programa
     def reset_quad(self):
         self.qstack = {}
@@ -24,7 +24,7 @@ class QuadrupleStack(object):
         self.funcjump = {}
         self.param_count = 0
 
-# INSERTAR / RESOLVER QUADRUPLOS
+    # INSERTAR / RESOLVER QUADRUPLOS
     # Insertar un quadruplo al stack
     def push_quad(self, quadruple):
         self.qstack[self.count] = quadruple
@@ -46,8 +46,8 @@ class QuadrupleStack(object):
             sys.exit()
         else:
             return sol
-    
-# SET / GETS    
+
+    # SET / GETS
     # Para poder guardar donde esta el inicio de una funcion
     def set_function_location(self, name):
         self.funcjump[name] = self.count
@@ -65,9 +65,9 @@ class QuadrupleStack(object):
     # se estan mandando
     def get_param_count(self):
         return self.param_count
-    
-# Funciones para diferentes estatutos y llenado de saltos
-    # Funcion que valida tipos e identifica si se esta mandando una 
+
+    # Funciones para diferentes estatutos y llenado de saltos
+    # Funcion que valida tipos e identifica si se esta mandando una
     # constante / variable o una expresion
     def expresion_or_id(self, param, type, error_message):
         if len(param) == 1:
@@ -75,7 +75,13 @@ class QuadrupleStack(object):
             if symbol.Symbol.check_type_compatibility(type, param.type):
                 return True
             else:
-                print("ERROR: " + error_message + " sent isn't same type as " + error_message+ " declared")
+                print(
+                    "ERROR: "
+                    + error_message
+                    + " sent isn't same type as "
+                    + error_message
+                    + " declared"
+                )
                 sys.exit()
         else:
 
@@ -85,7 +91,12 @@ class QuadrupleStack(object):
                 return False
             else:
                 print(
-                    "ERROR: "+ error_message + " sent isn't same type as "+ error_message+ " declared")
+                    "ERROR: "
+                    + error_message
+                    + " sent isn't same type as "
+                    + error_message
+                    + " declared"
+                )
                 sys.exit()
 
     # Regresa el quadruplo de parametros
@@ -110,7 +121,7 @@ class QuadrupleStack(object):
         else:
             print("ERROR: sent a numer of parameters greater than declared")
             sys.exit()
-   
+
     # Crea el quadruplo de return
     def return_in_function(self, type, exp=None):
         if exp:
@@ -130,7 +141,7 @@ class QuadrupleStack(object):
         else:
             # esto es si si es void
             self.push_quad(Quadruple("RETURN", None, None, None))
-    
+
         self.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"))
         self.jumpStackR.append(self.count_prev)
 
@@ -139,10 +150,17 @@ class QuadrupleStack(object):
             exp = exp[0]
         else:
             exp = self.qstack[self.count_prev].result_id
-        
+
         return Quadruple("WRITE", None, None, exp)
 
-   
+    def read_quad(self, vars):
+        if len(vars) > 2:
+            r = vars.pop(0)
+            for v in vars:
+                self.push_quad(Quadruple(Symbol("EQ", "assignment"), r, None, v))
+        else:
+            print("ERROR: Error in read asignation")
+            sys.exit()
 
     # LLena el go to cuando se llega al final de una funcion
     def return_jump_fill(self):
@@ -161,7 +179,6 @@ class QuadrupleStack(object):
     def go_to_main(self):
         end = self.jumpStack.pop()
         self.fill(end)
-
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while
@@ -218,7 +235,7 @@ class QuadrupleStack(object):
             print("ERROR: Error filling jump quadruple")
             sys.exit()
 
-# Prints y returns
+    # Prints y returns
     def print_quad(self, q):
         print(get_quad_formatted(q))
 

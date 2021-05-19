@@ -45,10 +45,7 @@ def p_global_vartable_distruct(p):
 
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
-    # Elimina la tabla de var de global
-    # ESTADO: pop main
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
-
     current_state.pop_curr_state()
     quad_stack.push_quad(Quadruple("ENDOF", None, None, None))
     # global_func_table.print_FuncTable()
@@ -613,23 +610,33 @@ def p_escritura(p):
     quad_stack.push_quad(
         quad_stack.write_quad(
             expresion_to_symbols(p[3], global_func_table, current_state)
-            )
         )
-
+    )
 
 
 # TERMINAL
 # Hace una lectura
 def p_lectura(p):
     """
-    lectura : READ OP CP
+    lectura : READ OP lectura1 CP
     """
-    p[0] = [p[1], p[2], p[3]]
+    p[0] = [p[1], p[2], p[3], p[4]]
+
+    quad_stack.read_quad(
+        expresion_to_symbols([p[1], p[3]], global_func_table, current_state)
+    )
+
+
+def p_lectura1(p):
     """
-    quad_stack.solve_expression(
-            expresion_to_symbols(p[0], global_func_table, current_state)
-        )
-"""
+    lectura1 : id_var COMMA lectura1
+             | id_var
+
+    """
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = [p[1], p[3]]
 
 
 # NO TERMINAL
@@ -698,10 +705,8 @@ def p_for1(p):
     for1  : for_simple
           | for_complex
     """
-    if len(p) == 2:
-        p[0] = p[1]
-    else:
-        p[0] = [p[1], p[2], p[3]]
+
+    p[0] = p[1]
 
 
 # TERMINAL Y NO TERMINAL
