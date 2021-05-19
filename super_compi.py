@@ -1,5 +1,6 @@
 import sys
-from file_parser import *
+import compilador.helpers.file_parser
+from compilador.helpers.file_parser import *
 
 if len(sys.argv) > 1:
     i = 1
@@ -8,5 +9,5 @@ if len(sys.argv) > 1:
         print(parser_file(sys.argv[i]))
         i += 1
 else:
-    print("DEFAULT: tests/test_11.txt")
-    print(parser_file("tests/test_11.txt"))
+    print("DEFAULT: compilador/tests/test_11.txt")
+    print(parser_file("compilador/tests/test_11.txt"))

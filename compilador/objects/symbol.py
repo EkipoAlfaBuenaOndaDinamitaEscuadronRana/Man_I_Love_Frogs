@@ -1,5 +1,51 @@
+import compilador.helpers.printer
+from compilador.helpers.printer import *
 import numpy as np
 import symbol
+
+type_dictionary = {
+    "int": "INT",
+    "float": "FLT",
+    "char": "CHAR",
+    "bool": "BOOL",
+    "null": "NULL",
+    "string": "STR",
+    "void": "VOID",
+    "INT": "INT",
+    "FLT": "FLT",
+    "CHAR": "CHAR",
+    "BOOL": "BOOL",
+    "NULL": "NULL",
+    "STR": "STR",
+    "VOID": "VOID",
+    "operation": "operation",
+    "parentheses": "parentheses",
+    "not": "not",
+    "assignment": "assignment",
+    "comparison": "comparison",
+    "matching": "matching",
+    "assignment_operation": "assignment_operation",
+    "read": "read",
+    "write": "write",
+}
+
+memory_sizes = {
+    "INT": 4,
+    "FLT": 4,
+    "CHAR": 1,
+    "STR": 1,
+    "BOOL": 1,
+    "NULL": 1,
+}
+
+type_translation = {
+    "INT": ["INT", "NULL", "read"],
+    "FLT": ["INT", "FLT", "NULL", "read"],
+    "CHAR": ["CHAR", "NULL", "read"],
+    "BOOL": ["INT", "FLT", "BOOL", "NULL", "read"],
+    "NULL": ["NULL"],
+    "STR": ["STR", "CHAR", "NULL", "read"],
+}
 
 
 class Symbol(object):
@@ -22,58 +68,10 @@ class Symbol(object):
     However, this value is expected to be assigned by the virtual machine.
     """
 
-    type_dictionary = {
-        "int": "INT",
-        "float": "FLT",
-        "char": "CHAR",
-        "bool": "BOOL",
-        "null": "NULL",
-        "string": "STR",
-        "void": "VOID",
-        "frog": "FROG", 
-        "INT": "INT",
-        "FLT": "FLT",
-        "CHAR": "CHAR",
-        "BOOL": "BOOL",
-        "NULL": "NULL",
-        "STR": "STR",
-        "VOID": "VOID",
-        "FROG": "FROG", 
-        "operation": "operation",
-        "parentheses": "parentheses",
-        "not": "not",
-        "assignment": "assignment",
-        "comparison": "comparison",
-        "matching": "matching",
-        "assignment_operation": "assignment_operation",
-        "read": "read",
-        "write": "write",
-    }
-
-    __memory_sizes = {
-        "INT": 4,
-        "FLT": 4,
-        "CHAR": 1,
-        "STR": 1,
-        "BOOL": 1,
-        "NULL": 1,
-    }
-
-    type_translation = {
-        "INT": ["INT", "NULL", "read"],
-        "FLT": ["INT", "FLT", "NULL", "read"],
-        "CHAR": ["CHAR", "NULL", "read"],
-        "BOOL": ["INT", "FLT", "BOOL", "NULL", "read"],
-        "NULL": ["NULL"],
-        "STR": ["STR", "CHAR", "NULL", "read"],
-        "FROG":["FROG", "NULL"]
-    }
 
     def __init__(self, name=None, type=None, dimension_sizes=[], direction=None):
         self.name = name
-        self.type = (
-            Symbol.type_dictionary[type] if type in Symbol.type_dictionary else None
-        )
+        self.type = type_dictionary[type] if type in type_dictionary else None
         self.dimension_sizes = dimension_sizes
         self.dimensions = len(dimension_sizes)
         self.direction = direction
@@ -93,9 +91,7 @@ class Symbol(object):
         self.name = name
 
     def set_type(self, type):
-        self.type = (
-            Symbol.type_dictionary[type] if type in Symbol.type_dictionary else None
-        )
+        self.type = type_dictionary[type] if type in type_dictionary else None
 
     def get_name(self):
         return self.name
@@ -104,7 +100,7 @@ class Symbol(object):
         return self.type
 
     def check_type_compatibility(type_recipient, type_sender):
-        return type_sender in Symbol.type_translation[type_recipient]
+        return type_sender in type_translation[type_recipient]
 
     def print_symbol(self):
         if self.name:
@@ -122,6 +118,6 @@ class Symbol(object):
 
     def memory_size(self):
         if self.dimensions:
-            return Symbol.__memory_sizes[self.type] * (np.prod(self.dimension_sizes))
+            return memory_sizes[self.type] * (np.prod(self.dimension_sizes))
 
-        return Symbol.__memory_sizes[self.type]
+        return memory_sizes[self.type]

@@ -1,5 +1,6 @@
+import compilador.objects.quadruple
+from compilador.objects.quadruple import *
 from re import A
-from quadruple import *
 import sys
 
 
@@ -72,7 +73,7 @@ class QuadrupleStack(object):
     def expresion_or_id(self, param, type, error_message):
         if len(param) == 1:
             param = param[0]
-            if symbol.Symbol.check_type_compatibility(type, param.type):
+            if Symbol.check_type_compatibility(type, param.type):
                 return True
             else:
                 print(
@@ -85,7 +86,7 @@ class QuadrupleStack(object):
                 sys.exit()
         else:
 
-            if symbol.Symbol.check_type_compatibility(
+            if Symbol.check_type_compatibility(
                 type, self.qstack[self.count_prev].result_id.type
             ):
                 return False
@@ -185,7 +186,7 @@ class QuadrupleStack(object):
         self.jumpStack.append(self.count)
 
     def ciclo_2(self):
-        if not symbol.Symbol.check_type_compatibility(
+        if not Symbol.check_type_compatibility(
             "BOOL", self.qstack[self.count_prev].result_id.type
         ):
             print("ERROR: Expresion in loop is not a boolean")
@@ -204,7 +205,7 @@ class QuadrupleStack(object):
 
     def if_1(self):
         # ESTE VA DESPUES DEL COLON
-        if not symbol.Symbol.check_type_compatibility(
+        if not Symbol.check_type_compatibility(
             "BOOL", self.qstack[self.count_prev].result_id.type
         ):
             print("ERROR: Expresion in loop is not a boolean")
@@ -251,20 +252,14 @@ class QuadrupleStack(object):
                 + str(
                     "-"
                     if v.operator == None
-                    else (
-                        v.operator.name
-                        if type(v.operator) == symbol.Symbol
-                        else v.operator
-                    )
+                    else (v.operator.name if type(v.operator) == Symbol else v.operator)
                 )
                 + " "
                 + str(
                     "-"
                     if v.operand_1 == None
                     else (
-                        v.operand_1.name
-                        if type(v.operand_1) == symbol.Symbol
-                        else v.operand_1
+                        v.operand_1.name if type(v.operand_1) == Symbol else v.operand_1
                     )
                 )
                 + " "
@@ -272,9 +267,7 @@ class QuadrupleStack(object):
                     "-"
                     if v.operand_2 == None
                     else (
-                        v.operand_2.name
-                        if type(v.operand_2) == symbol.Symbol
-                        else v.operand_2
+                        v.operand_2.name if type(v.operand_2) == Symbol else v.operand_2
                     )
                 )
                 + " "
@@ -282,9 +275,7 @@ class QuadrupleStack(object):
                     "-"
                     if v.result_id == None
                     else (
-                        v.result_id.name
-                        if type(v.result_id) == symbol.Symbol
-                        else v.result_id
+                        v.result_id.name if type(v.result_id) == Symbol else v.result_id
                     )
                 )
                 + "\n"
@@ -300,20 +291,14 @@ class QuadrupleStack(object):
                 + str(
                     "-"
                     if v.operator == None
-                    else (
-                        v.operator.name
-                        if type(v.operator) == symbol.Symbol
-                        else v.operator
-                    )
+                    else (v.operator.name if type(v.operator) == Symbol else v.operator)
                 )
                 + " "
                 + str(
                     "-"
                     if v.operand_1 == None
                     else (
-                        v.operand_1.name
-                        if type(v.operand_1) == symbol.Symbol
-                        else v.operand_1
+                        v.operand_1.name if type(v.operand_1) == Symbol else v.operand_1
                     )
                 )
                 + " "
@@ -321,9 +306,7 @@ class QuadrupleStack(object):
                     "-"
                     if v.operand_2 == None
                     else (
-                        v.operand_2.name
-                        if type(v.operand_2) == symbol.Symbol
-                        else v.operand_2
+                        v.operand_2.name if type(v.operand_2) == Symbol else v.operand_2
                     )
                 )
                 + " "
@@ -331,9 +314,7 @@ class QuadrupleStack(object):
                     "-"
                     if v.result_id == None
                     else (
-                        v.result_id.name
-                        if type(v.result_id) == symbol.Symbol
-                        else v.result_id
+                        v.result_id.name if type(v.result_id) == Symbol else v.result_id
                     )
                 )
                 + r"\n"
