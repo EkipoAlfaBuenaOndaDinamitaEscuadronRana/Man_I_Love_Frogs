@@ -2,8 +2,8 @@
 Para correr el archivo, usar este comando
 python3 -m unittest game_engine_tests.py
 """
-
-from engine import *
+import game_engine.engine
+from game_engine.engine import *
 import unittest
 
 
