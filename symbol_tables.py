@@ -14,8 +14,8 @@ class VariableTable(object):
     def set_variable(self, symbol, value):
         self.variables[symbol.name] = [symbol.type, value]
 
-    def get_variable(self, name):
-        return self.variables[name]
+    def get_variable_type(self, name):
+        return self.variables[name][0]
 
     def get_var_symbol(self, name):
         return Symbol(name, self.variables[name][0])

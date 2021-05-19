@@ -303,7 +303,7 @@ def p_tipo_func(p):
 def p_tipo_var(p):
     """
     tipo_var  : tipo
-              | PLAYER
+              | FROG
     """
     p[0] = p[1]
 
@@ -1078,24 +1078,42 @@ def p_llamada_obj(p):
     # Checa que no se este declarando la variable
     if current_state.get_curr_state_opt() != "varD":
         # Checa que la variable exista en la current table
-        if not global_func_table.get_function_variable_table(
+        if global_func_table.get_function_variable_table(
             current_state.get_curr_state_table()
-        ).lookup_variable(p[1]):
-            # Checa que exista en la global table
-            if not global_func_table.get_function_variable_table(
-                current_state.get_global_table()
             ).lookup_variable(p[1]):
-                print("ERROR: Variable " + str(p[1] + " not declared"))
+            if not global_func_table.get_function_variable_table(
+            current_state.get_curr_state_table()
+            ).get_variable_type(p[1]) == "FROG":
+                print("ERROR: Variable " + str(p[1] + " not type FROG"))
+                sys.exit()
+        elif global_func_table.get_function_variable_table(
+            current_state.get_global_table()
+            ).lookup_variable(p[1]):
+            if not global_func_table.get_function_variable_table(
+            current_state.get_global_table()
+            ).get_variable_type(p[1]) == "FROG":
+                print("ERROR: Variable " + str(p[1] + " not type FROG"))
+                sys.exit()
+        else:
+            print("ERROR: Variable " + str(p[1] + " not declared"))
+            sys.exit()
+            
+        
+        
+
+                
+        
+
 
 
 # TERMINAL
 # Regresa un metodo de objeto constante
 def p_cte_mtd_obj(p):
     """
-    cte_mtd_obj : ML
-                | MR
-                | MU
-                | MD
+    cte_mtd_obj : JL
+                | JR
+                | JU
+                | JD
     """
     p[0] = p[1]
 

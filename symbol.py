@@ -30,6 +30,7 @@ class Symbol(object):
         "null": "NULL",
         "string": "STR",
         "void": "VOID",
+        "frog": "FROG", 
         "INT": "INT",
         "FLT": "FLT",
         "CHAR": "CHAR",
@@ -37,6 +38,7 @@ class Symbol(object):
         "NULL": "NULL",
         "STR": "STR",
         "VOID": "VOID",
+        "FROG": "FROG", 
         "operation": "operation",
         "parentheses": "parentheses",
         "not": "not",
@@ -64,6 +66,7 @@ class Symbol(object):
         "BOOL": ["INT", "FLT", "BOOL", "NULL", "read"],
         "NULL": ["NULL"],
         "STR": ["STR", "CHAR", "NULL", "read"],
+        "FROG":["FROG", "NULL"]
     }
 
     def __init__(self, name=None, type=None, dimension_sizes=[], direction=None):

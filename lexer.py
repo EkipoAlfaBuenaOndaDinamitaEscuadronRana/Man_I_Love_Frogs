@@ -17,16 +17,16 @@ reserved = {
     "float": "FLT",  # float
     "string": "STR",  # string
     "bool": "BOOL",  # bool
-    "player": "PLAYER",  # player
+    "frog": "FROG",  # player
     "void": "VOID",  # void
     # OBJ ATRs & MTDs
     "color": "COLOR",  # color
     "hat": "HAT",  # hat
     "items": "ITEMS",  # items
-    "moveLeft": "ML",  # moveLeft
-    "moveRight": "MR",  # moveRight
-    "moveUp": "MU",  # moveUp
-    "moveDown": "MD",  # moveDown
+    "jump_left": "JL",  # jump_left
+    "jump_right": "JR",  # jump_right
+    "jump_up": "JU",  # jump_up
+    "jump_down": "JD",  # moveDown
     # OTRAS RESERVED WORDS
     "times": "TIMES",  # times
     "null": "NULL",  # null
