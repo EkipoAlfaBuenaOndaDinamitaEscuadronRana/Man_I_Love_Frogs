@@ -1,7 +1,15 @@
-from lexer import *
-from helper_functions import *
-from quadruple_stack import *
-import ply.yacc as yacc
+import compilador.lexer
+import compilador.helpers.helper_functions
+import compilador.objects.quadruple_stack
+import compilador.objects.state_table
+from compilador.lexer import *
+from compilador.helpers.helper_functions import *
+from compilador.objects.quadruple_stack import *
+from compilador.objects.state_table import *
+from compilador.objects.function_table import FunctionTable
+from compilador.objects.state_table import StateTable
+from compilador.objects.quadruple_stack import QuadrupleStack
+
 
 global_func_table = FunctionTable()
 current_state = StateTable()

@@ -1,4 +1,5 @@
-from symbol_tables import *
+import compilador.objects.function_table
+from compilador.objects.function_table import *
 
 
 class SemanticTable:
