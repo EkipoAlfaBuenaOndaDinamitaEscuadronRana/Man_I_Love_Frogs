@@ -1,3 +1,5 @@
+from router_solver import *
+
 class State(object):
     def __init__(self, table=None, opt=None):
         self.table = table

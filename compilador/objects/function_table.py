@@ -1,3 +1,4 @@
+from router_solver import *
 import compilador.objects.variable_tables
 import compilador.objects.symbol
 from compilador.objects.variable_tables import *

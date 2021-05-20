@@ -1,3 +1,4 @@
+from router_solver import *
 import compilador.objects.function_table
 import compilador.objects.quadruple
 import compilador.lexer
