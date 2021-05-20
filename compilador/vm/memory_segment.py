@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1, '/home/adrian/Documents/universidad/8vo Semestre/Compis/man_i_love_frogs')
+
 import compilador.objects.symbol
 from compilador.objects.symbol import *
 
@@ -29,3 +32,11 @@ class MemorySegment(object):
 
         else:
             return False
+
+ms = MemorySegment("Data Segment", 4)
+
+a_int = Symbol("a", "INT")
+b_int = Symbol("b", "INT")
+
+print(ms.insert_symbol(a_int))
+print(ms.insert_symbol(b_int))
