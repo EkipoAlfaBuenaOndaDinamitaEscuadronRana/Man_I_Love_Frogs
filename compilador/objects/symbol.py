@@ -12,6 +12,7 @@ type_dictionary = {
     "null": "NULL",
     "string": "STR",
     "void": "VOID",
+    "frog": "FROG",
     "INT": "INT",
     "FLT": "FLT",
     "CHAR": "CHAR",
@@ -19,6 +20,7 @@ type_dictionary = {
     "NULL": "NULL",
     "STR": "STR",
     "VOID": "VOID",
+    "FROG": "FROG",
     "operation": "operation",
     "parentheses": "parentheses",
     "not": "not",
@@ -30,7 +32,7 @@ type_dictionary = {
     "write": "write",
 }
 
-# NOTE: This sizes are no longer real... But I don't want to delete them...
+# NOTE: This sizes are no longer used... But I don't want to delete them yet...
 memory_sizes = {
     "INT": 4,
     "FLT": 4,
@@ -117,9 +119,6 @@ class Symbol(object):
         if self.direction:
             print("DIRECTION: ", self.direction)
 
-    # NOTE: This funcion is no longer needed... But I don't want to delete it
+    # NOTE: This funcion is no longer needed... But I don't want to delete it yet
     def memory_size(self):
-        if self.dimensions:
-            return memory_sizes[self.type] * (np.prod(self.dimension_sizes))
-
-        return memory_sizes[self.type]
+        return int(np.prod(self.dimension_sizes))
