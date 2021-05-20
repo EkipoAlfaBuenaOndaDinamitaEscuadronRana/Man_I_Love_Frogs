@@ -31,6 +31,10 @@ operators = {
     "%=": Symbol("MODEQ", "assignment_operation"),
     "read": Symbol("READ", "read"),
     "write": Symbol("WRITE", "write"),
+    "jump_left": Symbol("JL", "obj_method"),
+    "jump_right": Symbol("JR", "obj_method"),
+    "jump_up": Symbol("JU", "obj_method"),
+    "jump_down": Symbol("JD", "obj_method"),
 }
 
 

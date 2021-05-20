@@ -11,6 +11,7 @@ type_dictionary = {
     "null": "NULL",
     "string": "STR",
     "void": "VOID",
+    "frog": "FROG",
     "INT": "INT",
     "FLT": "FLT",
     "CHAR": "CHAR",
@@ -18,6 +19,7 @@ type_dictionary = {
     "NULL": "NULL",
     "STR": "STR",
     "VOID": "VOID",
+    "FROG": "FROG",
     "operation": "operation",
     "parentheses": "parentheses",
     "not": "not",
@@ -27,6 +29,7 @@ type_dictionary = {
     "assignment_operation": "assignment_operation",
     "read": "read",
     "write": "write",
+    "obj_method": "obj_method",
 }
 
 memory_sizes = {
@@ -45,6 +48,7 @@ type_translation = {
     "BOOL": ["INT", "FLT", "BOOL", "NULL", "read"],
     "NULL": ["NULL"],
     "STR": ["STR", "CHAR", "NULL", "read"],
+    "FROG": ["NULL"],
 }
 
 
@@ -67,7 +71,6 @@ class Symbol(object):
     It is also possible to specify a memory address.
     However, this value is expected to be assigned by the virtual machine.
     """
-
 
     def __init__(self, name=None, type=None, dimension_sizes=[], direction=None):
         self.name = name

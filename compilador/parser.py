@@ -1078,8 +1078,13 @@ def p_cte_atr_obj(p):
 def p_llamada_obj(p):
     """
     llamada_obj : ID DOT cte_mtd_obj OP var_cte CP
+                | ID DOT cte_mtd_obj OP CP
     """
-    p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
+
+    if len(p) == 6:
+        p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    else:
+        p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
 
     # VALIDA ID
     # ESTADO : CURRENT VAR TABLE
@@ -1088,30 +1093,33 @@ def p_llamada_obj(p):
         # Checa que la variable exista en la current table
         if global_func_table.get_function_variable_table(
             current_state.get_curr_state_table()
-            ).lookup_variable(p[1]):
-            if not global_func_table.get_function_variable_table(
-            current_state.get_curr_state_table()
-            ).get_variable_type(p[1]) == "FROG":
+        ).lookup_variable(p[1]):
+            if (
+                not global_func_table.get_function_variable_table(
+                    current_state.get_curr_state_table()
+                ).get_variable_type(p[1])
+                == "FROG"
+            ):
                 print("ERROR: Variable " + str(p[1] + " not type FROG"))
                 sys.exit()
         elif global_func_table.get_function_variable_table(
             current_state.get_global_table()
-            ).lookup_variable(p[1]):
-            if not global_func_table.get_function_variable_table(
-            current_state.get_global_table()
-            ).get_variable_type(p[1]) == "FROG":
+        ).lookup_variable(p[1]):
+            if (
+                not global_func_table.get_function_variable_table(
+                    current_state.get_global_table()
+                ).get_variable_type(p[1])
+                == "FROG"
+            ):
                 print("ERROR: Variable " + str(p[1] + " not type FROG"))
                 sys.exit()
         else:
             print("ERROR: Variable " + str(p[1] + " not declared"))
             sys.exit()
-            
-        
-        
 
-                
-        
-
+        quad_stack.object_method_quad(
+            expresion_to_symbols([p[1], p[3], p[5]], global_func_table, current_state)
+        )
 
 
 # TERMINAL
