@@ -25,7 +25,7 @@ reserved = {
     "jump_left": "JL",  # jump_left
     "jump_right": "JR",  # jump_right
     "jump_up": "JU",  # jump_up
-    "jump_down": "JD",  # moveDown
+    "jump_down": "JD",  # jump_down
     # OTRAS RESERVED WORDS
     "times": "TIMES",  # times
     "null": "NULL",  # null
