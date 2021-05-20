@@ -1,6 +1,4 @@
-import sys
-sys.path.insert(1, '/home/adrian/Documents/universidad/8vo Semestre/Compis/man_i_love_frogs')
-
+from router_solver import *
 import compilador.objects.symbol
 from compilador.objects.symbol import *
 
