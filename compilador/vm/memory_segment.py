@@ -1,4 +1,5 @@
-from symbol import *
+import compilador.objects.symbol
+from compilador.objects.symbol import *
 
 
 class MemorySegment(object):
@@ -11,10 +12,10 @@ class MemorySegment(object):
 
     # TODO: No estoy 100% seguro de que eso funcione así. Lo checamos después
     def __calculate_symbol_space(self, symbol):
-        return self.__used_memory + symbol.memory_size()
+        return self.__used_memory + Symbol.memory_size(symbol)
 
     def insert_symbol(self, symbol):
-        symbol_space = symbol.memory_size()
+        symbol_space = Symbol.memory_size(symbol)
         next_memory_dir = self.__calculate_symbol_space(symbol)
 
         if next_memory_dir <= self.__size:

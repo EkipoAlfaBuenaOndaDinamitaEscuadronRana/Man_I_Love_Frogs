@@ -1,5 +1,6 @@
 from tabulate import tabulate
-from symbol import *
+import compilador.objects.symbol
+from compilador.objects.symbol import *
 
 
 def get_quad_stack_formatted(qs):
@@ -20,34 +21,28 @@ def get_quad_formatted(q):
         str(
             "-"
             if q.operator == None
-            else (q.operator.name if type(q.operator) == symbol.Symbol else q.operator)
+            else (q.operator.name if type(q.operator) == Symbol else q.operator)
         )
     )
     quad.append(
         str(
             "-"
             if q.operand_1 == None
-            else (
-                q.operand_1.name if type(q.operand_1) == symbol.Symbol else q.operand_1
-            )
+            else (q.operand_1.name if type(q.operand_1) == Symbol else q.operand_1)
         )
     )
     quad.append(
         str(
             "-"
             if q.operand_2 == None
-            else (
-                q.operand_2.name if type(q.operand_2) == symbol.Symbol else q.operand_2
-            )
+            else (q.operand_2.name if type(q.operand_2) == Symbol else q.operand_2)
         )
     )
     quad.append(
         str(
             "-"
             if q.result_id == None
-            else (
-                q.result_id.name if type(q.result_id) == symbol.Symbol else q.result_id
-            )
+            else (q.result_id.name if type(q.result_id) == Symbol else q.result_id)
         )
     )
 

@@ -1,5 +1,6 @@
 import sys
-from file_parser import *
+import compilador.helpers.file_parser
+from compilador.helpers.file_parser import *
 
 # Este archivo funciona para tener los cuadruplos "correctos"
 f = open("test_answers.txt", "w")

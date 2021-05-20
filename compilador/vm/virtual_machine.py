@@ -1,4 +1,5 @@
-from memory_segment import *
+import compilador.vm.memory_segment
+from compilador.vm.memory_segment import *
 
 
 class VirtualMachine(object):

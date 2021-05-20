@@ -1,4 +1,9 @@
-from symbol_tables import *
+import compilador.objects.function_table
+import compilador.objects.symbol
+from compilador.objects.symbol import Symbol
+from compilador.objects.function_table import *
+from compilador.objects.symbol import *
+
 import sys
 import re
 

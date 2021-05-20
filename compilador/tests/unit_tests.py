@@ -1,10 +1,15 @@
-from symbol_tables import *
-from lexer import *
-from yacc import *
-from quadruple import *
-from virtual_machine import *
-from file_parser import *
-
+import compilador.objects.function_table
+import compilador.objects.quadruple
+import compilador.lexer
+import compilador.parser
+import compilador.helpers.file_parser
+import compilador.vm.virtual_machine
+from compilador.objects.function_table import *
+from compilador.objects.quadruple import *
+from compilador.lexer import *
+from compilador.parser import *
+from compilador.helpers.file_parser import *
+from compilador.vm.virtual_machine import *
 import unittest
 
 
@@ -31,17 +36,19 @@ class TestYacc(unittest.TestCase):
             "01 | GOTO - - 20\n02 | EQ 0 - respuesta\n03 | MUL b c T3\n04 | ADD a T3 T4\n05 | EQ T4 - respuesta\n06 | GT a b T6\n07 | GOTOF T6 - 11\n08 | RETURN respuesta - -\n09 | GOTO - - 19\n10 | GOTO - - 15\n11 | ADD respuesta c T11\n12 | EQ T11 - respuesta\n13 | RETURN respuesta - -\n14 | GOTO - - 19\n15 | ADD a b T15\n16 | SUB T15 c T16\n17 | EQ T16 - a\n18 | RETURN a - -\n19 | ENDFUNC - - -\n20 | ERA random - -\n21 | param 5 - param1\n22 | param 10 - param2\n23 | param 4 - param3\n24 | GOSUB random - 2\n25 | EQ random - a\n26 | ENDOF - - -\n",
         ]
         test_results = []
-        test_results.append(test_file("tests/test_1.txt", test_answers[1]))
-        test_results.append(test_file("tests/test_2.txt", test_answers[2]))
-        test_results.append(test_file("tests/test_3.txt", test_answers[3]))
-        test_results.append(test_file("tests/test_4.txt", test_answers[4]))
-        test_results.append(test_file("tests/test_5.txt", test_answers[5]))
-        test_results.append(test_file("tests/test_6.txt", test_answers[6]))
-        test_results.append(test_file("tests/test_7.txt", test_answers[7]))
+        test_results.append(test_file("./compilador/tests/test_1.txt", test_answers[1]))
+        test_results.append(test_file("./compilador/tests/test_2.txt", test_answers[2]))
+        test_results.append(test_file("./compilador/tests/test_3.txt", test_answers[3]))
+        test_results.append(test_file("./compilador/tests/test_4.txt", test_answers[4]))
+        test_results.append(test_file("./compilador/tests/test_5.txt", test_answers[5]))
+        test_results.append(test_file("./compilador/tests/test_6.txt", test_answers[6]))
+        test_results.append(test_file("./compilador/tests/test_7.txt", test_answers[7]))
         # Pendiente -> Simple For
         # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
-        test_results.append(test_file("tests/test_9.txt", test_answers[9]))
-        test_results.append(test_file("tests/test_10.txt", test_answers[10]))
+        test_results.append(test_file("./compilador/tests/test_9.txt", test_answers[9]))
+        test_results.append(
+            test_file("./compilador/tests/test_10.txt", test_answers[10])
+        )
 
         if "F" in test_results:
             result = "Failed"

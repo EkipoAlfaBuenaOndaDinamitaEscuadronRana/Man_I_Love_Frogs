@@ -1,4 +1,5 @@
-from semantic_table import *
+import compilador.objects.semantic_table
+from compilador.objects.semantic_table import *
 
 
 class Quadruple(object):

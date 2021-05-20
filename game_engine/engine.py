@@ -1,6 +1,8 @@
 import pygame
-from character import *
-from instruction import *
+import game_engine.character
+import game_engine.instruction
+from game_engine.character import *
+from game_engine.instruction import *
 
 
 class Engine:

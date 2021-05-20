@@ -7,12 +7,12 @@ Podrás encontrar la documentación en [este archivo](https://docs.google.com/do
 ## Instalación
 Lo primero, es abrir una terminal y clonar el repositorio escribiendo:
 ```
-git clone https://github.com/Nombre-Pendiente/Super-Compi.git
+git clone https://github.com/EkipoAlfaBuenaOndaDinamitaEscuadronRana/Man_I_Love_Frogs.git
 ```
 
 o en caso de querer clonarlo con ssh puedes usar:
 ```
-git clone git@github.com:Nombre-Pendiente/Super-Compi.git
+git clone git@github.com:EkipoAlfaBuenaOndaDinamitaEscuadronRana/Man_I_Love_Frogs.git
 ```
 
 Posteriormente, es necesario tener instalado python en tu maquina. Puedes instalarlo [aquí](https://www.python.org/downloads/).
@@ -43,7 +43,7 @@ Una vez terminada la tarea realizada, el resto del equipo aprovará sus cambios 
 ## Pruebas unitarias
 Para correr las pruebas unitarias, es necesario usar el comando
 ```
-python3 -m unittest unit_tests.py
+python3 -m unittest compilador/tests/unit_tests.py
 ```
 
 ## Code Styler
