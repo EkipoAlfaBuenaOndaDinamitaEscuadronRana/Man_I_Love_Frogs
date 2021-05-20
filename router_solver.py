@@ -1,5 +1,4 @@
 import sys
 import os
 
-route = os.getcwd()
-sys.path.insert(1, route)
+sys.path.insert(1, os.getcwd())
