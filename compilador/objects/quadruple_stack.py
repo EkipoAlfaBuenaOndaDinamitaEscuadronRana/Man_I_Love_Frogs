@@ -1,3 +1,4 @@
+from router_solver import *
 import compilador.objects.quadruple
 from compilador.objects.quadruple import *
 from re import A

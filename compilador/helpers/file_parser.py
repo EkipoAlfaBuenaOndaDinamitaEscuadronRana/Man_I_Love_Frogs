@@ -1,3 +1,4 @@
+from router_solver import *
 import ply.yacc as yacc
 import ply.lex as lex
 from compilador import parser, lexer

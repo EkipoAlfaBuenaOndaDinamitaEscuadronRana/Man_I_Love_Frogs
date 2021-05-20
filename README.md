@@ -43,7 +43,7 @@ Una vez terminada la tarea realizada, el resto del equipo aprovará sus cambios 
 ## Pruebas unitarias
 Para correr las pruebas unitarias, es necesario usar el comando
 ```
-python3 -m unittest unit_tests.py
+python3 -m unittest compilador/tests/unit_tests.py
 ```
 
 ## Code Styler
