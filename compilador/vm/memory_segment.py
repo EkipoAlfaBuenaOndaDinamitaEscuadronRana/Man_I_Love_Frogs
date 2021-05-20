@@ -30,11 +30,3 @@ class MemorySegment(object):
 
         else:
             return False
-
-ms = MemorySegment("Data Segment", 4)
-
-a_int = Symbol("a", "INT")
-b_int = Symbol("b", "INT")
-
-print(ms.insert_symbol(a_int))
-print(ms.insert_symbol(b_int))
