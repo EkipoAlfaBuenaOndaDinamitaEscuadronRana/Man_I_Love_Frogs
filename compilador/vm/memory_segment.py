@@ -7,7 +7,6 @@ class MemorySegment(object):
         self.name = name
         self.__size = size
         self.__memory = dict()
-
         self.__symbol_directions = dict()
 
         self.__type_size = int(size / 7)
@@ -89,8 +88,6 @@ class MemorySegment(object):
             self.__memory[symbol_position] = symbol
             self.__substract_memory(s_type)
 
-
-
             return symbol_position
 
         else:
@@ -102,4 +99,3 @@ s = Symbol("A", "FLT")
 
 print(ms.insert_symbol(s))
 # print(ms.insert_symbol(s))
- 
