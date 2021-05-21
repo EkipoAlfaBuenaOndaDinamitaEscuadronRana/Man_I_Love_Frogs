@@ -96,11 +96,11 @@ class MemorySegment(object):
         symbol_position = self.__get_symbol_position(s_type)
         s_size = symbol.memory_size()
 
-        print("----------------insert_symbol----------------")
-        print("subsegment size:", self.__subsegment_size)
-        print("initial_position:", initial_position)
-        print("symbol_position:", symbol_position)
-        print("initial_position + self.__subsegment_size:", initial_position + self.__subsegment_size)
+        # print("----------------insert_symbol----------------")
+        # print("subsegment size:", self.__subsegment_size)
+        # print("initial_position:", initial_position)
+        # print("symbol_position:", symbol_position)
+        # print("initial_position + self.__subsegment_size:", initial_position + self.__subsegment_size)
 
         if symbol_position + s_size - 1 < initial_position + self.__subsegment_size:
             self.__assign_memory(symbol, symbol_position)
@@ -110,9 +110,9 @@ class MemorySegment(object):
 
         return False
 
-# ms = MemorySegment("Juanito", 14, 0)
-# s = Symbol("A", "FLT")
-# f = Symbol("f", "FROG")
+ms = MemorySegment("Juanito", 14, 0)
+s = Symbol("A", "FLT")
+f = Symbol("f", "FROG")
 
 # print("result:", ms.insert_symbol(s))
 # print("---------------------end---------------------\n")
