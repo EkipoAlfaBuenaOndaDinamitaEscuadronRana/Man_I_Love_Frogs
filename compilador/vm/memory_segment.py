@@ -30,14 +30,17 @@ class MemorySegment(object):
 
     def __get_memory_inital_direction(self, s_type):
         type_inital_position = {
-            "INT": self.ints - self.__subsegment_size,
-            "FLT": self.flts - self.__subsegment_size,
-            "STR": self.strs - self.__subsegment_size,
-            "CHAR": self.chars - self.__subsegment_size,
-            "BOOL": self.bools - self.__subsegment_size,
-            "NULL": self.nulls - self.__subsegment_size,
-            "FROG": self.frogs - self.__subsegment_size,
+            "INT": self.ints,
+            "FLT": self.flts,
+            "STR": self.strs,
+            "CHAR": self.chars,
+            "BOOL": self.bools,
+            "NULL": self.nulls,
+            "FROG": self.frogs,
         }
+
+        print("type_inital_position:", type_inital_position[s_type])
+        print("INT:", self.ints)
 
         return type_inital_position[s_type]
 
@@ -54,7 +57,17 @@ class MemorySegment(object):
 
         return left_memory[s_type]
 
+    # Global size   30
+    # SubSegment    4
+    # Spare memory  4
+    # inital dir    0
     def __get_symbol_position(self, s_type):
+        
+        print("__get_symbol_position")
+        print("__subsegment_size:", self.__subsegment_size)
+        print("__get_spare_memory:", self.__get_spare_memory(s_type))
+        print("__get_memory_inital_direction:", self.__get_memory_inital_direction(s_type))
+
         return (
             self.__subsegment_size
             - self.__get_spare_memory(s_type)
@@ -90,7 +103,7 @@ class MemorySegment(object):
     def __assign_memory(self, symbol, symbol_position):
         # Scalar or array size 1
         if symbol.memory_size() == 1:
-            self.__memory[symbol_position + 1] = symbol
+            self.__memory[symbol_position] = symbol
 
         # Two- or three-dimensional array
         else:
@@ -107,17 +120,16 @@ class MemorySegment(object):
             self.__assign_memory(symbol, symbol_position)
             self.__substract_memory(symbol)
 
+            print("symbol_position: ", symbol_position)
+
             return True
 
         return False
 
     def search_symbol(self, direction):
-        if self.name == "Constant Segment":
-            print("initial_position: ", self.initial_position)
 
-        # breakpoint()
-        print("direction:", direction)
-        print("initial_position:", self.initial_position)
+        print("memory", self.__memory.keys())
+
         direction = direction - self.initial_position
         return self.__memory.get(direction, None)
 
@@ -145,4 +157,3 @@ class MemorySegment(object):
 # ms.search_symbol(4).print_symbol()
 # ms.search_symbol(5).print_symbol()
 # ms.search_symbol(6).print_symbol()
-

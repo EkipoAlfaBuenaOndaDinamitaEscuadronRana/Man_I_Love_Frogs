@@ -34,7 +34,7 @@ class VirtualMachine(object):
         self, local_size, local_start_direction,  
     ):
         num_local_segments = len(self.func_table.functions) - 1
-        local_segment_size = local_size / num_local_segments
+        local_segment_size = local_size // num_local_segments
 
         local_memory_size = local_size // num_local_segments
         print("local_memory_size:", local_memory_size)
@@ -124,6 +124,18 @@ ft.set_function("fun2", "void", [], vt)
 ft.set_function("main", "void", [], vt)
 
 vm = VirtualMachine(7, 7, 14, ft)
+# vm = VirtualMachine(30, 10, 60, ft)
+
+print("--------------------- vm stats ---------------------")
+print("global:")
+print("  initial_pos:", vm.global_segment.initial_position)
+print("constant:")
+print("  initial_pos:", vm.constant_segment.initial_position)
+print("local:")
+print("  initial_pos[0]:", vm.local_segment[0].initial_position)
+print("  initial_pos[1]:", vm.local_segment[1].initial_position)
+print("----------------------------------------------------")
+
 
 a_int = Symbol("A", "INT")
 b_flt = Symbol("B", "FLT")
@@ -165,6 +177,8 @@ vm.insert_symbol_in_segment("fun2", e_bool)
 vm.insert_symbol_in_segment("fun2", f_null)
 vm.insert_symbol_in_segment("fun2", g_frog)
 
+print("-----------------------------------------------------")
+
 vm.get_direction_symbol(0).print_symbol()
 vm.get_direction_symbol(1).print_symbol()
 vm.get_direction_symbol(2).print_symbol()
@@ -191,3 +205,8 @@ vm.get_direction_symbol(20).print_symbol()
 
 vm.get_direction_symbol(21).print_symbol()
 vm.get_direction_symbol(22).print_symbol()
+vm.get_direction_symbol(23).print_symbol()
+vm.get_direction_symbol(24).print_symbol()
+vm.get_direction_symbol(25).print_symbol()
+vm.get_direction_symbol(26).print_symbol()
+vm.get_direction_symbol(27).print_symbol()
