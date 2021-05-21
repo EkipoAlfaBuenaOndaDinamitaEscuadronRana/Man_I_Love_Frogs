@@ -79,10 +79,12 @@ class VirtualMachine(object):
 
         # Direction is in Global Segment
         if direction <= global_size:
+            print("WENT to global")
             return self.global_segment.search_symbol(direction)
 
         # Direction is in Constant Segment
         elif direction <= global_size + constant_size:
+            print("WENT to constant")
             return self.constant_segment.search_symbol(direction)
 
         # Direction is bigger than memory
@@ -93,3 +95,43 @@ class VirtualMachine(object):
         # Direction is in Local Segment
         else:
             pass
+
+ft = FunctionTable()
+vt = VariableTable()
+ft.set_function("func", "void", [], vt)
+ft.set_function("main", "void", [], vt)
+
+vm = VirtualMachine(7, 7, 7, ft)
+
+a_int = Symbol("A", "INT")
+b_flt = Symbol("B", "FLT")
+c_str = Symbol("C", "STR")
+d_char = Symbol("D", "CHAR")
+e_bool = Symbol("E", "BOOL")
+f_null = Symbol("F", "NULL")
+g_frog = Symbol("G", "FROG")
+
+vm.insert_symbol_in_segment("Global Segment", a_int)
+vm.insert_symbol_in_segment("Global Segment", b_flt)
+vm.insert_symbol_in_segment("Global Segment", c_str)
+vm.insert_symbol_in_segment("Global Segment", d_char)
+vm.insert_symbol_in_segment("Global Segment", e_bool)
+vm.insert_symbol_in_segment("Global Segment", f_null)
+vm.insert_symbol_in_segment("Global Segment", g_frog)
+
+vm.insert_symbol_in_segment("Constant Segment", a_int)
+vm.insert_symbol_in_segment("Constant Segment", b_flt)
+vm.insert_symbol_in_segment("Constant Segment", c_str)
+vm.insert_symbol_in_segment("Constant Segment", d_char)
+vm.insert_symbol_in_segment("Constant Segment", e_bool)
+vm.insert_symbol_in_segment("Constant Segment", f_null)
+vm.insert_symbol_in_segment("Constant Segment", g_frog)
+
+vm.get_direction_symbol(0).print_symbol()
+vm.get_direction_symbol(1).print_symbol()
+vm.get_direction_symbol(2).print_symbol()
+vm.get_direction_symbol(3).print_symbol()
+vm.get_direction_symbol(4).print_symbol()
+vm.get_direction_symbol(5).print_symbol()
+vm.get_direction_symbol(6).print_symbol()
+# vm.get_direction_symbol(7).print_symbol()

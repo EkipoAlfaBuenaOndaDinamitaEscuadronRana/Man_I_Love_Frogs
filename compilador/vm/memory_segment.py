@@ -9,7 +9,7 @@ class MemorySegment(object):
         self.size = size
         self.__memory = dict()
         self.__symbol_directions = dict()
-        self.__inial_position = initial_position
+        self.__initial_position = initial_position
 
         self.__subsegment_size = int(size / 7)
 
@@ -91,9 +91,9 @@ class MemorySegment(object):
     def __assign_memory(self, symbol, symbol_position):
         # Scalar or array size 1
         if symbol.memory_size() == 1:
-            self.__memory[symbol_position] = symbol
+            self.__memory[symbol_position + 1] = symbol
 
-        # Two or three dimensional array
+        # Two- or three-dimensional array
         else:
             pass
 
@@ -113,5 +113,33 @@ class MemorySegment(object):
         return False
 
     def search_symbol(self, direction):
+        print("direction:", direction)
+        print("initial_position:", self.__initial_position)
         direction = direction - self.__initial_position
         return self.__memory.get(direction, None)
+
+# ms = MemorySegment("Global Segment", 7, 0)
+# a_int = Symbol("A", "INT")
+# b_flt = Symbol("B", "FLT")
+# c_str = Symbol("C", "STR")
+# d_char = Symbol("D", "CHAR")
+# e_bool = Symbol("E", "BOOL")
+# f_null = Symbol("F", "NULL")
+# g_frog = Symbol("G", "FROG")
+
+# ms.insert_symbol(a_int)
+# ms.insert_symbol(b_flt)
+# ms.insert_symbol(c_str)
+# ms.insert_symbol(d_char)
+# ms.insert_symbol(e_bool)
+# ms.insert_symbol(f_null)
+# ms.insert_symbol(g_frog)
+
+# ms.search_symbol(0).print_symbol()
+# ms.search_symbol(1).print_symbol()
+# ms.search_symbol(2).print_symbol()
+# ms.search_symbol(3).print_symbol()
+# ms.search_symbol(4).print_symbol()
+# ms.search_symbol(5).print_symbol()
+# ms.search_symbol(6).print_symbol()
+
