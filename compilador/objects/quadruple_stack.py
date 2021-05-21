@@ -173,10 +173,6 @@ class QuadrupleStack(object):
                 else:
                     print("ERROR: Error parameter in object method not INT type")
                     sys.exit()
-
-            """
-        llamada_obj : ID DOT cte_mtd_obj OP var_cte CP
-            """
         else:
             print("ERROR: Error in object method call")
             sys.exit()
