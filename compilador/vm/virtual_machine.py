@@ -17,9 +17,12 @@ class VirtualMachine(object):
         )
 
         if func_table:
-            local_size_memory = global_size + constant_size + local_size
+            local_size_memory = global_size + constant_size
+
+            print("local_size_memory:", local_size_memory)
+
             self.local_segment = self.__build_local_segment(
-                local_size, constant_size, local_size_memory
+                local_size, global_size + constant_size
             )
             self.local_functions = len(self.local_segment)
 
@@ -28,19 +31,22 @@ class VirtualMachine(object):
             self.local_functions = 0
 
     def __build_local_segment(
-        self, local_size, local_start_direction, local_size_memory
+        self, local_size, local_start_direction,  
     ):
         num_local_segments = len(self.func_table.functions) - 1
         local_segment_size = local_size / num_local_segments
 
-        local_memory_size = local_size_memory / num_local_segments
+        local_memory_size = local_size // num_local_segments
+        print("local_memory_size:", local_memory_size)
+
         start_direction = local_start_direction
+        print("start_direction:", start_direction)
 
         segments = []
         for func_name in self.func_table.functions:
             if func_name != "main":
                 segments.append(
-                    MemorySegment(func_name, local_segment_size, start_direction + 1)
+                    MemorySegment(func_name, local_segment_size, start_direction)
                 )
                 start_direction += local_memory_size
 
@@ -76,7 +82,12 @@ class VirtualMachine(object):
             return function_segment.insert_symbol(symbol)
 
     def __get_local_segment(self, direction):
-        pass
+        current_segment_direction = self.global_segment.size + self.constant_segment.size
+        for func in self.local_segment:
+            func_size = func.size + func.initial_position - 1
+
+            if direction <= func_size:
+                return func
 
     def get_direction_symbol(self, direction):
         global_size = self.global_segment.size
@@ -101,16 +112,18 @@ class VirtualMachine(object):
 
         # Direction is in Local Segment
         else:
-            self.__get_local_segment(direction):
             print("WENT to local")
-
+            segment = self.__get_local_segment(direction)
+            # print(segment.name)
+            return segment.search_symbol(direction)
 
 ft = FunctionTable()
 vt = VariableTable()
 ft.set_function("func", "void", [], vt)
+ft.set_function("fun2", "void", [], vt)
 ft.set_function("main", "void", [], vt)
 
-vm = VirtualMachine(7, 7, 7, ft)
+vm = VirtualMachine(7, 7, 14, ft)
 
 a_int = Symbol("A", "INT")
 b_flt = Symbol("B", "FLT")
@@ -136,6 +149,22 @@ vm.insert_symbol_in_segment("Constant Segment", e_bool)
 vm.insert_symbol_in_segment("Constant Segment", f_null)
 vm.insert_symbol_in_segment("Constant Segment", g_frog)
 
+vm.insert_symbol_in_segment("func", a_int)
+vm.insert_symbol_in_segment("func", b_flt)
+vm.insert_symbol_in_segment("func", c_str)
+vm.insert_symbol_in_segment("func", d_char)
+vm.insert_symbol_in_segment("func", e_bool)
+vm.insert_symbol_in_segment("func", f_null)
+vm.insert_symbol_in_segment("func", g_frog)
+
+vm.insert_symbol_in_segment("fun2", a_int)
+vm.insert_symbol_in_segment("fun2", b_flt)
+vm.insert_symbol_in_segment("fun2", c_str)
+vm.insert_symbol_in_segment("fun2", d_char)
+vm.insert_symbol_in_segment("fun2", e_bool)
+vm.insert_symbol_in_segment("fun2", f_null)
+vm.insert_symbol_in_segment("fun2", g_frog)
+
 vm.get_direction_symbol(0).print_symbol()
 vm.get_direction_symbol(1).print_symbol()
 vm.get_direction_symbol(2).print_symbol()
@@ -151,4 +180,14 @@ vm.get_direction_symbol(10).print_symbol()
 vm.get_direction_symbol(11).print_symbol()
 vm.get_direction_symbol(12).print_symbol()
 vm.get_direction_symbol(13).print_symbol()
-vm.get_direction_symbol(14)
+
+vm.get_direction_symbol(14).print_symbol()
+vm.get_direction_symbol(15).print_symbol()
+vm.get_direction_symbol(16).print_symbol()
+vm.get_direction_symbol(17).print_symbol()
+vm.get_direction_symbol(18).print_symbol()
+vm.get_direction_symbol(19).print_symbol()
+vm.get_direction_symbol(20).print_symbol()
+
+vm.get_direction_symbol(21).print_symbol()
+vm.get_direction_symbol(22).print_symbol()
