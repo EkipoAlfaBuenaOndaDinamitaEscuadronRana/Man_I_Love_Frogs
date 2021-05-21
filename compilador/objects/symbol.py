@@ -72,12 +72,13 @@ class Symbol(object):
     However, this value is expected to be assigned by the virtual machine.
     """
 
-    def __init__(self, name=None, type=None, dimension_sizes=[], direction=None):
+    def __init__(self, name=None, type=None, dimension_sizes=[], direction=None, value=None):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None
         self.dimension_sizes = dimension_sizes
         self.dimensions = len(dimension_sizes)
         self.direction = direction
+        self.value = value
 
     def __eq__(self, other):
         if type(self) is Symbol and type(other) is Symbol:
@@ -118,6 +119,9 @@ class Symbol(object):
 
         if self.direction:
             print("DIRECTION: ", self.direction)
+
+        if self.value:
+            print("VALUE: ", self.value)
 
     def memory_size(self):
         return int(np.prod(self.dimension_sizes))

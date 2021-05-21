@@ -6,7 +6,7 @@ from compilador.objects.symbol import *
 class MemorySegment(object):
     def __init__(self, name, size, initial_position):
         self.name = name
-        self.__size = size
+        self.size = size
         self.__memory = dict()
         self.__symbol_directions = dict()
         self.__inial_position = initial_position
@@ -89,7 +89,13 @@ class MemorySegment(object):
 
     # TODO: Does not assign arrays
     def __assign_memory(self, symbol, symbol_position):
-        self.__memory[symbol_position] = symbol
+        # Scalar or array size 1
+        if symbol.memory_size() == 1:
+            self.__memory[symbol_position] = symbol
+
+        # Two or three dimensional array
+        else:
+            pass
 
     # TODO: Does not work with arrays
     def insert_symbol(self, symbol):
@@ -105,3 +111,7 @@ class MemorySegment(object):
             return True
 
         return False
+
+    def search_symbol(self, direction):
+        direction = direction - self.__initial_position
+        return self.__memory.get(direction, None)

@@ -9,6 +9,7 @@ from compilador.objects.variable_tables import *
 
 class VirtualMachine(object):
     def __init__(self, global_size, constant_size, local_size, func_table=None):
+        self.__total_size = global_size + constant_size + local_size
         self.func_table = func_table
         self.global_segment = MemorySegment("Global Segment", global_size, 0)
         self.constant_segment = MemorySegment(
@@ -16,21 +17,21 @@ class VirtualMachine(object):
         )
 
         if func_table:
-            total_size_memory = global_size + constant_size + local_size
+            local_size_memory = global_size + constant_size + local_size
             self.local_segment = self.__build_local_segment(
-                local_size, constant_size + 1, total_size_memory
+                local_size, constant_size + 1, local_size_memory
             )
 
         else:
             self.local_segment = None
 
     def __build_local_segment(
-        self, local_size, local_start_direction, total_size_memory
+        self, local_size, local_start_direction, local_size_memory
     ):
         num_local_segments = len(self.func_table.functions) - 1
         local_segment_size = local_size / num_local_segments
 
-        local_memory_size = total_size_memory / num_local_segments
+        local_memory_size = local_size_memory / num_local_segments
         start_direction = local_start_direction
 
         segments = []
@@ -71,3 +72,24 @@ class VirtualMachine(object):
                 return False
 
             return function_segment.insert_symbol(symbol)
+
+    def get_direction_symbol(self, direction):
+        global_size = self.global_segment.size
+        constant_size = self.constant_segment.size
+
+        # Direction is in Global Segment
+        if direction <= global_size:
+            return self.global_segment.search_symbol(direction)
+
+        # Direction is in Constant Segment
+        elif direction <= global_size + constant_size:
+            return self.constant_segment.search_symbol(direction)
+
+        # Direction is bigger than memory
+        elif direction > self.__total_size:
+            print("Direction out of bounds")
+            return None
+
+        # Direction is in Local Segment
+        else:
+            pass
