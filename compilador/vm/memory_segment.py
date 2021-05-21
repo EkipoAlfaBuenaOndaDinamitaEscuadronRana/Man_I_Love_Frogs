@@ -11,7 +11,7 @@ class MemorySegment(object):
         self.__symbol_directions = dict()
         self.__initial_position = initial_position
 
-        self.__subsegment_size = int(size / 7)
+        self.__subsegment_size = size // 7
 
         self.ints = 0
         self.flts = self.__subsegment_size
@@ -113,6 +113,10 @@ class MemorySegment(object):
         return False
 
     def search_symbol(self, direction):
+
+        if self.name == "Constant Segment":
+            print("initial_position: ", self.__initial_position)
+
         print("direction:", direction)
         print("initial_position:", self.__initial_position)
         direction = direction - self.__initial_position
