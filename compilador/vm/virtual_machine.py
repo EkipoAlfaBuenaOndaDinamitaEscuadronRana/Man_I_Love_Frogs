@@ -65,7 +65,9 @@ class VirtualMachine(object):
         else:
             function_segment = self.__find_function_segment(segment_name)
 
+            # The function was not found
             if function_segment == None:
+                print("Function was not found")
                 return False
 
             return function_segment.insert_symbol(symbol)
