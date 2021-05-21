@@ -27,7 +27,7 @@ class VirtualMachine(object):
     def __build_local_segment(
         self, local_size, local_start_direction, total_size_memory
     ):
-        num_local_segments = self.func_table.length() - 1
+        num_local_segments = len(self.func_table.functions) - 1
         local_segment_size = local_size / num_local_segments
 
         local_memory_size = total_size_memory / num_local_segments

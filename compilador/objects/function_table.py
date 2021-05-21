@@ -55,6 +55,3 @@ class FunctionTable(object):
 
     def print_FuncTable(self):
         print(get_functable_formatted(self.functions))
-
-    def length(self):
-        return len(self.functions)
