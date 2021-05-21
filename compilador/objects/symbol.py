@@ -72,7 +72,9 @@ class Symbol(object):
     However, this value is expected to be assigned by the virtual machine.
     """
 
-    def __init__(self, name=None, type=None, dimension_sizes=[], direction=None, value=None):
+    def __init__(
+        self, name=None, type=None, dimension_sizes=[], direction=None, value=None
+    ):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None
         self.dimension_sizes = dimension_sizes
@@ -82,7 +84,25 @@ class Symbol(object):
 
     def __eq__(self, other):
         if type(self) is Symbol and type(other) is Symbol:
-            return self.name == other.name and self.type == other.type
+            self_data = [
+                self.name,
+                self.type,
+                self.dimension_sizes,
+                self.dimensions,
+                self.direction,
+                self.value,
+            ]
+
+            other_data = [
+                other.name,
+                other.type,
+                other.dimension_sizes,
+                other.dimensions,
+                other.direction,
+                other.value,
+            ]
+
+            return self_data == other_data
         elif self is None and other is None:
             return True
         else:

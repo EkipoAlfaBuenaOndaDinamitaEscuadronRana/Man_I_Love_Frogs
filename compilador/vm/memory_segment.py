@@ -14,11 +14,11 @@ class MemorySegment(object):
 
         self.ints = 0
         self.flts = self.__subsegment_size
-        self.strs = 2 * self.__subsegment_size
-        self.chars = 3 * self.__subsegment_size
-        self.bools = 4 * self.__subsegment_size
-        self.nulls = 5 * self.__subsegment_size
-        self.frogs = 6 * self.__subsegment_size
+        self.strs = self.__subsegment_size * 2
+        self.chars = self.__subsegment_size * 3
+        self.bools = self.__subsegment_size * 4
+        self.nulls = self.__subsegment_size * 5
+        self.frogs = self.__subsegment_size * 6
 
         self.spare_memory_ints = self.__subsegment_size
         self.spare_memory_flts = self.__subsegment_size
@@ -39,9 +39,6 @@ class MemorySegment(object):
             "FROG": self.frogs,
         }
 
-        print("type_inital_position:", type_inital_position[s_type])
-        print("INT:", self.ints)
-
         return type_inital_position[s_type]
 
     def __get_spare_memory(self, s_type):
@@ -57,17 +54,7 @@ class MemorySegment(object):
 
         return left_memory[s_type]
 
-    # Global size   30
-    # SubSegment    4
-    # Spare memory  4
-    # inital dir    0
     def __get_symbol_position(self, s_type):
-        
-        print("__get_symbol_position")
-        print("__subsegment_size:", self.__subsegment_size)
-        print("__get_spare_memory:", self.__get_spare_memory(s_type))
-        print("__get_memory_inital_direction:", self.__get_memory_inital_direction(s_type))
-
         return (
             self.__subsegment_size
             - self.__get_spare_memory(s_type)
@@ -120,40 +107,10 @@ class MemorySegment(object):
             self.__assign_memory(symbol, symbol_position)
             self.__substract_memory(symbol)
 
-            print("symbol_position: ", symbol_position)
-
             return True
 
         return False
 
     def search_symbol(self, direction):
-
-        print("memory", self.__memory.keys())
-
         direction = direction - self.initial_position
         return self.__memory.get(direction, None)
-
-# ms = MemorySegment("Global Segment", 7, 0)
-# a_int = Symbol("A", "INT")
-# b_flt = Symbol("B", "FLT")
-# c_str = Symbol("C", "STR")
-# d_char = Symbol("D", "CHAR")
-# e_bool = Symbol("E", "BOOL")
-# f_null = Symbol("F", "NULL")
-# g_frog = Symbol("G", "FROG")
-
-# ms.insert_symbol(a_int)
-# ms.insert_symbol(b_flt)
-# ms.insert_symbol(c_str)
-# ms.insert_symbol(d_char)
-# ms.insert_symbol(e_bool)
-# ms.insert_symbol(f_null)
-# ms.insert_symbol(g_frog)
-
-# ms.search_symbol(0).print_symbol()
-# ms.search_symbol(1).print_symbol()
-# ms.search_symbol(2).print_symbol()
-# ms.search_symbol(3).print_symbol()
-# ms.search_symbol(4).print_symbol()
-# ms.search_symbol(5).print_symbol()
-# ms.search_symbol(6).print_symbol()

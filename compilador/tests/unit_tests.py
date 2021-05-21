@@ -482,6 +482,33 @@ class TestMemorySegment(unittest.TestCase):
         self.assertEqual(ms.insert_symbol(a_frg), True)
         self.assertEqual(ms.insert_symbol(b_flt), False)
 
+    def search_symbol(self):
+        ms = MemorySegment("Global Segment", 7, 0)
+
+        a_int = Symbol("A", "INT")
+        b_flt = Symbol("B", "FLT")
+        c_str = Symbol("C", "STR")
+        d_char = Symbol("D", "CHAR")
+        e_bool = Symbol("E", "BOOL")
+        f_null = Symbol("F", "NULL")
+        g_frog = Symbol("G", "FROG")
+
+        ms.insert_symbol(a_int)
+        ms.insert_symbol(b_flt)
+        ms.insert_symbol(c_str)
+        ms.insert_symbol(d_char)
+        ms.insert_symbol(e_bool)
+        ms.insert_symbol(f_null)
+        ms.insert_symbol(g_frog)
+
+        self.assertEqual(ms.search_symbol(0), a_int)
+        self.assertEqual(ms.search_symbol(1), b_flt)
+        self.assertEqual(ms.search_symbol(2), c_str)
+        self.assertEqual(ms.search_symbol(3), d_char)
+        self.assertEqual(ms.search_symbol(4), e_bool)
+        self.assertEqual(ms.search_symbol(5), f_null)
+        self.assertEqual(ms.search_symbol(6), g_frog)
+
 
 class TestVirtualMachine(unittest.TestCase):
     def test_insert_symbol_in_segment(self):
@@ -503,3 +530,164 @@ class TestVirtualMachine(unittest.TestCase):
 
         self.assertEqual(vm.insert_symbol_in_segment("func", a_frg), True)
         self.assertEqual(vm.insert_symbol_in_segment("func", b_frg), False)
+
+    def test_get_direction_symbol(self):
+        ft = FunctionTable()
+        vt = VariableTable()
+        ft.set_function("func", "void", [], vt)
+        ft.set_function("fun2", "void", [], vt)
+        ft.set_function("main", "void", [], vt)
+
+        a_int = Symbol("A", "INT")
+        b_flt = Symbol("B", "FLT")
+        c_str = Symbol("C", "STR")
+        d_char = Symbol("D", "CHAR")
+        e_bool = Symbol("E", "BOOL")
+        f_null = Symbol("F", "NULL")
+        g_frog = Symbol("G", "FROG")
+
+        # Using on a small virtual machine
+        small_vm = VirtualMachine(30, 10, 60, ft)
+
+        # Inserting in Global Segment
+        small_vm.insert_symbol_in_segment("Global Segment", a_int)
+        small_vm.insert_symbol_in_segment("Global Segment", b_flt)
+        small_vm.insert_symbol_in_segment("Global Segment", c_str)
+        small_vm.insert_symbol_in_segment("Global Segment", d_char)
+        small_vm.insert_symbol_in_segment("Global Segment", e_bool)
+        small_vm.insert_symbol_in_segment("Global Segment", f_null)
+        small_vm.insert_symbol_in_segment("Global Segment", g_frog)
+
+        # Inserting in Constant Segment
+        small_vm.insert_symbol_in_segment("Constant Segment", a_int)
+        small_vm.insert_symbol_in_segment("Constant Segment", b_flt)
+        small_vm.insert_symbol_in_segment("Constant Segment", c_str)
+        small_vm.insert_symbol_in_segment("Constant Segment", d_char)
+        small_vm.insert_symbol_in_segment("Constant Segment", e_bool)
+        small_vm.insert_symbol_in_segment("Constant Segment", f_null)
+        small_vm.insert_symbol_in_segment("Constant Segment", g_frog)
+
+        # Inserting in Local segment
+        small_vm.insert_symbol_in_segment("func", a_int)
+        small_vm.insert_symbol_in_segment("func", b_flt)
+        small_vm.insert_symbol_in_segment("func", c_str)
+        small_vm.insert_symbol_in_segment("func", d_char)
+        small_vm.insert_symbol_in_segment("func", e_bool)
+        small_vm.insert_symbol_in_segment("func", f_null)
+        small_vm.insert_symbol_in_segment("func", g_frog)
+
+        small_vm.insert_symbol_in_segment("fun2", a_int)
+        small_vm.insert_symbol_in_segment("fun2", b_flt)
+        small_vm.insert_symbol_in_segment("fun2", c_str)
+        small_vm.insert_symbol_in_segment("fun2", d_char)
+        small_vm.insert_symbol_in_segment("fun2", e_bool)
+        small_vm.insert_symbol_in_segment("fun2", f_null)
+        small_vm.insert_symbol_in_segment("fun2", g_frog)
+
+        # Searching in Global segment
+        self.assertEqual(small_vm.get_direction_symbol(0), a_int)
+        self.assertEqual(small_vm.get_direction_symbol(4), b_flt)
+        self.assertEqual(small_vm.get_direction_symbol(8), c_str)
+        self.assertEqual(small_vm.get_direction_symbol(12), d_char)
+        self.assertEqual(small_vm.get_direction_symbol(16), e_bool)
+        self.assertEqual(small_vm.get_direction_symbol(20), f_null)
+        self.assertEqual(small_vm.get_direction_symbol(24), g_frog)
+
+        # Searching in Constant segment
+        self.assertEqual(small_vm.get_direction_symbol(30), a_int)
+        self.assertEqual(small_vm.get_direction_symbol(31), b_flt)
+        self.assertEqual(small_vm.get_direction_symbol(32), c_str)
+        self.assertEqual(small_vm.get_direction_symbol(33), d_char)
+        self.assertEqual(small_vm.get_direction_symbol(34), e_bool)
+        self.assertEqual(small_vm.get_direction_symbol(35), f_null)
+        self.assertEqual(small_vm.get_direction_symbol(36), g_frog)
+
+        # Searching in Local segment
+        self.assertEqual(small_vm.get_direction_symbol(40), a_int)
+        self.assertEqual(small_vm.get_direction_symbol(44), b_flt)
+        self.assertEqual(small_vm.get_direction_symbol(48), c_str)
+        self.assertEqual(small_vm.get_direction_symbol(52), d_char)
+        self.assertEqual(small_vm.get_direction_symbol(56), e_bool)
+        self.assertEqual(small_vm.get_direction_symbol(60), f_null)
+        self.assertEqual(small_vm.get_direction_symbol(64), g_frog)
+
+        self.assertEqual(small_vm.get_direction_symbol(70), a_int)
+        self.assertEqual(small_vm.get_direction_symbol(74), b_flt)
+        self.assertEqual(small_vm.get_direction_symbol(78), c_str)
+        self.assertEqual(small_vm.get_direction_symbol(82), d_char)
+        self.assertEqual(small_vm.get_direction_symbol(86), e_bool)
+        self.assertEqual(small_vm.get_direction_symbol(90), f_null)
+        self.assertEqual(small_vm.get_direction_symbol(94), g_frog)
+
+        # Using on the real model of virtual machine
+        real_vm = VirtualMachine(3000, 1000, 6000, ft)
+
+        # Inserting in Global Segment
+        real_vm.insert_symbol_in_segment("Global Segment", a_int)
+        real_vm.insert_symbol_in_segment("Global Segment", b_flt)
+        real_vm.insert_symbol_in_segment("Global Segment", c_str)
+        real_vm.insert_symbol_in_segment("Global Segment", d_char)
+        real_vm.insert_symbol_in_segment("Global Segment", e_bool)
+        real_vm.insert_symbol_in_segment("Global Segment", f_null)
+        real_vm.insert_symbol_in_segment("Global Segment", g_frog)
+
+        # Inserting in Constant Segment
+        real_vm.insert_symbol_in_segment("Constant Segment", a_int)
+        real_vm.insert_symbol_in_segment("Constant Segment", b_flt)
+        real_vm.insert_symbol_in_segment("Constant Segment", c_str)
+        real_vm.insert_symbol_in_segment("Constant Segment", d_char)
+        real_vm.insert_symbol_in_segment("Constant Segment", e_bool)
+        real_vm.insert_symbol_in_segment("Constant Segment", f_null)
+        real_vm.insert_symbol_in_segment("Constant Segment", g_frog)
+
+        # Inserting in Local segment
+        real_vm.insert_symbol_in_segment("func", a_int)
+        real_vm.insert_symbol_in_segment("func", b_flt)
+        real_vm.insert_symbol_in_segment("func", c_str)
+        real_vm.insert_symbol_in_segment("func", d_char)
+        real_vm.insert_symbol_in_segment("func", e_bool)
+        real_vm.insert_symbol_in_segment("func", f_null)
+        real_vm.insert_symbol_in_segment("func", g_frog)
+
+        real_vm.insert_symbol_in_segment("fun2", a_int)
+        real_vm.insert_symbol_in_segment("fun2", b_flt)
+        real_vm.insert_symbol_in_segment("fun2", c_str)
+        real_vm.insert_symbol_in_segment("fun2", d_char)
+        real_vm.insert_symbol_in_segment("fun2", e_bool)
+        real_vm.insert_symbol_in_segment("fun2", f_null)
+        real_vm.insert_symbol_in_segment("fun2", g_frog)
+
+        # Searching in Global segment
+        self.assertEqual(real_vm.get_direction_symbol(0), a_int)
+        self.assertEqual(real_vm.get_direction_symbol(428), b_flt)
+        self.assertEqual(real_vm.get_direction_symbol(856), c_str)
+        self.assertEqual(real_vm.get_direction_symbol(1284), d_char)
+        self.assertEqual(real_vm.get_direction_symbol(1712), e_bool)
+        self.assertEqual(real_vm.get_direction_symbol(2140), f_null)
+        self.assertEqual(real_vm.get_direction_symbol(2568), g_frog)
+
+        # Searching in Constant segment
+        self.assertEqual(real_vm.get_direction_symbol(3000), a_int)
+        self.assertEqual(real_vm.get_direction_symbol(3142), b_flt)
+        self.assertEqual(real_vm.get_direction_symbol(3284), c_str)
+        self.assertEqual(real_vm.get_direction_symbol(3426), d_char)
+        self.assertEqual(real_vm.get_direction_symbol(3568), e_bool)
+        self.assertEqual(real_vm.get_direction_symbol(3710), f_null)
+        self.assertEqual(real_vm.get_direction_symbol(3852), g_frog)
+
+        # Searching in Local segment
+        self.assertEqual(real_vm.get_direction_symbol(4000), a_int)
+        self.assertEqual(real_vm.get_direction_symbol(4428), b_flt)
+        self.assertEqual(real_vm.get_direction_symbol(4856), c_str)
+        self.assertEqual(real_vm.get_direction_symbol(5284), d_char)
+        self.assertEqual(real_vm.get_direction_symbol(5712), e_bool)
+        self.assertEqual(real_vm.get_direction_symbol(6140), f_null)
+        self.assertEqual(real_vm.get_direction_symbol(6568), g_frog)
+
+        self.assertEqual(real_vm.get_direction_symbol(7000), a_int)
+        self.assertEqual(real_vm.get_direction_symbol(7428), b_flt)
+        self.assertEqual(real_vm.get_direction_symbol(7856), c_str)
+        self.assertEqual(real_vm.get_direction_symbol(8284), d_char)
+        self.assertEqual(real_vm.get_direction_symbol(8712), e_bool)
+        self.assertEqual(real_vm.get_direction_symbol(9140), f_null)
+        self.assertEqual(real_vm.get_direction_symbol(9568), g_frog)
