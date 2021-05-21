@@ -482,6 +482,7 @@ class TestMemorySegment(unittest.TestCase):
         self.assertEqual(ms.insert_symbol(a_frg), True)
         self.assertEqual(ms.insert_symbol(b_flt), False)
 
+
 class TestVirtualMachine(unittest.TestCase):
     def test_insert_symbol_in_segment(self):
         ft = FunctionTable()

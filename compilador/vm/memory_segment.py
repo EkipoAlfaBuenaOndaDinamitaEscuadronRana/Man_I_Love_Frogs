@@ -31,32 +31,36 @@ class MemorySegment(object):
 
     def __get_memory_inital_direction(self, s_type):
         type_inital_position = {
-            "INT" : self.ints - self.__subsegment_size,
-            "FLT" : self.flts - self.__subsegment_size,
-            "STR" : self.strs - self.__subsegment_size,
-            "CHAR" : self.chars - self.__subsegment_size,
-            "BOOL" : self.bools - self.__subsegment_size,
-            "NULL" : self.nulls - self.__subsegment_size,
-            "FROG" : self.frogs - self.__subsegment_size,
+            "INT": self.ints - self.__subsegment_size,
+            "FLT": self.flts - self.__subsegment_size,
+            "STR": self.strs - self.__subsegment_size,
+            "CHAR": self.chars - self.__subsegment_size,
+            "BOOL": self.bools - self.__subsegment_size,
+            "NULL": self.nulls - self.__subsegment_size,
+            "FROG": self.frogs - self.__subsegment_size,
         }
 
         return type_inital_position[s_type]
 
     def __get_spare_memory(self, s_type):
         left_memory = {
-            "INT" : self.spare_memory_ints,
-            "FLT" : self.spare_memory_flts,
-            "STR" : self.spare_memory_strs,
-            "CHAR" : self.spare_memory_chars,
-            "BOOL" : self.spare_memory_bools,
-            "NULL" : self.spare_memory_nulls,
-            "FROG" : self.spare_memory_frogs,
+            "INT": self.spare_memory_ints,
+            "FLT": self.spare_memory_flts,
+            "STR": self.spare_memory_strs,
+            "CHAR": self.spare_memory_chars,
+            "BOOL": self.spare_memory_bools,
+            "NULL": self.spare_memory_nulls,
+            "FROG": self.spare_memory_frogs,
         }
 
         return left_memory[s_type]
 
     def __get_symbol_position(self, s_type):
-        return self.__subsegment_size - self.__get_spare_memory(s_type) + self.__get_memory_inital_direction(s_type)
+        return (
+            self.__subsegment_size
+            - self.__get_spare_memory(s_type)
+            + self.__get_memory_inital_direction(s_type)
+        )
 
     def __substract_memory(self, symbol):
         s_type = symbol.type
@@ -83,24 +87,16 @@ class MemorySegment(object):
         elif s_type == "FROG":
             self.spare_memory_frogs -= s_size
 
+    # TODO: Does not assign arrays
     def __assign_memory(self, symbol, symbol_position):
         self.__memory[symbol_position] = symbol
-        # s_size = symbol.memoty_size()
 
-        # for row in symbol
-
-    # TODO: No funciona con arrays
+    # TODO: Does not work with arrays
     def insert_symbol(self, symbol):
         s_type = symbol.type
         initial_position = self.__get_memory_inital_direction(s_type)
         symbol_position = self.__get_symbol_position(s_type)
         s_size = symbol.memory_size()
-
-        # print("----------------insert_symbol----------------")
-        # print("subsegment size:", self.__subsegment_size)
-        # print("initial_position:", initial_position)
-        # print("symbol_position:", symbol_position)
-        # print("initial_position + self.__subsegment_size:", initial_position + self.__subsegment_size)
 
         if symbol_position + s_size - 1 < initial_position + self.__subsegment_size:
             self.__assign_memory(symbol, symbol_position)
@@ -109,17 +105,3 @@ class MemorySegment(object):
             return True
 
         return False
-
-ms = MemorySegment("Juanito", 14, 0)
-s = Symbol("A", "FLT")
-f = Symbol("f", "FROG")
-
-# print("result:", ms.insert_symbol(s))
-# print("---------------------end---------------------\n")
-# print("result:", ms.insert_symbol(s))
-# print("---------------------end---------------------\n")
-# print("result:", ms.insert_symbol(f))
-# print("---------------------end---------------------\n")
-# print("result:", ms.insert_symbol(f))
-# print("---------------------end---------------------\n")
-# print("result:", ms.insert_symbol(f))

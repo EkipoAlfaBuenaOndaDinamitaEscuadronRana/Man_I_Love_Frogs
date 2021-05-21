@@ -119,6 +119,5 @@ class Symbol(object):
         if self.direction:
             print("DIRECTION: ", self.direction)
 
-    # NOTE: This funcion is no longer needed... But I don't want to delete it yet
     def memory_size(self):
         return int(np.prod(self.dimension_sizes))
