@@ -1,3 +1,4 @@
+from router_solver import *
 import compilador.helpers.printer
 from compilador.helpers.printer import *
 import numpy as np

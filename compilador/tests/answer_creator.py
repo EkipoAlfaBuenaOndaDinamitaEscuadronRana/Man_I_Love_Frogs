@@ -1,3 +1,4 @@
+from router_solver import *
 import sys
 import compilador.helpers.file_parser
 from compilador.helpers.file_parser import *
