@@ -33,6 +33,7 @@ type_dictionary = {
     "obj_method": "obj_method",
 }
 
+# NOTE: This sizes are no longer used... But I don't want to delete them yet...
 memory_sizes = {
     "INT": 4,
     "FLT": 4,
@@ -121,7 +122,4 @@ class Symbol(object):
             print("DIRECTION: ", self.direction)
 
     def memory_size(self):
-        if self.dimensions:
-            return memory_sizes[self.type] * (np.prod(self.dimension_sizes))
-
-        return memory_sizes[self.type]
+        return int(np.prod(self.dimension_sizes))
