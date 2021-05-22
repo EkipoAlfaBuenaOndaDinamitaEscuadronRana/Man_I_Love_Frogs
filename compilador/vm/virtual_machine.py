@@ -130,39 +130,3 @@ class VirtualMachine(object):
 
                 if curr_quad.result_id and not(curr_quad.result_id.segment_direction and curr_quad.result_id.global_direction):
                     self.insert_symbol_in_segment(curr_quad.result_id.scope, curr_quad.result_id)
-
-add = Symbol("ADD", "operation")
-a = Symbol("A", "INT")
-b = Symbol("B", "FLT")
-t1 = Symbol("T1", "FLT")
-
-a.scope = "Constant Segment"
-b.scope = "Constant Segment"
-t1.scope = "Constant Segment"
-
-quad_dir = { 0: Quadruple(add, a, b, t1) }
-
-# quad_dir[0].operator.print_symbol()
-# print()
-# quad_dir[0].operand_1.print_symbol()
-# print()
-# quad_dir[0].operand_2.print_symbol()
-# print()
-# quad_dir[0].result_id.print_symbol()
-# print("-----------------------")
-
-ft = FunctionTable()
-vt = VariableTable()
-ft.set_function("main", "void", [], vt)
-real_vm = VirtualMachine(3000, 1000, 6000, ft)
-
-real_vm.quadruple_direction_allocator(quad_dir)
-
-# quad_dir[0].operator.print_symbol()
-# print()
-# quad_dir[0].operand_1.print_symbol()
-# print()
-# quad_dir[0].operand_2.print_symbol()
-# print()
-# quad_dir[0].result_id.print_symbol()
-# print()
