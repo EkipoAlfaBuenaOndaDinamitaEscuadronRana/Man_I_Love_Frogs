@@ -54,10 +54,10 @@ def p_global_vartable_distruct(p):
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
-    quad_stack.push_quad(Quadruple(Symbol("ENDOF", "instruction"), None, None, None), current_state.get_curr_state_table())
+    quad_stack.push_quad(Quadruple(Symbol("ENDOF", "instruction", current_state.get_curr_state_table()), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
-    #quad_stack.print_quads()
-    #global_func_table.print_FuncTable()
+    quad_stack.print_quads()
+    global_func_table.print_FuncTable()
 
 
 # TERMINAL Y NO TERMINAL
@@ -90,12 +90,13 @@ def p_global_vartable(p):
     global_func_table.reset_functionTable()
     # GLOBAL VAR TABLE INIT
     # ESTADO: global var table
-    current_state.push_state(State(p[0]))
+    current_state.push_state(State("Global Segment"))
+    global_func_table.set_function("Constant Segment", "void", [], VariableTable())
     # LLAMAR FUNCION PARA METER TABLA GLOBAL A FUNCTION TABLE
     # CREA VAR TABLE
-    global_func_table.set_function(p[0], "void", [], VariableTable())
+    global_func_table.set_function("Global Segment", "void", [], VariableTable())
     # Limpea la quad_stack
-    quad_stack.push_quad(Quadruple(Symbol("GOTO", "instruction"), None, None, "MISSING_ADDRESS"), current_state.get_curr_state_table())
+    quad_stack.push_quad(Quadruple(Symbol("GOTO", "instruction",current_state.get_curr_state_table()), None, None, "MISSING_ADDRESS"), current_state.get_curr_state_table())
     quad_stack.jumpStack.append(quad_stack.count_prev)
 
 
@@ -187,6 +188,7 @@ def p_var(p):
                 sys.exit()
             else:
                 # Inserta a vartable
+                symbol.set_scope(current_state.get_curr_state_table())
                 global_func_table.get_function_variable_table(
                     current_state.get_curr_state_table()
                 ).set_variable(symbol)
@@ -256,7 +258,7 @@ def p_func_init(p):
             # Inserta a tabla global variable de funcion 
             global_func_table.get_function_variable_table(
                     current_state.get_global_table()
-                ).set_variable(Symbol(p[2], global_func_table.get_function_type(p[2])))
+                ).set_variable(Symbol(p[2], global_func_table.get_function_type(p[2]), current_state.get_global_table()))
 
             # crea tabla de variables actual
             global_func_table.set_function_variable_table_at(p[2])
@@ -284,7 +286,7 @@ def p_func_distruct(p):
 
     # Mete el quad de end func
     quad_stack.return_jump_fill()
-    quad_stack.push_quad(Quadruple(Symbol("ENDFUNC", "instruction"), None, None, None), current_state.get_curr_state_table())
+    quad_stack.push_quad(Quadruple(Symbol("ENDFUNC", "instruction", current_state.get_curr_state_table()), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
 
 
@@ -628,7 +630,8 @@ def p_escritura(p):
 
     quad_stack.push_quad(
         quad_stack.write_quad(
-            expresion_to_symbols(p[3], global_func_table, current_state)
+            expresion_to_symbols(p[3], global_func_table, current_state),
+            current_state.get_curr_state_table()
         ), current_state.get_curr_state_table()
     )
 
@@ -764,8 +767,8 @@ def p_llamada(p):
         quad_stack.reset_param_count()
         quad_stack.push_quad(
             Quadruple(
-                Symbol("GOSUB", "instruction"),
-                p[1],
+                Symbol("GOSUB", "instruction", current_state.get_curr_state_table()),
+                Symbol(p[1],global_func_table.get_function_type(p[1]),current_state.get_curr_state_table()),
                 None,
                 quad_stack.get_function_location(current_state.get_curr_state_opt()),
             ),
@@ -808,6 +811,7 @@ def p_parametro(p):
                         current_state.get_curr_state_opt()
                     ),
                     expresion_to_symbols(p[1], global_func_table, current_state),
+                    current_state.get_curr_state_table()
                 ),
                 current_state.get_curr_state_table()
             )
@@ -1071,7 +1075,7 @@ def p_id_func(p):
             sys.exit()
         else:
             # Se mete el ERA quad
-            quad_stack.push_quad(Quadruple(Symbol("ERA", "instruction"), p[1], None, None), current_state.get_curr_state_table())
+            quad_stack.push_quad(Quadruple(Symbol("ERA", "instruction", current_state.get_curr_state_table()), Symbol(p[1],global_func_table.get_function_type(p[1]),current_state.get_curr_state_table()), None, None), current_state.get_curr_state_table())
             current_state.set_curr_state_opt(p[1])
 
 
@@ -1101,7 +1105,6 @@ def p_llamada_obj(p):
         p[0] = [p[1], p[2], p[3], p[4], p[5]]
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
-
     # VALIDA ID
     # ESTADO : CURRENT VAR TABLE
     # Checa que no se este declarando la variable

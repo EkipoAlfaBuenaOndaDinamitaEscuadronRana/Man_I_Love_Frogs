@@ -139,9 +139,11 @@ def expresion_to_symbols(exp, ft, s, d=None):
         exp = dec_to_as(exp)
     for e in exp:
         if e in operators:
-            sym_list.append(operators[e])
+            op = operators[e]
+            op.set_scope(s.get_curr_state_table())
+            sym_list.append(op)
         elif ft.lookup_function(e) and ("(" in exp and ")" in exp):
-            sym_list.append(Symbol(e, ft.get_function_type(e)))
+            sym_list.append(Symbol(e, ft.get_function_type(e),s.get_global_table()))
             start = exp.index("(")
             end = exp.index(")") + 1
             del exp[start:end]
@@ -159,9 +161,9 @@ def expresion_to_symbols(exp, ft, s, d=None):
             )
         else:
             c_type = constant_eval(e)
-
             if c_type != None:
-                sym_list.append(Symbol(e, c_type))
+                sym_list.append(Symbol(e, c_type, "Constant Segment"))
+
             else:
                 print('ERROR: token " ' + str(e) + ' " not valid or not found')
                 sys.exit()

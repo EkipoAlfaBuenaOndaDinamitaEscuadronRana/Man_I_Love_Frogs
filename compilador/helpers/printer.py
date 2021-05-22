@@ -10,40 +10,43 @@ def get_quad_stack_formatted(qs):
     for k, v in qs.items():
         row = []
         row.append(str(int(k)).zfill(2))
-        row.append(get_quad_formatted(v))
+        row.append(get_symbol_formatted([v.operator, v.operand_1, v.operand_2, v.result_id]))
         quads.append(row)
     return tabulate(quads, tablefmt="fancy_grid")
 
 
 def get_quad_formatted(q):
-    headers = ["None", "None", "None", "None"]
+    #headers = ["Operator", "Operand_1", "Operand_1", "Result", "Scope"]
     quad = []
+    quad = get_symbol_formatted([q.operator, q.operand_1, q.operand_2, q.operand_2])
+
+    '''
     quad.append(
         str(
             "-"
             if q.operator == None
-            else (q.operator.name if type(q.operator) == symbol.Symbol else q.operator)
+            else get_symbol_formatted(q.operator)
         )
     )
     quad.append(
         str(
             "-"
             if q.operand_1 == None
-            else (q.operand_1.name if type(q.operand_1) == symbol.Symbol else q.operand_1)
+            else get_symbol_formatted(q.operand_1)
         )
     )
     quad.append(
         str(
             "-"
             if q.operand_2 == None
-            else (q.operand_2.name if type(q.operand_2) == symbol.Symbol else q.operand_2)
+            else get_symbol_formatted(q.operand_2)
         )
     )
     quad.append(
         str(
             "-"
             if q.result_id == None
-            else (q.result_id.name if type(q.result_id) == symbol.Symbol else q.result_id)
+            else get_symbol_formatted(q.result_id)
         )
     )
     quad.append(
@@ -53,7 +56,7 @@ def get_quad_formatted(q):
             else q.scope
         )
     )
-
+    '''
     return tabulate([quad], tablefmt="plain", colalign=("center", "center"))
 
 
@@ -85,13 +88,26 @@ def get_vartable_formatted(vt):
 
 
 def get_symbol_formatted(s):
-    headers = ["Name", "Type"]
+    headers = ["Name", "Type", "Scope"]
     values = []
-    for v in s:
+    if type(s) == symbol.Symbol:
         row = []
-        row.append(v.name)
-        row.append(v.type)
+        row.append(s.name)
+        row.append(s.type)
+        row.append(s.scope)
         values.append(row)
+    else:
+        for v in s:
+            row = []
+            if v == None:
+                row.append("-")
+                row.append("-")
+                row.append("-")
+            else:
+                row.append(v.name)
+                row.append(v.type)
+                row.append(v.scope)
+            values.append(row)
     return tabulate(values, headers, tablefmt="fancy_grid")
 
 
