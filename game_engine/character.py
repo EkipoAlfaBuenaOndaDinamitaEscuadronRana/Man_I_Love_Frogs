@@ -1,3 +1,5 @@
+from router_solver import *
+
 class Character(object):
     def __init__(self, x, y, width, height, speed):
         self.x = x

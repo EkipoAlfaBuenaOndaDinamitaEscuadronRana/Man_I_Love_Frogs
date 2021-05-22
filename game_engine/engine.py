@@ -1,3 +1,4 @@
+from router_solver import *
 import pygame
 import game_engine.character
 import game_engine.instruction
