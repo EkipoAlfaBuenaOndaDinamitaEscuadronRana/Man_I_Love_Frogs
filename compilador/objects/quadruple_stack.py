@@ -54,10 +54,11 @@ class QuadrupleStack(object):
             # print(last_temp)
             # print()
             # print(self.temp_count)
-            # if last_temp > self.temp_count:
-            #     self.temp_count = last_temp 
-            # elif  last_temp < self.temp_count:
-            #     self.temp_count += 1
+            if len(sol) > 1:
+                 self.temp_count = last_temp - 1
+            else:
+                self.temp_count = last_temp
+
 
             # print("---AFTER-----")
             # print(last_temp)
