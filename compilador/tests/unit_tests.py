@@ -1,3 +1,4 @@
+from router_solver import *
 import compilador.objects.function_table
 import compilador.objects.quadruple
 import compilador.lexer
@@ -66,10 +67,10 @@ class TestSymbol(unittest.TestCase):
 
     def test_memory_size(self):
         var = Symbol("var", "INT")
-        self.assertEqual(var.memory_size(), 4)
+        self.assertEqual(var.memory_size(), 1)
 
         arr = Symbol("arr", "INT", [3])
-        self.assertEqual(arr.memory_size(), 12)
+        self.assertEqual(arr.memory_size(), 3)
 
 
 class TestVarTable(unittest.TestCase):
@@ -472,30 +473,33 @@ class TestQuadruple(unittest.TestCase):
 
 class TestMemorySegment(unittest.TestCase):
     def test_insert_symbol(self):
-        ms = MemorySegment("Data Segment", 4)
+        ms = MemorySegment("Global Segment", 7, 0)
+        a_flt = Symbol("A", "FLT")
+        b_flt = Symbol("B", "FLT")
+        a_frg = Symbol("f", "FROG")
 
-        a_int = Symbol("a", "INT")
-        b_int = Symbol("b", "INT")
-
-        self.assertEqual(ms.insert_symbol(a_int), True)
-        self.assertEqual(ms.insert_symbol(b_int), False)
+        self.assertEqual(ms.insert_symbol(a_flt), True)
+        self.assertEqual(ms.insert_symbol(a_frg), True)
+        self.assertEqual(ms.insert_symbol(b_flt), False)
 
 
 class TestVirtualMachine(unittest.TestCase):
     def test_insert_symbol_in_segment(self):
-        vmm = VirtualMachine(4, 8, 20, 4)
+        ft = FunctionTable()
+        vt = VariableTable()
+        ft.set_function("func", "void", [], vt)
+        ft.set_function("main", "void", [], vt)
 
-        a_int = Symbol("a", "INT")
-        b_int = Symbol("b", "INT")
-        c_int = Symbol("c", "INT", [3])
+        vm = VirtualMachine(7, 7, 7, ft)
 
-        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", a_int), True)
-        self.assertEqual(vmm.insert_symbol_in_segment("Data Segment", b_int), False)
+        a_flt = Symbol("A", "FLT")
+        b_flt = Symbol("B", "FLT")
 
-        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", a_int), True)
-        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", b_int), True)
-        self.assertEqual(vmm.insert_symbol_in_segment("Code Segment", c_int), False)
+        a_frg = Symbol("a", "FROG")
+        b_frg = Symbol("b", "FROG")
 
-        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", a_int), True)
-        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", b_int), True)
-        self.assertEqual(vmm.insert_symbol_in_segment("Stack Segment", c_int), True)
+        self.assertEqual(vm.insert_symbol_in_segment("Global Segment", a_flt), True)
+        self.assertEqual(vm.insert_symbol_in_segment("Global Segment", b_flt), False)
+
+        self.assertEqual(vm.insert_symbol_in_segment("func", a_frg), True)
+        self.assertEqual(vm.insert_symbol_in_segment("func", b_frg), False)

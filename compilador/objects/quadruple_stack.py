@@ -1,6 +1,6 @@
+from router_solver import *
 import compilador.objects.quadruple
 from compilador.objects.quadruple import *
-from re import A
 import sys
 
 
@@ -161,6 +161,20 @@ class QuadrupleStack(object):
                 self.push_quad(Quadruple(Symbol("EQ", "assignment"), r, None, v))
         else:
             print("ERROR: Error in read asignation")
+            sys.exit()
+
+    def object_method_quad(self, data):
+        if len(data) == 3:
+            if data[2].type == "parentheses":
+                self.push_quad(Quadruple(data[1], data[0], None, Symbol("1", "INT")))
+            else:
+                if Symbol.check_type_compatibility("INT", data[2].type):
+                    self.push_quad(Quadruple(data[1], data[0], None, data[2]))
+                else:
+                    print("ERROR: Error parameter in object method not INT type")
+                    sys.exit()
+        else:
+            print("ERROR: Error in object method call")
             sys.exit()
 
     # LLena el go to cuando se llega al final de una funcion

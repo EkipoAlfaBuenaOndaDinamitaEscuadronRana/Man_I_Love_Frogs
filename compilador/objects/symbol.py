@@ -1,3 +1,4 @@
+from router_solver import *
 import compilador.helpers.printer
 from compilador.helpers.printer import *
 import numpy as np
@@ -11,6 +12,7 @@ type_dictionary = {
     "null": "NULL",
     "string": "STR",
     "void": "VOID",
+    "frog": "FROG",
     "INT": "INT",
     "FLT": "FLT",
     "CHAR": "CHAR",
@@ -18,6 +20,7 @@ type_dictionary = {
     "NULL": "NULL",
     "STR": "STR",
     "VOID": "VOID",
+    "FROG": "FROG",
     "operation": "operation",
     "parentheses": "parentheses",
     "not": "not",
@@ -27,8 +30,10 @@ type_dictionary = {
     "assignment_operation": "assignment_operation",
     "read": "read",
     "write": "write",
+    "obj_method": "obj_method",
 }
 
+# NOTE: This sizes are no longer used... But I don't want to delete them yet...
 memory_sizes = {
     "INT": 4,
     "FLT": 4,
@@ -45,6 +50,7 @@ type_translation = {
     "BOOL": ["INT", "FLT", "BOOL", "NULL", "read"],
     "NULL": ["NULL"],
     "STR": ["STR", "CHAR", "NULL", "read"],
+    "FROG": ["NULL"],
 }
 
 
@@ -116,7 +122,4 @@ class Symbol(object):
             print("DIRECTION: ", self.direction)
 
     def memory_size(self):
-        if self.dimensions:
-            return memory_sizes[self.type] * (np.prod(self.dimension_sizes))
-
-        return memory_sizes[self.type]
+        return int(np.prod(self.dimension_sizes))

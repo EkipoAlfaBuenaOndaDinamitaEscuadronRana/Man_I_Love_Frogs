@@ -1,3 +1,4 @@
+from router_solver import *
 from tabulate import tabulate
 import compilador.objects.symbol
 from compilador.objects.symbol import *

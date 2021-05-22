@@ -1,0 +1,12 @@
+program objects; 
+
+{
+    int a = 1;
+    frog pepe;
+    pepe.jump_left();
+    pepe.jump_right(10);
+    pepe.jump_up(a);
+
+
+   
+}
