@@ -90,6 +90,8 @@ class MemorySegment(object):
     def __assign_memory(self, symbol, symbol_position):
         # Scalar or array size 1
         if symbol.memory_size() == 1:
+            symbol.segment_direction = symbol_position
+            symbol.global_direction = self.initial_position + symbol_position
             self.__memory[symbol_position] = symbol
 
         # Two- or three-dimensional array

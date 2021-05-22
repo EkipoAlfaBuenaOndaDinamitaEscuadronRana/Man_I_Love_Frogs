@@ -534,8 +534,8 @@ class TestVirtualMachine(unittest.TestCase):
     def test_get_direction_symbol(self):
         ft = FunctionTable()
         vt = VariableTable()
-        ft.set_function("func", "void", [], vt)
-        ft.set_function("fun2", "void", [], vt)
+        ft.set_function("func1", "void", [], vt)
+        ft.set_function("func2", "void", [], vt)
         ft.set_function("main", "void", [], vt)
 
         a_int = Symbol("A", "INT")
@@ -568,21 +568,21 @@ class TestVirtualMachine(unittest.TestCase):
         small_vm.insert_symbol_in_segment("Constant Segment", g_frog)
 
         # Inserting in Local segment
-        small_vm.insert_symbol_in_segment("func", a_int)
-        small_vm.insert_symbol_in_segment("func", b_flt)
-        small_vm.insert_symbol_in_segment("func", c_str)
-        small_vm.insert_symbol_in_segment("func", d_char)
-        small_vm.insert_symbol_in_segment("func", e_bool)
-        small_vm.insert_symbol_in_segment("func", f_null)
-        small_vm.insert_symbol_in_segment("func", g_frog)
+        small_vm.insert_symbol_in_segment("func1", a_int)
+        small_vm.insert_symbol_in_segment("func1", b_flt)
+        small_vm.insert_symbol_in_segment("func1", c_str)
+        small_vm.insert_symbol_in_segment("func1", d_char)
+        small_vm.insert_symbol_in_segment("func1", e_bool)
+        small_vm.insert_symbol_in_segment("func1", f_null)
+        small_vm.insert_symbol_in_segment("func1", g_frog)
 
-        small_vm.insert_symbol_in_segment("fun2", a_int)
-        small_vm.insert_symbol_in_segment("fun2", b_flt)
-        small_vm.insert_symbol_in_segment("fun2", c_str)
-        small_vm.insert_symbol_in_segment("fun2", d_char)
-        small_vm.insert_symbol_in_segment("fun2", e_bool)
-        small_vm.insert_symbol_in_segment("fun2", f_null)
-        small_vm.insert_symbol_in_segment("fun2", g_frog)
+        small_vm.insert_symbol_in_segment("func2", a_int)
+        small_vm.insert_symbol_in_segment("func2", b_flt)
+        small_vm.insert_symbol_in_segment("func2", c_str)
+        small_vm.insert_symbol_in_segment("func2", d_char)
+        small_vm.insert_symbol_in_segment("func2", e_bool)
+        small_vm.insert_symbol_in_segment("func2", f_null)
+        small_vm.insert_symbol_in_segment("func2", g_frog)
 
         # Searching in Global segment
         self.assertEqual(small_vm.get_direction_symbol(0), a_int)
@@ -641,21 +641,21 @@ class TestVirtualMachine(unittest.TestCase):
         real_vm.insert_symbol_in_segment("Constant Segment", g_frog)
 
         # Inserting in Local segment
-        real_vm.insert_symbol_in_segment("func", a_int)
-        real_vm.insert_symbol_in_segment("func", b_flt)
-        real_vm.insert_symbol_in_segment("func", c_str)
-        real_vm.insert_symbol_in_segment("func", d_char)
-        real_vm.insert_symbol_in_segment("func", e_bool)
-        real_vm.insert_symbol_in_segment("func", f_null)
-        real_vm.insert_symbol_in_segment("func", g_frog)
+        real_vm.insert_symbol_in_segment("func1", a_int)
+        real_vm.insert_symbol_in_segment("func1", b_flt)
+        real_vm.insert_symbol_in_segment("func1", c_str)
+        real_vm.insert_symbol_in_segment("func1", d_char)
+        real_vm.insert_symbol_in_segment("func1", e_bool)
+        real_vm.insert_symbol_in_segment("func1", f_null)
+        real_vm.insert_symbol_in_segment("func1", g_frog)
 
-        real_vm.insert_symbol_in_segment("fun2", a_int)
-        real_vm.insert_symbol_in_segment("fun2", b_flt)
-        real_vm.insert_symbol_in_segment("fun2", c_str)
-        real_vm.insert_symbol_in_segment("fun2", d_char)
-        real_vm.insert_symbol_in_segment("fun2", e_bool)
-        real_vm.insert_symbol_in_segment("fun2", f_null)
-        real_vm.insert_symbol_in_segment("fun2", g_frog)
+        real_vm.insert_symbol_in_segment("func2", a_int)
+        real_vm.insert_symbol_in_segment("func2", b_flt)
+        real_vm.insert_symbol_in_segment("func2", c_str)
+        real_vm.insert_symbol_in_segment("func2", d_char)
+        real_vm.insert_symbol_in_segment("func2", e_bool)
+        real_vm.insert_symbol_in_segment("func2", f_null)
+        real_vm.insert_symbol_in_segment("func2", g_frog)
 
         # Searching in Global segment
         self.assertEqual(real_vm.get_direction_symbol(0), a_int)
@@ -691,3 +691,40 @@ class TestVirtualMachine(unittest.TestCase):
         self.assertEqual(real_vm.get_direction_symbol(8712), e_bool)
         self.assertEqual(real_vm.get_direction_symbol(9140), f_null)
         self.assertEqual(real_vm.get_direction_symbol(9568), g_frog)
+
+    def test_quadruple_direction_allocator(self):
+        add = Symbol("ADD", "operation")
+        a = Symbol("A", "INT")
+        b = Symbol("B", "FLT")
+        t1 = Symbol("T1", "FLT")
+
+        a.scope = "Constant Segment"
+        b.scope = "Constant Segment"
+        t1.scope = "Constant Segment"
+
+        self.assertEqual(a.segment_direction, None)
+        self.assertEqual(a.global_direction, None)
+
+        self.assertEqual(b.segment_direction, None)
+        self.assertEqual(b.global_direction, None)
+
+        self.assertEqual(t1.segment_direction, None)
+        self.assertEqual(t1.global_direction, None)
+
+        quad_dir = { 0: Quadruple(add, a, b, t1) }
+
+        ft = FunctionTable()
+        vt = VariableTable()
+        ft.set_function("main", "void", [], vt)
+        real_vm = VirtualMachine(3000, 1000, 6000, ft)
+
+        real_vm.quadruple_direction_allocator(quad_dir)
+
+        self.assertEqual(a.segment_direction, 0)
+        self.assertEqual(a.global_direction, 3000)
+
+        self.assertEqual(b.segment_direction, 142)
+        self.assertEqual(b.global_direction, 3142)
+
+        self.assertEqual(t1.segment_direction, 143)
+        self.assertEqual(t1.global_direction, 3143)

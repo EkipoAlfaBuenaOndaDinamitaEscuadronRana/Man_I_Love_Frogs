@@ -72,15 +72,15 @@ class Symbol(object):
     However, this value is expected to be assigned by the virtual machine.
     """
 
-    def __init__(
-        self, name=None, type=None, dimension_sizes=[], direction=None, value=None
-    ):
+    def __init__(self, name=None, type=None, dimension_sizes=[]):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None
         self.dimension_sizes = dimension_sizes
         self.dimensions = len(dimension_sizes)
-        self.direction = direction
-        self.value = value
+        self.segment_direction = None
+        self.global_direction = None
+        self.value = None
+        self.scope = None
 
     def __eq__(self, other):
         if type(self) is Symbol and type(other) is Symbol:
@@ -89,8 +89,10 @@ class Symbol(object):
                 self.type,
                 self.dimension_sizes,
                 self.dimensions,
-                self.direction,
+                self.segment_direction,
+                self.global_direction,
                 self.value,
+                self.scope,
             ]
 
             other_data = [
@@ -98,8 +100,10 @@ class Symbol(object):
                 other.type,
                 other.dimension_sizes,
                 other.dimensions,
-                other.direction,
+                other.segment_direction,
+                other.global_direction,
                 other.value,
+                other.scope,
             ]
 
             return self_data == other_data
@@ -137,8 +141,9 @@ class Symbol(object):
             print("DIMENSIONS: ", self.dimensions)
             print("DIMENSION_SIZES: ", self.dimension_sizes)
 
-        if self.direction:
-            print("DIRECTION: ", self.direction)
+        if self.segment_direction != None and self.global_direction != None:
+            print("SEGMENT_DIRECTION: ", self.segment_direction)
+            print("GLOBAL_DIRECTION: ", self.global_direction)
 
         if self.value:
             print("VALUE: ", self.value)
