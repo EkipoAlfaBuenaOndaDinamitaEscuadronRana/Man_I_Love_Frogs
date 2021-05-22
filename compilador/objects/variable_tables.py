@@ -11,14 +11,14 @@ class VariableTable(object):
     def reset_functionTable(self):
         self.variables = {}
 
-    def set_variable(self, symbol, value):
-        self.variables[symbol.name] = [symbol.type, value]
+    def set_variable(self, symbol):
+        self.variables[symbol.name] = symbol.type
 
     def get_variable_type(self, name):
-        return self.variables[name][0]
+        return self.variables[name]
 
     def get_var_symbol(self, name):
-        return Symbol(name, self.variables[name][0])
+        return Symbol(name, self.variables[name])
 
     def get_size(self):
         return len(self.variables)

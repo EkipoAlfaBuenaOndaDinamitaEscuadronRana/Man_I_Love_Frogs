@@ -9,6 +9,7 @@ class Quadruple(object):
         self.operand_1 = operand_1
         self.operand_2 = operand_2
         self.result_id = result_id
+        self.scope = None
 
     def __is_operator(symbol):
         return symbol in [
@@ -467,7 +468,8 @@ class Quadruple(object):
                     return "error: non-compatible types"
 
             result_quadruple_id += 1
-
+        
+        #resulting_quads.append(result_quadruple_id)
         return resulting_quads
 
     def format_quadruple(self):

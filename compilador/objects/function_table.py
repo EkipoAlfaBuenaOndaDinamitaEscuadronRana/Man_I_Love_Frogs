@@ -23,7 +23,7 @@ class FunctionTable(object):
     def set_function_variable_table_at(self, name):
         self.functions[name]["vt"] = VariableTable()
         for symbol in self.functions[name]["p"]:
-            self.functions[name]["vt"].set_variable(symbol, None)
+            self.functions[name]["vt"].set_variable(symbol)
 
     def set_function_size_at(self, name):
         self.functions[name]["s"] = self.functions[name]["vt"].get_size()

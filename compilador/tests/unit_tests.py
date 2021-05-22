@@ -78,12 +78,12 @@ class TestVarTable(unittest.TestCase):
         vt = VariableTable()
 
         s = Symbol("variable", "int")
-        vt.set_variable(s, 12)
-        self.assertEqual(vt.variables[s.name], ["INT", 12])
+        vt.set_variable(s)
+        self.assertEqual(vt.variables[s.name], "INT")
 
         s = Symbol("variable", "int")
-        vt.set_variable(s, 23)
-        self.assertEqual(vt.variables[s.name], ["INT", 23])
+        vt.set_variable(s)
+        self.assertEqual(vt.variables[s.name], "INT")
 
 
 class TestFuncTable(unittest.TestCase):
@@ -92,7 +92,7 @@ class TestFuncTable(unittest.TestCase):
         vt = VariableTable()
 
         s = Symbol("variable", "int")
-        vt.set_variable(s, 12)
+        vt.set_variable(s)
         ft.set_function("print_something", "void", [s], vt)
         self.assertEqual(
             ft.functions["print_something"], {"t": "VOID", "p": [s], "s": 0, "vt": vt}
