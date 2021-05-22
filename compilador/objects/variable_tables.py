@@ -12,13 +12,13 @@ class VariableTable(object):
         self.variables = {}
 
     def set_variable(self, symbol):
-        self.variables[symbol.name] = symbol.type
+        self.variables[symbol.name] = symbol
 
     def get_variable_type(self, name):
-        return self.variables[name]
+        return self.variables[name].type
 
     def get_var_symbol(self, name):
-        return Symbol(name, self.variables[name])
+        return self.variables[name]
 
     def get_size(self):
         return len(self.variables)

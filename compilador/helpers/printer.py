@@ -76,15 +76,20 @@ def get_functable_formatted(ft):
 
 
 def get_vartable_formatted(vt):
-    headers = ["Name", "Type"]
-    values = []
+    symbols = []
     for v in vt:
-        row = []
-        row.append(v)
-        row.append(vt[v])
-        values.append(row)
+        symbols.append(vt[v])
+    return get_symbol_formatted(symbols)
 
-    return tabulate(values, headers, tablefmt="fancy_grid")
+    # headers = ["Name", "Type"]
+    # values = []
+    # for v in vt:
+    #     row = []
+    #     row.append(v)
+    #     row.append(vt[v])
+    #     values.append(row)
+
+    # return tabulate(values, headers, tablefmt="fancy_grid")
 
 
 def get_symbol_formatted(s):

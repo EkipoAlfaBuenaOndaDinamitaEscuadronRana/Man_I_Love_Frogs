@@ -206,7 +206,7 @@ class QuadrupleStack(object):
             sys.exit()
 
     # LLena el go to cuando se llega al final de una funcion
-    def return_jump_fill(self):
+    def return_jump_fill(self, scope):
         if len(self.jumpStackR) > 0:
             if self.jumpStackR[-1] == self.count_prev:
                 self.qstack.pop(self.count_prev)
@@ -216,12 +216,12 @@ class QuadrupleStack(object):
 
             while len(self.jumpStackR) > 0:
                 end = self.jumpStackR.pop()
-                self.fill(end)
+                self.fill(end, scope)
 
     # Para llenar el quadruplo de go to main
-    def go_to_main(self):
+    def go_to_main(self, scope):
         end = self.jumpStack.pop()
-        self.fill(end)
+        self.fill(end, scope)
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while
@@ -243,7 +243,7 @@ class QuadrupleStack(object):
         end = self.jumpStack.pop()
         ret = self.jumpStack.pop()
         self.push_quad(Quadruple(Symbol("GOTO", "instruction"), None, None, ret), scope)
-        self.fill(end)
+        self.fill(end, scope)
 
     def if_1(self, scope):
         # ESTE VA DESPUES DEL COLON
@@ -257,22 +257,22 @@ class QuadrupleStack(object):
             self.push_quad(Quadruple(Symbol("GOTOF", "instruction", scope), result, None, "MISSING_ADDRESS"), scope)
             self.jumpStack.append(self.count_prev)
 
-    def if_2(self):
+    def if_2(self, scope):
         # ESTE VA CUANDO SE CIERRAN EL IF TOTAL
         end = self.jumpStack.pop()
-        self.fill(end)
+        self.fill(end, scope)
 
     def if_3(self, scope):
         # ESTE VA EN EL ELSE
         self.push_quad(Quadruple(Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"), scope)
         not_true = self.jumpStack.pop()
         self.jumpStack.append(self.count_prev)
-        self.fill(not_true)
+        self.fill(not_true, scope)
 
     # Mete el address indicado en el go_to
-    def fill(self, index):
+    def fill(self, index, scope):
         if self.qstack[index].result_id == "MISSING_ADDRESS":
-            self.qstack[index].result_id = Symbol(self.count, "address")
+            self.qstack[index].result_id = Symbol(self.count, "address", scope)
 
         else:
             print("ERROR: Error filling jump quadruple")

@@ -286,7 +286,7 @@ def p_func_distruct(p):
     # pop del estado actual (la tabla de la funcion que se llamo)
 
     # Mete el quad de end func
-    quad_stack.return_jump_fill()
+    quad_stack.return_jump_fill(current_state.get_curr_state_table())
     quad_stack.push_quad(Quadruple(Symbol("ENDFUNC", "instruction", current_state.get_curr_state_table()), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
 
@@ -355,7 +355,7 @@ def p_main_vartable_init(p):
     # LLAMAR FUNCION PARA METER TABLA de main A  GLOBAL FUNCTION TABLE y crea su VAR TABLE
     global_func_table.set_function("main", "void", [], VariableTable())
     current_state.push_state(State("main"))
-    quad_stack.go_to_main()
+    quad_stack.go_to_main(current_state.get_curr_state_table())
     # Estado: MAIN # no se popea hasta que se acabe el programa
 
 
@@ -594,7 +594,7 @@ def p_if_dos(p):
     if_dos : empty
     """
     p[0] = p[1]
-    quad_stack.if_2()
+    quad_stack.if_2(current_state.get_curr_state_table())
 
 
 # TERMINAL
