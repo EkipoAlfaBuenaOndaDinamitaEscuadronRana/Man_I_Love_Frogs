@@ -54,6 +54,7 @@ def p_global_vartable_distruct(p):
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
+    global_func_table.set_function_size_at("Constant Segment")
     quad_stack.push_quad(Quadruple(Symbol("ENDOF", "instruction", current_state.get_curr_state_table()), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
     quad_stack.print_quads()
@@ -333,7 +334,7 @@ def p_tipo(p):
     tipo : INT
          | FLT
          | BOOL
-         | CCHAR
+         | CHAR
          | STR
     """
     p[0] = p[1]
@@ -1005,16 +1006,28 @@ def p_var_cte(p):
     """
     var_cte : id_var
             | llamada
-            | bool_cte
-            | NULL
-            | CINT
-            | CFLT
-            | CCHAR
-            | CSTRING
+            | real_constants
+            
 
     """
     p[0] = p[1]
 
+    
+
+
+def p_real_constants(p):
+    """
+    real_constants : bool_cte
+                   | NULL
+                   | CINT
+                   | CFLT
+                   | CCHAR
+                   | CSTRING
+
+    """
+    p[0] = p[1]
+
+    global_func_table.insert_to_constant_table(expresion_to_symbols(p[0], global_func_table, current_state))
 
 # TERMINAL Y NO TERMINAL
 # Regresa IDs validas para variables

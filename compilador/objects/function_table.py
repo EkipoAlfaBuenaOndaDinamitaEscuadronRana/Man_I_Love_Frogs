@@ -28,6 +28,10 @@ class FunctionTable(object):
     def set_function_size_at(self, name):
         self.functions[name]["s"] = self.functions[name]["vt"].get_size()
 
+    def insert_to_constant_table(self, constant):
+        for c in constant:
+            self.functions["Constant Segment"]["vt"].set_variable(c)
+
     def get_function(self, name):
         return self.functions[name]
 
