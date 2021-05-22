@@ -169,8 +169,10 @@ class QuadrupleStack(object):
         self.push_quad(Quadruple(Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"), scope)
         self.jumpStackR.append(self.count_prev)
 
-    def parche_guadalupano(self, func_var):
-        return True
+    def parche_guadalupano(self, func_var, scope):
+        self.push_quad(Quadruple(Symbol("EQ", "assignment", scope), func_var, None, Symbol(str("T" + str(self.temp_count)), func_var.type, scope)), scope)
+        self.temp_count += 1
+
 
     def write_quad(self, exp, scope):
         if len(exp) == 1:

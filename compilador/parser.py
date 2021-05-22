@@ -737,8 +737,7 @@ def p_for1(p):
 # Regresa el fromato de un for simple
 def p_for_simple(p):
     """
-    for_simple  : id_var TIMES
-                | CINT TIMES
+    for_simple  : var_cte TIMES
     """
 
     p[0] = [p[1], p[2]]
@@ -775,7 +774,11 @@ def p_llamada(p):
             ),
             current_state.get_curr_state_table()
         )
-        
+        quad_stack.parche_guadalupano(
+            global_func_table.get_function_variable_table(
+                current_state.get_global_table()
+                ).get_var_symbol(p[1]), 
+                current_state.get_curr_state_table())
         current_state.remove_curr_state_opt()
     else:
         print("ERROR: Number of parameters sent is less than parameters asked")
