@@ -36,6 +36,7 @@ operators = {
     "jump_right": Symbol("JR", "obj_method"),
     "jump_up": Symbol("JU", "obj_method"),
     "jump_down": Symbol("JD", "obj_method"),
+    
 }
 
 

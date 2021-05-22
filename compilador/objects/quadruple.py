@@ -469,7 +469,7 @@ class Quadruple(object):
 
             result_quadruple_id += 1
         
-        #resulting_quads.append(result_quadruple_id)
+        resulting_quads.append(result_quadruple_id)
         return resulting_quads
 
     def format_quadruple(self):

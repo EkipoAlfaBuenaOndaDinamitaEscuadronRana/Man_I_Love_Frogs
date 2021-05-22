@@ -54,9 +54,9 @@ def p_global_vartable_distruct(p):
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
-    quad_stack.push_quad(Quadruple("ENDOF", None, None, None), current_state.get_curr_state_table())
+    quad_stack.push_quad(Quadruple(Symbol("ENDOF", "instruction"), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
-    quad_stack.print_quads()
+    #quad_stack.print_quads()
     #global_func_table.print_FuncTable()
 
 
@@ -95,7 +95,7 @@ def p_global_vartable(p):
     # CREA VAR TABLE
     global_func_table.set_function(p[0], "void", [], VariableTable())
     # Limpea la quad_stack
-    quad_stack.push_quad(Quadruple("GOTO", None, None, "MISSING_ADDRESS"), current_state.get_curr_state_table())
+    quad_stack.push_quad(Quadruple(Symbol("GOTO", "instruction"), None, None, "MISSING_ADDRESS"), current_state.get_curr_state_table())
     quad_stack.jumpStack.append(quad_stack.count_prev)
 
 
@@ -284,7 +284,7 @@ def p_func_distruct(p):
 
     # Mete el quad de end func
     quad_stack.return_jump_fill()
-    quad_stack.push_quad(Quadruple("ENDFUNC", None, None, None), current_state.get_curr_state_table())
+    quad_stack.push_quad(Quadruple(Symbol("ENDFUNC", "instruction"), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
 
 
@@ -764,7 +764,7 @@ def p_llamada(p):
         quad_stack.reset_param_count()
         quad_stack.push_quad(
             Quadruple(
-                "GOSUB",
+                Symbol("GOSUB", "instruction"),
                 p[1],
                 None,
                 quad_stack.get_function_location(current_state.get_curr_state_opt()),
@@ -1040,7 +1040,7 @@ def p_id_var(p):
             if not global_func_table.get_function_variable_table(
                 current_state.get_global_table()
             ).lookup_variable(p[1]):
-                print("ERROR: Variable " + str(p[1] + " not declared"))
+                print("ERROR: Variable \"" + str(p[1] + "\" not declared in scope \"" + str(current_state.get_curr_state_table()) + "\""))
                 sys.exit()
 
 
@@ -1071,7 +1071,7 @@ def p_id_func(p):
             sys.exit()
         else:
             # Se mete el ERA quad
-            quad_stack.push_quad(Quadruple("ERA", p[1], None, None), current_state.get_curr_state_table())
+            quad_stack.push_quad(Quadruple(Symbol("ERA", "instruction"), p[1], None, None), current_state.get_curr_state_table())
             current_state.set_curr_state_opt(p[1])
 
 

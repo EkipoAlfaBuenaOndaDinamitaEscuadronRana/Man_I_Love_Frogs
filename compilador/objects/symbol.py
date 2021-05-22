@@ -31,6 +31,7 @@ type_dictionary = {
     "read": "read",
     "write": "write",
     "obj_method": "obj_method",
+    "instruction": "instruction",
 }
 
 # NOTE: This sizes are no longer used... But I don't want to delete them yet...
