@@ -1,7 +1,3 @@
-"""
-Para correr el archivo, usar este comando
-python3 -m unittest game_engine_tests.py
-"""
 from router_solver import *
 import game_engine.engine
 from game_engine.engine import *
