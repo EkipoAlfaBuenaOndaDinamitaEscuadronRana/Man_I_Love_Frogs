@@ -113,6 +113,9 @@ class VirtualMachine(object):
             segment = self.__get_local_segment(direction)
             return segment.search_symbol(direction)
 
+    def __not_allocated(self, symbol):
+        return symbol and not (symbol.segment_direction and symbol.global_direction)
+
     def quadruple_direction_allocator(self, quad_dir):
         current_scope = ""
 
@@ -121,27 +124,15 @@ class VirtualMachine(object):
             quad_operation = curr_quad.operator.name
 
             if quad_operation not in ["GOTO", "GOTOF", "ENDFUNC", "GOSUB", "ENDOF"]:
+                operand_1 = curr_quad.operand_1
+                operand_2 = curr_quad.operand_2
+                result_id = curr_quad.result_id
 
-                if curr_quad.operand_1 and not (
-                    curr_quad.operand_1.segment_direction
-                    and curr_quad.operand_1.global_direction
-                ):
-                    self.insert_symbol_in_segment(
-                        curr_quad.operand_1.scope, curr_quad.operand_1
-                    )
+                if self.__not_allocated(operand_1):
+                    self.insert_symbol_in_segment(operand_1.scope, operand_1)
 
-                if curr_quad.operand_2 and not (
-                    curr_quad.operand_2.segment_direction
-                    and curr_quad.operand_2.global_direction
-                ):
-                    self.insert_symbol_in_segment(
-                        curr_quad.operand_2.scope, curr_quad.operand_2
-                    )
+                if self.__not_allocated(operand_2):
+                    self.insert_symbol_in_segment(operand_2.scope, operand_2)
 
-                if curr_quad.result_id and not (
-                    curr_quad.result_id.segment_direction
-                    and curr_quad.result_id.global_direction
-                ):
-                    self.insert_symbol_in_segment(
-                        curr_quad.result_id.scope, curr_quad.result_id
-                    )
+                if self.__not_allocated(curr_quad.result_id):
+                    self.insert_symbol_in_segment(result_id.scope, result_id)
