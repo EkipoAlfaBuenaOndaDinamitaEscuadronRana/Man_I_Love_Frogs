@@ -107,8 +107,10 @@ class Symbol(object):
             ]
 
             return self_data == other_data
+
         elif self is None and other is None:
             return True
+
         else:
             return False
 

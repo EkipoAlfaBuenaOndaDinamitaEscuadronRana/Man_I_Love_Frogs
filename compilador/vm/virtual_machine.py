@@ -36,7 +36,8 @@ class VirtualMachine(object):
         local_start_direction,
     ):
         num_local_segments = len(self.func_table.functions) - 1
-        if not num_local_segments: return []
+        if not num_local_segments:
+            return []
 
         local_segment_size = local_size // num_local_segments
 
@@ -112,7 +113,6 @@ class VirtualMachine(object):
             segment = self.__get_local_segment(direction)
             return segment.search_symbol(direction)
 
-
     def quadruple_direction_allocator(self, quad_dir):
         current_scope = ""
 
@@ -122,11 +122,26 @@ class VirtualMachine(object):
 
             if quad_operation not in ["GOTO", "GOTOF", "ENDFUNC", "GOSUB", "ENDOF"]:
 
-                if curr_quad.operand_1 and not(curr_quad.operand_1.segment_direction and curr_quad.operand_1.global_direction):
-                    self.insert_symbol_in_segment(curr_quad.operand_1.scope, curr_quad.operand_1)
+                if curr_quad.operand_1 and not (
+                    curr_quad.operand_1.segment_direction
+                    and curr_quad.operand_1.global_direction
+                ):
+                    self.insert_symbol_in_segment(
+                        curr_quad.operand_1.scope, curr_quad.operand_1
+                    )
 
-                if curr_quad.operand_2 and not(curr_quad.operand_2.segment_direction and curr_quad.operand_2.global_direction):
-                    self.insert_symbol_in_segment(curr_quad.operand_2.scope, curr_quad.operand_2)
+                if curr_quad.operand_2 and not (
+                    curr_quad.operand_2.segment_direction
+                    and curr_quad.operand_2.global_direction
+                ):
+                    self.insert_symbol_in_segment(
+                        curr_quad.operand_2.scope, curr_quad.operand_2
+                    )
 
-                if curr_quad.result_id and not(curr_quad.result_id.segment_direction and curr_quad.result_id.global_direction):
-                    self.insert_symbol_in_segment(curr_quad.result_id.scope, curr_quad.result_id)
+                if curr_quad.result_id and not (
+                    curr_quad.result_id.segment_direction
+                    and curr_quad.result_id.global_direction
+                ):
+                    self.insert_symbol_in_segment(
+                        curr_quad.result_id.scope, curr_quad.result_id
+                    )

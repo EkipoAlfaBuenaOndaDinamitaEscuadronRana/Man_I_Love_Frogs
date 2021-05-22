@@ -711,7 +711,7 @@ class TestVirtualMachine(unittest.TestCase):
         self.assertEqual(t1.segment_direction, None)
         self.assertEqual(t1.global_direction, None)
 
-        quad_dir = { 0: Quadruple(add, a, b, t1) }
+        quad_dir = {0: Quadruple(add, a, b, t1)}
 
         ft = FunctionTable()
         vt = VariableTable()
