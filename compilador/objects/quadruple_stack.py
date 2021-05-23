@@ -50,21 +50,15 @@ class QuadrupleStack(object):
             sys.exit()
         else:
             last_temp = sol.pop()
-            # print(str(self.count) + "---BEFORE-----")
-            # print(last_temp)
-            # print()
-            # print(self.temp_count)
             if len(sol) > 1:
                  self.temp_count = last_temp - 1
             else:
-                self.temp_count = last_temp
-
-
-            # print("---AFTER-----")
-            # print(last_temp)
-            # print()
-            # print(self.temp_count)
+                if last_temp == 0:
+                    self.temp_count = last_temp + 1
+                else:
+                    self.temp_count = last_temp
             return sol
+
 
     # SET / GETS
     # Para poder guardar donde esta el inicio de una funcion
@@ -80,6 +74,8 @@ class QuadrupleStack(object):
     def reset_param_count(self):
         self.param_count = 0
 
+    def reset_temp_count(self):
+        self.temp_count = 0
     # Para cuando saber el numero de parametros de entrada que
     # se estan mandando
     def get_param_count(self):
@@ -170,8 +166,9 @@ class QuadrupleStack(object):
         self.jumpStackR.append(self.count_prev)
 
     def parche_guadalupano(self, func_var, scope):
-        self.push_quad(Quadruple(Symbol("EQ", "assignment", scope), func_var, None, Symbol(str("T" + str(self.temp_count)), func_var.type, scope)), scope)
-        self.temp_count += 1
+        if func_var.type != "VOID":
+            self.push_quad(Quadruple(Symbol("EQ", "assignment", scope), func_var, None, Symbol(str("T" + str(self.temp_count)), func_var.type, scope)), scope)
+            self.temp_count += 1
 
 
     def write_quad(self, exp, scope):

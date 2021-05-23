@@ -93,7 +93,7 @@ def get_vartable_formatted(vt):
 
 
 def get_symbol_formatted(s):
-    headers = ["Name", "Type", "Scope"]
+    headers = ["Name", "Type", "Scope", "Address"]
     values = []
     if type(s) == symbol.Symbol:
         row = []
@@ -108,10 +108,19 @@ def get_symbol_formatted(s):
                 row.append("-")
                 row.append("-")
                 row.append("-")
+                row.append("-")
             else:
                 row.append(v.name)
                 row.append(v.type)
                 row.append(v.scope)
+                if v.address != None:
+                    a_list = []
+                    for a in v.address:
+                        a_list.append(a.name)
+                    row.append(a_list)
+                else:
+                    row.append(v.address)
+
             values.append(row)
     return tabulate(values, headers, tablefmt="fancy_grid")
 

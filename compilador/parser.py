@@ -57,7 +57,7 @@ def p_global_vartable_distruct(p):
     global_func_table.set_function_size_at("Constant Segment")
     quad_stack.push_quad(Quadruple(Symbol("ENDOF", "instruction", current_state.get_curr_state_table()), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
-    quad_stack.print_quads()
+    #quad_stack.print_quads()
     global_func_table.print_FuncTable()
 
 
@@ -105,18 +105,34 @@ def p_global_vartable(p):
 # Deja que se declaren funciones y variables globales pero no obliga
 def p_bloque_g(p):
     """
-    bloque_g : var_dec var bloque_g
-             | func_declaration func bloque_g
-             | empty
+    bloque_g : var_global func_global
     """
 
+    p[0] = [p[1], p[2]]
+
+    # print("p_bloque_g: " + str(p[0]))
+
+def p_var_global(p):
+    """
+    var_global : var_dec var var_global
+               | empty
+    
+    """
     if len(p) == 2:
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3]]
 
-    # print("p_bloque_g: " + str(p[0]))
-
+def p_func_global(p):
+    """
+    func_global : func_declaration func func_global
+                | empty
+    
+    """
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = [p[1], p[2], p[3]]
 
 # NO TERMINAL
 # Validación e insersion de variable a symboltable
@@ -255,6 +271,7 @@ def p_func_init(p):
         else:
             # Inserta a functable global
             # manda tipo, ID y lista de parametros
+            quad_stack.reset_temp_count()
             global_func_table.set_function(p[2], p[1], get_parameters(p[4]), None)
             # Inserta a tabla global variable de funcion 
             global_func_table.get_function_variable_table(
@@ -356,6 +373,7 @@ def p_main_vartable_init(p):
     global_func_table.set_function("main", "void", [], VariableTable())
     current_state.push_state(State("main"))
     quad_stack.go_to_main(current_state.get_curr_state_table())
+    quad_stack.reset_temp_count()
     # Estado: MAIN # no se popea hasta que se acabe el programa
 
 
@@ -779,7 +797,10 @@ def p_llamada(p):
                 current_state.get_global_table()
                 ).get_var_symbol(p[1]), 
                 current_state.get_curr_state_table())
-        current_state.remove_curr_state_opt()
+        global_func_table.get_function_variable_table(
+                current_state.get_global_table()
+                ).add_address(p[1],quad_stack.qstack[quad_stack.count_prev].result_id)
+        current_state.pop_curr_state()
     else:
         print("ERROR: Number of parameters sent is less than parameters asked")
         sys.exit()
@@ -1026,11 +1047,20 @@ def p_real_constants(p):
                    | CFLT
                    | CCHAR
                    | CSTRING
+                   | SUB CINT
+                   | SUB CFLT
 
     """
-    p[0] = p[1]
-
-    global_func_table.insert_to_constant_table(expresion_to_symbols(p[0], global_func_table, current_state))
+    constant = 0
+    if len(p) == 2:
+        constant = p[1]
+        p[0] = p[1]
+    else:
+        constant = p[2]
+        constant = constant * -1
+        p[0] = [constant]
+    
+    global_func_table.insert_to_constant_table(expresion_to_symbols(constant, global_func_table, current_state))
 
 # TERMINAL Y NO TERMINAL
 # Regresa IDs validas para variables
@@ -1092,7 +1122,9 @@ def p_id_func(p):
         else:
             # Se mete el ERA quad
             quad_stack.push_quad(Quadruple(Symbol("ERA", "instruction", current_state.get_curr_state_table()), Symbol(p[1],global_func_table.get_function_type(p[1]),current_state.get_curr_state_table()), None, None), current_state.get_curr_state_table())
-            current_state.set_curr_state_opt(p[1])
+            current_state.push_state(State(current_state.get_curr_state_table(), p[1]))
+
+
 
 
 # TERMINAL Y NO TERMINAL

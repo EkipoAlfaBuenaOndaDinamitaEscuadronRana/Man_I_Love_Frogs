@@ -113,8 +113,8 @@ def dec_to_as(exp):
 
 def constant_eval(const):
     patterns = {
-        "INT": r"\d+",
-        "FLT": r"\d+\.\d+",
+        "INT": r"(\d+|-\d+)",
+        "FLT": r"(\d+\.\d+|-\d+\.\d+)",
         "CHAR": r'("|\')([^\"|^\'])("|\')',
         "BOOL": r"(?:true|false)",
         "NULL": r"null",
@@ -143,10 +143,21 @@ def expresion_to_symbols(exp, ft, s, d=None):
             op.set_scope(s.get_curr_state_table())
             sym_list.append(op)
         elif ft.lookup_function(e) and ("(" in exp and ")" in exp):
-            sym_list.append(Symbol(e, ft.get_function_type(e),s.get_global_table()))
-            start = exp.index("(")
-            end = exp.index(")") + 1
-            del exp[start:end]
+            address = ft.get_function_variable_table(s.get_global_table()).get_var_symbol(e).get_address()
+            if address != None:
+                sym_list.append(address)
+            else:
+                sym_list.append(Symbol(e, ft.get_function_type(e),s.get_global_table()))
+            stack = []
+            count = exp.index("(")
+            stack.append(exp[count])
+            del exp[count]
+            while len(stack) > 0 and count < len(exp):
+                if exp[count] == "(":
+                    stack.append(exp[count])
+                elif exp[count] == ")":
+                    stack.pop()
+                exp.pop(count)
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e
         ):
@@ -165,7 +176,7 @@ def expresion_to_symbols(exp, ft, s, d=None):
                 sym_list.append(Symbol(e, c_type, "Constant Segment"))
 
             else:
-                print('ERROR: token " ' + str(e) + ' " not valid or not found')
+                print('ERROR: token "' + str(e) + '" not valid or not found')
                 sys.exit()
 
     return sym_list

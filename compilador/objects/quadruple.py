@@ -133,7 +133,6 @@ class Quadruple(object):
         stack_values, stack_operators, result_quadruple_id, stack_types, resulting_quads
     ):
         result_id = "T" + str(result_quadruple_id)
-
         consideration = Quadruple.__type_consideration(stack_types, stack_operators)
         operator = Symbol(
             stack_operators[-1], SemanticTable.clasify_symbol_op(stack_operators.pop())
@@ -487,6 +486,8 @@ class Quadruple(object):
             expression = Quadruple.__divide_expression(expression)
 
         for symbol in expression:
+            print(str(symbol.name) + " " + str(symbol.type))
+
             s_type = type(symbol)
 
             if s_type == Symbol:
