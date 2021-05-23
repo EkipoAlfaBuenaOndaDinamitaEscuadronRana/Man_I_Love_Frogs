@@ -486,8 +486,6 @@ class Quadruple(object):
             expression = Quadruple.__divide_expression(expression)
 
         for symbol in expression:
-            print(str(symbol.name) + " " + str(symbol.type))
-
             s_type = type(symbol)
 
             if s_type == Symbol:
