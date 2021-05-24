@@ -209,6 +209,12 @@ def p_var(p):
                 global_func_table.get_function_variable_table(
                     current_state.get_curr_state_table()
                 ).set_variable(symbol)
+                if symbol.type == "FROG":
+                    atr_frog = Symbol(str(symbol.name) + ".hat", "STR", symbol.scope)
+                    global_func_table.get_function_variable_table(
+                    current_state.get_curr_state_table()
+                    ).set_variable(atr_frog)
+
 
         if current_state.get_curr_state_opt() == "as_on":
             quad_stack.push_list(
@@ -778,7 +784,6 @@ def p_llamada(p):
     llamada : id_func OP llamada1 CP
     """
     p[0] = [p[1], p[2], p[3], p[4]]
-
     if quad_stack.get_param_count() == len(
         global_func_table.get_function_parameters(current_state.get_curr_state_opt())
     ):
@@ -821,21 +826,34 @@ def p_llamada1(p):
     else:
         p[0] = [p[1], p[2], p[3]]
 
+def p_param_check(p):
+    """
+    param_check : empty
+
+    """
+    p[0] = p[1]
+
+    current_state.push_state(State(current_state.get_curr_state_table(), "param_check"))
+
 
 def p_parametro(p):
     """
-    parametro : expresion
+    parametro : param_check expresion
               | empty
     """
-    p[0] = p[1]
+    if len(p) == 2:  
+        p[0] = p[1]
+    else:
+        p[0] = p[2]
     if current_state.get_curr_state_opt != None:
-        if p[1] != None:
+        if p[0] != None:
+            current_state.pop_curr_state()
             quad_stack.push_quad(
                 quad_stack.validate_parameters(
                     global_func_table.get_function_parameters(
                         current_state.get_curr_state_opt()
                     ),
-                    expresion_to_symbols(p[1], global_func_table, current_state),
+                    expresion_to_symbols(p[0], global_func_table, current_state),
                     current_state.get_curr_state_table()
                 ),
                 current_state.get_curr_state_table()
@@ -843,6 +861,8 @@ def p_parametro(p):
     else:
         print("ERROR: Error trying to validate parameters")
         sys.exit()
+    
+
 
 
 # NO TERMINAL
@@ -856,7 +876,7 @@ def p_expresion(p):
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3]]
-    if current_state.get_curr_state_opt() != "as_on":
+    if current_state.get_curr_state_opt() != "as_on" and current_state.get_curr_state_opt() != "param_check":
         quad_stack.push_list(
             quad_stack.solve_expression(
                 expresion_to_symbols(p[0], global_func_table, current_state)
@@ -1075,7 +1095,7 @@ def p_id_var(p):
     elif len(p) == 3:
         p[0] = [p[1], p[2]]
     else:
-        p[0] = [p[1], p[2], p[3]]
+        p[0] = str(p[1]) + str(p[2]) + str(p[3]) 
 
     # VALIDA ID
     # ESTADO : CURRENT VAR TABLE
