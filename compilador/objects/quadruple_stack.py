@@ -2,6 +2,7 @@ from typing import SupportsComplex
 from router_solver import *
 import compilador.objects.quadruple
 from compilador.objects.quadruple import *
+import re
 import sys
 
 
@@ -16,7 +17,7 @@ class QuadrupleStack(object):
         self.jumpStackR = []
         self.funcjump = {}
         self.param_count = 0
-        self.temp_count = 0
+        self.temp_count = 1
 
     # para borrar el contendio cuando se empieza a leer un programa
     def reset_quad(self):
@@ -27,7 +28,7 @@ class QuadrupleStack(object):
         self.jumpStackR = []
         self.funcjump = {}
         self.param_count = 0
-        self.temp_count = 0
+        self.temp_count = 1
 
     # INSERTAR / RESOLVER QUADRUPLOS
     # Insertar un quadruplo al stack
@@ -49,15 +50,19 @@ class QuadrupleStack(object):
             print(sol)
             sys.exit()
         else:
-            last_temp = sol.pop()
-            if len(sol) > 1:
-                 self.temp_count = last_temp - 1
-            else:
-                if last_temp == 0:
-                    self.temp_count = last_temp + 1
-                else:
-                    self.temp_count = last_temp
+            self.get_last_temporal(sol)
             return sol
+
+    def get_last_temporal(self, list):
+        r = r"T(\d+)"
+        for q in list:
+            temp = q.result_id.name
+            result = re.match(r, temp)
+            if result:
+                if result.start() == 0 and result.end() == (len(str(temp))):
+                    temp = int(temp[1:])
+                    self.temp_count = temp + 1
+                    
 
 
     # SET / GETS
@@ -75,7 +80,7 @@ class QuadrupleStack(object):
         self.param_count = 0
 
     def reset_temp_count(self):
-        self.temp_count = 0
+        self.temp_count = 1
     # Para cuando saber el numero de parametros de entrada que
     # se estan mandando
     def get_param_count(self):

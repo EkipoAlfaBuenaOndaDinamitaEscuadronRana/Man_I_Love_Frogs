@@ -111,7 +111,6 @@ class Symbol(object):
         return self.name
 
     def get_address(self):
-        print(self.address)
         if len(self.address) > 0:
             return self.address.pop()
         else:
