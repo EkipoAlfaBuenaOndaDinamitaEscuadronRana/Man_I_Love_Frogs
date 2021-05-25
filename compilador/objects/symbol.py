@@ -83,12 +83,39 @@ class Symbol(object):
         self.dimension_sizes = dimension_sizes
         self.dimensions = len(dimension_sizes)
         self.address = address
+        self.segment_direction = None
+        self.global_direction = None
+        self.value = None
 
     def __eq__(self, other):
         if type(self) is Symbol and type(other) is Symbol:
-            return self.name == other.name and self.type == other.type
+            self_data = [
+                self.name,
+                self.type,
+                self.dimension_sizes,
+                self.dimensions,
+                self.segment_direction,
+                self.global_direction,
+                self.value,
+                self.scope,
+            ]
+
+            other_data = [
+                other.name,
+                other.type,
+                other.dimension_sizes,
+                other.dimensions,
+                other.segment_direction,
+                other.global_direction,
+                other.value,
+                other.scope,
+            ]
+
+            return self_data == other_data
+
         elif self is None and other is None:
             return True
+
         else:
             return False
 
@@ -133,8 +160,12 @@ class Symbol(object):
             print("DIMENSIONS: ", self.dimensions)
             print("DIMENSION_SIZES: ", self.dimension_sizes)
 
-        if self.address:
-            print("ADDRESS: ", self.address)
+        if self.segment_direction != None and self.global_direction != None:
+            print("SEGMENT_DIRECTION: ", self.segment_direction)
+            print("GLOBAL_DIRECTION: ", self.global_direction)
+
+        if self.value:
+            print("VALUE: ", self.value)
 
     def memory_size(self):
         return int(np.prod(self.dimension_sizes))

@@ -4,7 +4,7 @@ Compilador de Rosamaría Martínez y Adrián García
 ## Documentación
 Podrás encontrar la documentación en [este archivo](https://docs.google.com/document/d/1uo_Ad0OShn6FkB5r4D5TGvB4o_46ZmvYzrOaCscHmEU/edit?usp=sharing)
 
-## Instalacion
+## Instalación
 Lo primero, es abrir una terminal y clonar el repositorio escribiendo:
 ```
 git clone https://github.com/EkipoAlfaBuenaOndaDinamitaEscuadronRana/Man_I_Love_Frogs.git
@@ -47,12 +47,12 @@ python3 -m unittest compilador/tests/unit_tests.py
 ```
 
 ## Code Styler
-Para este proyecto, usamos [Black](https://github.com/psf/black) como estilizador de código. Cada vez que se mande un Pull Request a revisión, es importante correr los siguietes comandos para cada uno de los archivos modificados enviados a revision
+Para este proyecto, usamos [Black](https://github.com/psf/black) como estilizador de código. Cada vez que se mande un Pull Request a revisión, es importante correr alguno de los siguietes dos comandos para poder hacer el merge del PR.
 ```
-black {nombre_de_archivo.py}
+black .
 ```
 ```
-python3 -m black {nombre_de_archivo.py}
+python3 -m black .
 ```
 
 ### Avances de entrega 1
@@ -88,3 +88,9 @@ python3 -m black {nombre_de_archivo.py}
 1. Quadruplos hacen asignaciones
 2. Se instauró un code styler
 3. Expresiones aritmeticas con tipos
+
+### Avances de entrega 7
+1. Quadruplos hacen estatus no lineales, funciones y metodos de objetos
+2. Se hace type checking de toda expresion
+3. Se empieza la alocación de memoria y el desarrollo de la vm
+4. Refactorización de jerarquia de archivos
