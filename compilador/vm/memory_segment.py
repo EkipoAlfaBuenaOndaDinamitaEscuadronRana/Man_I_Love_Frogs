@@ -6,20 +6,19 @@ from compilador.objects.symbol import *
 class MemorySegment(object):
     def __init__(self, name, size, initial_position):
         self.name = name
-        self.__size = size
+        self.size = size
         self.__memory = dict()
         self.__symbol_directions = dict()
-        self.__inial_position = initial_position
-
-        self.__subsegment_size = int(size / 7)
+        self.__subsegment_size = size // 7
+        self.initial_position = initial_position
 
         self.ints = 0
         self.flts = self.__subsegment_size
-        self.strs = 2 * self.__subsegment_size
-        self.chars = 3 * self.__subsegment_size
-        self.bools = 4 * self.__subsegment_size
-        self.nulls = 5 * self.__subsegment_size
-        self.frogs = 6 * self.__subsegment_size
+        self.strs = self.__subsegment_size * 2
+        self.chars = self.__subsegment_size * 3
+        self.bools = self.__subsegment_size * 4
+        self.nulls = self.__subsegment_size * 5
+        self.frogs = self.__subsegment_size * 6
 
         self.spare_memory_ints = self.__subsegment_size
         self.spare_memory_flts = self.__subsegment_size
@@ -31,13 +30,13 @@ class MemorySegment(object):
 
     def __get_memory_inital_direction(self, s_type):
         type_inital_position = {
-            "INT": self.ints - self.__subsegment_size,
-            "FLT": self.flts - self.__subsegment_size,
-            "STR": self.strs - self.__subsegment_size,
-            "CHAR": self.chars - self.__subsegment_size,
-            "BOOL": self.bools - self.__subsegment_size,
-            "NULL": self.nulls - self.__subsegment_size,
-            "FROG": self.frogs - self.__subsegment_size,
+            "INT": self.ints,
+            "FLT": self.flts,
+            "STR": self.strs,
+            "CHAR": self.chars,
+            "BOOL": self.bools,
+            "NULL": self.nulls,
+            "FROG": self.frogs,
         }
 
         return type_inital_position[s_type]
@@ -89,7 +88,15 @@ class MemorySegment(object):
 
     # TODO: Does not assign arrays
     def __assign_memory(self, symbol, symbol_position):
-        self.__memory[symbol_position] = symbol
+        # Scalar or array size 1
+        if symbol.memory_size() == 1:
+            symbol.segment_direction = symbol_position
+            symbol.global_direction = self.initial_position + symbol_position
+            self.__memory[symbol_position] = symbol
+
+        # Two- or three-dimensional array
+        else:
+            pass
 
     # TODO: Does not work with arrays
     def insert_symbol(self, symbol):
@@ -105,3 +112,7 @@ class MemorySegment(object):
             return True
 
         return False
+
+    def search_symbol(self, direction):
+        direction = direction - self.initial_position
+        return self.__memory.get(direction, None)
