@@ -88,3 +88,8 @@ python3 -m black .
 1. Quadruplos hacen asignaciones
 2. Se instauró un code styler
 3. Expresiones aritmeticas con tipos
+
+### Avances de entrega 7
+1. Quadruplos hacen estatus no lineales y funciones
+2. Se hace type checking de toda expresion
+3. Se empieza la alocación de memoria y el desarrollo de la vm
