@@ -90,7 +90,7 @@ python3 -m black .
 3. Expresiones aritmeticas con tipos
 
 ### Avances de entrega 7
-1. Quadruplos hacen estatus no lineales y funciones
+1. Quadruplos hacen estatus no lineales, funciones y metodos de objetos
 2. Se hace type checking de toda expresion
 3. Se empieza la alocación de memoria y el desarrollo de la vm
 4. Refactorización de jerarquia de archivos
