@@ -1,4 +1,5 @@
 from router_solver import *
+import game_engine.game_engine_tests
 import compilador.objects.function_table
 import compilador.objects.quadruple
 import compilador.lexer
@@ -11,6 +12,7 @@ from compilador.lexer import *
 from compilador.parser import *
 from compilador.helpers.file_parser import *
 from compilador.vm.virtual_machine import *
+from game_engine.game_engine_tests import *
 import unittest
 
 
