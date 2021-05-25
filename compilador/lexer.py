@@ -15,7 +15,7 @@ reserved = {
     "int": "INT",  # int
     "float": "FLT",  # float
     "string": "STR",  # string
-    "char" : "CHAR",
+    "char": "CHAR",
     "bool": "BOOL",  # bool
     "frog": "FROG",  # player
     "void": "VOID",  # void

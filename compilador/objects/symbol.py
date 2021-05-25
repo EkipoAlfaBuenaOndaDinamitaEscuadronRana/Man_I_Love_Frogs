@@ -32,7 +32,7 @@ type_dictionary = {
     "write": "write",
     "obj_method": "obj_method",
     "instruction": "instruction",
-    "address" : "address"
+    "address": "address",
 }
 
 # NOTE: This sizes are no longer used... But I don't want to delete them yet...
@@ -76,7 +76,9 @@ class Symbol(object):
     However, this value is expected to be assigned by the virtual machine.
     """
 
-    def __init__(self, name=None, type=None, scope= None, address=[], dimension_sizes=[]):
+    def __init__(
+        self, name=None, type=None, scope=None, address=[], dimension_sizes=[]
+    ):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None
         self.scope = scope
@@ -124,13 +126,13 @@ class Symbol(object):
 
     def set_name(self, name):
         self.name = name
-    
+
     def set_scope(self, scope):
         self.scope = scope
 
     def set_type(self, type):
         self.type = type_dictionary[type] if type in type_dictionary else None
-    
+
     def set_address(self, address):
         self.address.append(address)
 

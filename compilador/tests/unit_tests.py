@@ -29,15 +29,19 @@ class TestYacc(unittest.TestCase):
             "*",
             "01 | GOTO - - 2\n02 | ENDOF - - -\n",
             "01 | GOTO - - 2\n02 | EQ 1 - a\n03 | ENDOF - - -\n",
-            "01 | GOTO - - 6\n02 | EQ 2 - b\n03 | MUL a a T3\n04 | RETURN T3 - -\n05 | ENDFUNC - - -\n06 | EQ 10 - x\n07 | BEQ x 10 T7\n08 | GOTOF T7 - 13\n09 | ERA square - -\n10 | param a - param1\n11 | GOSUB square - 3\n12 | EQ square - b\n13 | ENDOF - - -\n",
-            "01 | GOTO - - 2\n02 | EQ 10 - x\n03 | EQ 2 - y\n04 | MUL x y T4\n05 | EQ T4 - a\n06 | ADD x y T6\n07 | EQ T6 - b\n08 | DIV x y T8\n09 | EQ T8 - c\n10 | SUB x y T10\n11 | EQ T10 - d\n12 | ENDOF - - -\n",
-            "01 | GOTO - - 5\n02 | EQ 1 - a\n03 | EQ 2 - b\n04 | EQ 0 - c\n05 | GT a b T5\n06 | GOTOF T5 - 10\n07 | ADD a 1 T7\n08 | EQ T7 - c\n09 | GOTO - - 17\n10 | BEQ b a T10\n11 | GOTOF T10 - 15\n12 | ADD b 1 T12\n13 | EQ T12 - c\n14 | GOTO - - 17\n15 | ADD 1 2 T15\n16 | EQ T15 - c\n17 | ENDOF - - -\n",
-            "01 | GOTO - - 5\n02 | EQ 1 - a\n03 | EQ 2 - b\n04 | EQ 0 - c\n05 | GT a b T5\n06 | GOTOF T5 - 10\n07 | ADD a b T7\n08 | EQ T7 - c\n09 | GOTO - - 5\n10 | ENDOF - - -\n",
-            "01 | GOTO - - 4\n02 | EQ 10 - b\n03 | EQ 0 - c\n04 | EQ 0 - a\n05 | LT a b T5\n06 | GOTOF T5 - 12\n07 | ADD a 1 T7\n08 | EQ T7 - a\n09 | ADD c 1 T9\n10 | EQ T9 - c\n11 | GOTO - - 5\n12 | ADD b c T12\n13 | EQ T12 - b\n14 | ENDOF - - -\n",
+            "01 | GOTO - - 6\n02 | EQ 2 - b\n03 | MUL a a T1\n04 | RETURN T1 - -\n05 | ENDFUNC - - -\n06 | EQ 10 - x\n07 | BEQ x 10 T1\n08 | GOTOF T1 - 14\n09 | ERA square - -\n10 | PARAM a - param1\n11 | GOSUB square - 3\n12 | EQ square - T2\n13 | EQ T2 - b\n14 | ENDOF - - -\n",
+            "01 | GOTO - - 2\n02 | EQ 10 - x\n03 | EQ 2 - y\n04 | MUL x y T1\n05 | EQ T1 - a\n06 | ADD x y T2\n07 | EQ T2 - b\n08 | DIV x y T3\n09 | EQ T3 - c\n10 | SUB x y T4\n11 | EQ T4 - d\n12 | ENDOF - - -\n",
+            "01 | GOTO - - 5\n02 | EQ 1 - a\n03 | EQ 2 - b\n04 | EQ 0 - c\n05 | GT a b T1\n06 | GOTOF T1 - 10\n07 | ADD a 1 T2\n08 | EQ T2 - c\n09 | GOTO - - 17\n10 | BEQ b a T3\n11 | GOTOF T3 - 15\n12 | ADD b 1 T4\n13 | EQ T4 - c\n14 | GOTO - - 17\n15 | ADD 1 2 T5\n16 | EQ T5 - c\n17 | ENDOF - - -\n",
+            "01 | GOTO - - 5\n02 | EQ 1 - a\n03 | EQ 2 - b\n04 | EQ 0 - c\n05 | GT a b T1\n06 | GOTOF T1 - 10\n07 | ADD a b T2\n08 | EQ T2 - c\n09 | GOTO - - 5\n10 | ENDOF - - -\n",
+            "01 | GOTO - - 4\n02 | EQ 10 - b\n03 | EQ 0 - c\n04 | EQ 0 - a\n05 | LT a b T1\n06 | GOTOF T1 - 12\n07 | ADD a 1 T2\n08 | EQ T2 - a\n09 | ADD c 1 T3\n10 | EQ T3 - c\n11 | GOTO - - 5\n12 | ADD b c T4\n13 | EQ T4 - b\n14 | ENDOF - - -\n",
             "*",
-            '01 | GOTO - - 11\n02 | EQ 0 - a\n03 | EQ "hola me llamo" - saludo\n04 | ADD saludo nombre T4\n05 | EQ T4 - saludo\n06 | ADD saludo "y mi edad es " T6\n07 | EQ T6 - saludo\n08 | ADD saludo edad T8\n09 | EQ T8 - saludo\n10 | ENDFUNC - - -\n11 | EQ "Rosita" - n\n12 | EQ "22" - e\n13 | ERA hola - -\n14 | param n - param1\n15 | param e - param2\n16 | ADD a 1 T16\n17 | param T16 - param3\n18 | GOSUB hola - 3\n19 | ENDOF - - -\n',
-            "01 | GOTO - - 20\n02 | EQ 0 - respuesta\n03 | MUL b c T3\n04 | ADD a T3 T4\n05 | EQ T4 - respuesta\n06 | GT a b T6\n07 | GOTOF T6 - 11\n08 | RETURN respuesta - -\n09 | GOTO - - 19\n10 | GOTO - - 15\n11 | ADD respuesta c T11\n12 | EQ T11 - respuesta\n13 | RETURN respuesta - -\n14 | GOTO - - 19\n15 | ADD a b T15\n16 | SUB T15 c T16\n17 | EQ T16 - a\n18 | RETURN a - -\n19 | ENDFUNC - - -\n20 | ERA random - -\n21 | param 5 - param1\n22 | param 10 - param2\n23 | param 4 - param3\n24 | GOSUB random - 2\n25 | EQ random - a\n26 | ENDOF - - -\n",
+            '01 | GOTO - - 11\n02 | EQ 0 - a\n03 | EQ "hola me llamo" - saludo\n04 | ADD saludo nombre T1\n05 | EQ T1 - saludo\n06 | ADD saludo "y mi edad es " T2\n07 | EQ T2 - saludo\n08 | ADD saludo edad T3\n09 | EQ T3 - saludo\n10 | ENDFUNC - - -\n11 | EQ "Rosita" - n\n12 | EQ "22" - e\n13 | ERA hola - -\n14 | PARAM n - param1\n15 | PARAM e - param2\n16 | ADD a 1 T1\n17 | PARAM T1 - param3\n18 | GOSUB hola - 3\n19 | ENDOF - - -\n',
+            "01 | GOTO - - 20\n02 | EQ 0 - respuesta\n03 | MUL b c T1\n04 | ADD a T1 T2\n05 | EQ T2 - respuesta\n06 | GT a b T3\n07 | GOTOF T3 - 11\n08 | RETURN respuesta - -\n09 | GOTO - - 19\n10 | GOTO - - 15\n11 | ADD respuesta c T4\n12 | EQ T4 - respuesta\n13 | RETURN respuesta - -\n14 | GOTO - - 19\n15 | ADD a b T5\n16 | SUB T5 c T6\n17 | EQ T6 - a\n18 | RETURN a - -\n19 | ENDFUNC - - -\n20 | ERA random - -\n21 | PARAM 5 - param1\n22 | PARAM -10 - param2\n23 | PARAM 4 - param3\n24 | GOSUB random - 2\n25 | EQ random - T1\n26 | ADD 1 T1 T2\n27 | EQ T2 - a\n28 | ERA random - -\n29 | PARAM a - param1\n30 | PARAM 3 - param2\n31 | PARAM 100 - param3\n32 | GOSUB random - 2\n33 | EQ random - T3\n34 | EQ T3 - b\n35 | ERA random - -\n36 | ERA random - -\n37 | PARAM 5 - param1\n38 | PARAM 5 - param2\n39 | PARAM 5 - param3\n40 | GOSUB random - 2\n41 | EQ random - T4\n42 | PARAM T4 - param1\n43 | PARAM 5 - param2\n44 | PARAM 5 - param3\n45 | GOSUB random - 2\n46 | EQ random - T5\n47 | EQ T5 - c\n48 | ERA random - -\n49 | PARAM 1 - param1\n50 | PARAM 2 - param2\n51 | PARAM 3 - param3\n52 | GOSUB random - 2\n53 | EQ random - T6\n54 | ERA random - -\n55 | PARAM 4 - param1\n56 | PARAM 5 - param2\n57 | PARAM 6 - param3\n58 | GOSUB random - 2\n59 | EQ random - T7\n60 | ADD T7 T6 T8\n61 | EQ T8 - d\n62 | ENDOF - - -\n",
+            "01 | GOTO - - 2\n02 | EQ READ - a\n03 | EQ READ - b\n04 | EQ READ - c\n05 | ENDOF - - -\n",
+            '01 | GOTO - - 2\n02 | EQ 1 - a\n03 | EQ "cowboy" - pepe.hat\n04 | JL pepe - 1\n05 | JR pepe - 10\n06 | JU pepe - a\n07 | ENDOF - - -\n',
+            "01 | GOTO - - 15\n02 | BEQ n 0 T1\n03 | GOTOF T1 - 7\n04 | RETURN 1 - -\n05 | GOTO - - 14\n06 | GOTO - - 15\n07 | ERA factorial - -\n08 | SUB n 1 T2\n09 | PARAM T2 - param1\n10 | GOSUB factorial - 2\n11 | EQ factorial - T3\n12 | MUL n T3 T4\n13 | RETURN T4 - -\n14 | ENDFUNC - - -\n15 | ERA factorial - -\n16 | PARAM 5 - param1\n17 | GOSUB factorial - 2\n18 | EQ factorial - T1\n19 | EQ T1 - respuesta\n20 | ENDOF - - -\n",
         ]
+
         test_results = []
         test_results.append(test_file("./compilador/tests/test_1.txt", test_answers[1]))
         test_results.append(test_file("./compilador/tests/test_2.txt", test_answers[2]))
@@ -51,6 +55,15 @@ class TestYacc(unittest.TestCase):
         test_results.append(test_file("./compilador/tests/test_9.txt", test_answers[9]))
         test_results.append(
             test_file("./compilador/tests/test_10.txt", test_answers[10])
+        )
+        test_results.append(
+            test_file("./compilador/tests/test_11.txt", test_answers[11])
+        )
+        test_results.append(
+            test_file("./compilador/tests/test_12.txt", test_answers[12])
+        )
+        test_results.append(
+            test_file("./compilador/tests/test_13.txt", test_answers[13])
         )
 
         if "F" in test_results:
@@ -70,9 +83,11 @@ class TestSymbol(unittest.TestCase):
     def test_memory_size(self):
         var = Symbol("var", "INT")
         self.assertEqual(var.memory_size(), 1)
-
+        """
         arr = Symbol("arr", "INT", [3])
+        print(arr.memory_size())
         self.assertEqual(arr.memory_size(), 3)
+        """
 
 
 class TestVarTable(unittest.TestCase):
@@ -81,11 +96,11 @@ class TestVarTable(unittest.TestCase):
 
         s = Symbol("variable", "int")
         vt.set_variable(s)
-        self.assertEqual(vt.variables[s.name], "INT")
+        self.assertEqual(vt.variables[s.name], s)
 
         s = Symbol("variable", "int")
         vt.set_variable(s)
-        self.assertEqual(vt.variables[s.name], "INT")
+        self.assertEqual(vt.variables[s.name], s)
 
 
 class TestFuncTable(unittest.TestCase):
@@ -436,10 +451,11 @@ class TestQuadruple(unittest.TestCase):
         )
 
     def test_evaluate_symbol(self):
-        symbol = Symbol("SUB", "operation")
+        symbol = Symbol("SUB", "operation", "main")
         stack_values = ["A", "B"]
         stack_operators = ["ADD"]
         stack_types = ["FLT", "FLT"]
+        stack_scopes = ["main", "main", "main"]
         resulting_quads = []
         result_quadruple_id = 1
 
@@ -448,6 +464,7 @@ class TestQuadruple(unittest.TestCase):
             stack_values,
             stack_operators,
             stack_types,
+            stack_scopes,
             resulting_quads,
             result_quadruple_id,
         )
@@ -461,6 +478,8 @@ class TestQuadruple(unittest.TestCase):
         self.assertEqual(stack_values, ["T1"])
         self.assertEqual(stack_operators, ["SUB"])
         self.assertEqual(stack_types, ["FLT"])
+        self.assertEqual(stack_types, ["FLT"])
+        self.assertEqual(stack_scopes, ["main", "main"])
         self.assertEqual(resulting_quads_formatted, ["ADD A B T1"])
 
     def test_format_quadruple(self):

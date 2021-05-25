@@ -10,17 +10,19 @@ def get_quad_stack_formatted(qs):
     for k, v in qs.items():
         row = []
         row.append(str(int(k)).zfill(2))
-        row.append(get_symbol_formatted([v.operator, v.operand_1, v.operand_2, v.result_id]))
+        row.append(
+            get_symbol_formatted([v.operator, v.operand_1, v.operand_2, v.result_id])
+        )
         quads.append(row)
     return tabulate(quads, tablefmt="fancy_grid")
 
 
 def get_quad_formatted(q):
-    #headers = ["Operator", "Operand_1", "Operand_1", "Result", "Scope"]
+    # headers = ["Operator", "Operand_1", "Operand_1", "Result", "Scope"]
     quad = []
     quad = get_symbol_formatted([q.operator, q.operand_1, q.operand_2, q.operand_2])
 
-    '''
+    """
     quad.append(
         str(
             "-"
@@ -56,7 +58,7 @@ def get_quad_formatted(q):
             else q.scope
         )
     )
-    '''
+    """
     return tabulate([quad], tablefmt="plain", colalign=("center", "center"))
 
 

@@ -22,7 +22,7 @@ class VariableTable(object):
 
     def add_address(self, name, address):
         self.variables[name].set_address(address)
-    
+
     def get_size(self):
         return len(self.variables)
 

@@ -62,8 +62,6 @@ class QuadrupleStack(object):
                 if result.start() == 0 and result.end() == (len(str(temp))):
                     temp = int(temp[1:])
                     self.temp_count = temp + 1
-                    
-
 
     # SET / GETS
     # Para poder guardar donde esta el inicio de una funcion
@@ -81,6 +79,7 @@ class QuadrupleStack(object):
 
     def reset_temp_count(self):
         self.temp_count = 1
+
     # Para cuando saber el numero de parametros de entrada que
     # se estan mandando
     def get_param_count(self):
@@ -126,10 +125,14 @@ class QuadrupleStack(object):
                 sent_param = sent_param[0]
                 self.param_count += 1
                 return Quadruple(
-                    Symbol("PARAM", sent_param.type, scope), 
-                    sent_param, 
-                    None, 
-                    Symbol("param" + str(self.param_count),current_func_param.type, current_func_param.scope)
+                    Symbol("PARAM", sent_param.type, scope),
+                    sent_param,
+                    None,
+                    Symbol(
+                        "param" + str(self.param_count),
+                        current_func_param.type,
+                        current_func_param.scope,
+                    ),
                 )
             else:
                 self.param_count += 1
@@ -138,7 +141,11 @@ class QuadrupleStack(object):
                     Symbol("PARAM", self.qstack[self.count_prev].result_id.type, scope),
                     self.qstack[self.count_prev].result_id,
                     None,
-                    Symbol(("param" + str(self.param_count)),current_func_param.type, current_func_param.scope),
+                    Symbol(
+                        ("param" + str(self.param_count)),
+                        current_func_param.type,
+                        current_func_param.scope,
+                    ),
                 )
 
         else:
@@ -146,34 +153,52 @@ class QuadrupleStack(object):
             sys.exit()
 
     # Crea el quadruplo de return
-    def return_in_function(self, type, scope,exp=None):
+    def return_in_function(self, type, scope, exp=None):
         if exp:
             # esto es si no es un void
             if self.expresion_or_id(exp, type, "Return"):
                 exp = exp[0]
-                self.push_quad(Quadruple(Symbol("RETURN",exp.type, scope),
-                                         exp, 
-                                         None, 
-                                         None), scope)
+                self.push_quad(
+                    Quadruple(Symbol("RETURN", exp.type, scope), exp, None, None), scope
+                )
             else:
                 self.push_quad(
                     Quadruple(
-                        Symbol("RETURN",self.qstack[self.count_prev].result_id.type, scope),
+                        Symbol(
+                            "RETURN", self.qstack[self.count_prev].result_id.type, scope
+                        ),
                         self.qstack[self.count_prev].result_id,
                         None,
-                        None),scope)
+                        None,
+                    ),
+                    scope,
+                )
         else:
             # esto es si si es void
-            self.push_quad(Quadruple(Symbol("RETURN", "VOID", scope), None, None, None), scope)
+            self.push_quad(
+                Quadruple(Symbol("RETURN", "VOID", scope), None, None, None), scope
+            )
 
-        self.push_quad(Quadruple(Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"), scope)
+        self.push_quad(
+            Quadruple(
+                Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"
+            ),
+            scope,
+        )
         self.jumpStackR.append(self.count_prev)
 
     def parche_guadalupano(self, func_var, scope):
         if func_var.type != "VOID":
-            self.push_quad(Quadruple(Symbol("EQ", "assignment", scope), func_var, None, Symbol(str("T" + str(self.temp_count)), func_var.type, scope)), scope)
+            self.push_quad(
+                Quadruple(
+                    Symbol("EQ", "assignment", scope),
+                    func_var,
+                    None,
+                    Symbol(str("T" + str(self.temp_count)), func_var.type, scope),
+                ),
+                scope,
+            )
             self.temp_count += 1
-
 
     def write_quad(self, exp, scope):
         if len(exp) == 1:
@@ -187,7 +212,9 @@ class QuadrupleStack(object):
         if len(vars) > 2:
             r = vars.pop(0)
             for v in vars:
-                self.push_quad(Quadruple(Symbol("EQ", "assignment", scope), r, None, v), scope)
+                self.push_quad(
+                    Quadruple(Symbol("EQ", "assignment", scope), r, None, v), scope
+                )
         else:
             print("ERROR: Error in read asignation")
             sys.exit()
@@ -195,7 +222,12 @@ class QuadrupleStack(object):
     def object_method_quad(self, data, scope):
         if len(data) == 3:
             if data[2].type == "parentheses":
-                self.push_quad(Quadruple(data[1], data[0], None, Symbol("1", "INT", "Constant Segment")), scope)
+                self.push_quad(
+                    Quadruple(
+                        data[1], data[0], None, Symbol("1", "INT", "Constant Segment")
+                    ),
+                    scope,
+                )
             else:
                 if Symbol.check_type_compatibility("INT", data[2].type):
                     self.push_quad(Quadruple(data[1], data[0], None, data[2]), scope)
@@ -236,7 +268,15 @@ class QuadrupleStack(object):
             sys.exit()
         else:
             result = self.qstack[self.count_prev].result_id
-            self.push_quad(Quadruple(Symbol("GOTOF", "instruction", scope), result, None, "MISSING_ADDRESS"), scope)
+            self.push_quad(
+                Quadruple(
+                    Symbol("GOTOF", "instruction", scope),
+                    result,
+                    None,
+                    "MISSING_ADDRESS",
+                ),
+                scope,
+            )
             self.jumpStack.append(self.count_prev)
 
     def ciclo_3(self, scope):
@@ -255,7 +295,15 @@ class QuadrupleStack(object):
             sys.exit()
         else:
             result = self.qstack[self.count_prev].result_id
-            self.push_quad(Quadruple(Symbol("GOTOF", "instruction", scope), result, None, "MISSING_ADDRESS"), scope)
+            self.push_quad(
+                Quadruple(
+                    Symbol("GOTOF", "instruction", scope),
+                    result,
+                    None,
+                    "MISSING_ADDRESS",
+                ),
+                scope,
+            )
             self.jumpStack.append(self.count_prev)
 
     def if_2(self, scope):
@@ -265,7 +313,12 @@ class QuadrupleStack(object):
 
     def if_3(self, scope):
         # ESTE VA EN EL ELSE
-        self.push_quad(Quadruple(Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"), scope)
+        self.push_quad(
+            Quadruple(
+                Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"
+            ),
+            scope,
+        )
         not_true = self.jumpStack.pop()
         self.jumpStack.append(self.count_prev)
         self.fill(not_true, scope)
@@ -285,6 +338,9 @@ class QuadrupleStack(object):
 
     def print_quads(self):
         print(get_quad_stack_formatted(self.qstack))
+
+    def get_qstack(self):
+        return self.qstack
 
     def return_quads(self):
         rq = ""

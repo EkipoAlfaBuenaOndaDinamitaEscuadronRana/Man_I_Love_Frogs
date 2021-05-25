@@ -130,13 +130,21 @@ class Quadruple(object):
         )
 
     def __generate_quadruple(
-        stack_values, stack_operators, result_quadruple_id, stack_types, stack_scopes, resulting_quads
+        stack_values,
+        stack_operators,
+        result_quadruple_id,
+        stack_types,
+        stack_scopes,
+        resulting_quads,
     ):
 
         result_id = "T" + str(result_quadruple_id)
         consideration = Quadruple.__type_consideration(stack_types, stack_operators)
         operator = Symbol(
-            stack_operators[-1], SemanticTable.clasify_symbol_op(stack_operators.pop()), stack_scopes[-2])
+            stack_operators[-1],
+            SemanticTable.clasify_symbol_op(stack_operators.pop()),
+            stack_scopes[-2],
+        )
         operand_1 = Symbol(stack_values[-2], stack_types[-2], stack_scopes[-3])
         operand_2 = Symbol(stack_values[-1], stack_types[-1], stack_scopes[-1])
         quad_result = Symbol(result_id, consideration, stack_scopes[-2])
@@ -153,13 +161,18 @@ class Quadruple(object):
         stack_scopes.append(q.result_id.scope)
 
     def __generate_not_quadruple(
-        stack_values, stack_operators, result_quadruple_id, stack_types, stack_scopes,resulting_quads
+        stack_values,
+        stack_operators,
+        result_quadruple_id,
+        stack_types,
+        stack_scopes,
+        resulting_quads,
     ):
         result_id = "T" + str(result_quadruple_id)
         consideration = Quadruple.__not_consideration(stack_types)
         operator = Symbol(stack_operators.pop(), "not", stack_scopes[-2])
         value = Symbol(stack_values.pop(), stack_types.pop(), stack_scopes.pop())
-        quad_result = Symbol(result_id, consideration,stack_scopes.pop())
+        quad_result = Symbol(result_id, consideration, stack_scopes.pop())
 
         q = Quadruple(operator, value, None, quad_result)
 
@@ -168,9 +181,13 @@ class Quadruple(object):
         stack_values.append(result_id)
         stack_scopes.append(q.result_id.scope)
 
-
     def __generate_assignment_quadruple(
-        stack_values, stack_operators, result_quadruple_id, stack_types, stack_scopes, resulting_quads
+        stack_values,
+        stack_operators,
+        result_quadruple_id,
+        stack_types,
+        stack_scopes,
+        resulting_quads,
     ):
 
         consideration = Quadruple.__type_consideration(stack_types, stack_operators)
@@ -181,7 +198,6 @@ class Quadruple(object):
         stack_types.append(consideration)
         q = Quadruple(operator, value, None, quad_result)
         resulting_quads.append(q)
-
 
     def evaluate_symbol(
         symbol,
@@ -205,8 +221,6 @@ class Quadruple(object):
         elif s_type in ["assignment", "assignment_operation"]:
             stack_operators.append(s_name)
             stack_scopes.append(s_scope)
-
-            
 
         # is a value
         elif s_type in SemanticTable.types:
@@ -495,8 +509,8 @@ class Quadruple(object):
                     return "error: non-compatible types"
 
             result_quadruple_id += 1
-        
-        #resulting_quads.append(result_quadruple_id)
+
+        # resulting_quads.append(result_quadruple_id)
         return resulting_quads
 
     def format_quadruple(self):

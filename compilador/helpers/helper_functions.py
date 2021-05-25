@@ -36,7 +36,6 @@ operators = {
     "jump_right": Symbol("JR", "obj_method"),
     "jump_up": Symbol("JU", "obj_method"),
     "jump_down": Symbol("JD", "obj_method"),
-    
 }
 
 
@@ -143,11 +142,17 @@ def expresion_to_symbols(exp, ft, s, d=None):
             op.set_scope(s.get_curr_state_table())
             sym_list.append(op)
         elif ft.lookup_function(e) and ("(" in exp and ")" in exp):
-            address = ft.get_function_variable_table(s.get_global_table()).get_var_symbol(e).get_address()
+            address = (
+                ft.get_function_variable_table(s.get_global_table())
+                .get_var_symbol(e)
+                .get_address()
+            )
             if address != None:
                 sym_list.append(address)
             else:
-                sym_list.append(Symbol(e, ft.get_function_type(e),s.get_global_table()))
+                sym_list.append(
+                    Symbol(e, ft.get_function_type(e), s.get_global_table())
+                )
             stack = []
             count = exp.index("(")
             stack.append(exp[count])
