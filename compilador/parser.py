@@ -57,7 +57,7 @@ def p_global_vartable_distruct(p):
     global_func_table.set_function_size_at("Constant Segment")
     quad_stack.push_quad(Quadruple(Symbol("ENDOF", "instruction", current_state.get_curr_state_table()), None, None, None), current_state.get_curr_state_table())
     current_state.pop_curr_state()
-    #quad_stack.print_quads()
+    quad_stack.print_quads()
     global_func_table.print_FuncTable()
 
 
@@ -206,6 +206,7 @@ def p_var(p):
             else:
                 # Inserta a vartable
                 symbol.set_scope(current_state.get_curr_state_table())
+                print(str(symbol.name) + " " + symbol.scope)
                 global_func_table.get_function_variable_table(
                     current_state.get_curr_state_table()
                 ).set_variable(symbol)
