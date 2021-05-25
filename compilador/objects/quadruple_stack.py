@@ -72,7 +72,7 @@ class QuadrupleStack(object):
 
     # Para poder saber donde esta el inicio de una funcion
     def get_function_location(self, name):
-        return Symbol(self.funcjump[name], "address")
+        return Symbol(self.funcjump[name], "address", name)
 
     # Para cuando acabas de validar que sea el numero correcto
     # de parametros para la duncion actual
@@ -104,7 +104,6 @@ class QuadrupleStack(object):
                 )
                 sys.exit()
         else:
-
             if Symbol.check_type_compatibility(
                 type, self.qstack[self.count_prev].result_id.type
             ):
@@ -130,7 +129,7 @@ class QuadrupleStack(object):
                     Symbol("PARAM", sent_param.type, scope), 
                     sent_param, 
                     None, 
-                    Symbol("param" + str(self.param_count),current_func_param.type, scope)
+                    Symbol("param" + str(self.param_count),current_func_param.type, current_func_param.scope)
                 )
             else:
                 self.param_count += 1
@@ -139,7 +138,7 @@ class QuadrupleStack(object):
                     Symbol("PARAM", self.qstack[self.count_prev].result_id.type, scope),
                     self.qstack[self.count_prev].result_id,
                     None,
-                    Symbol(("param" + str(self.param_count)),current_func_param.type, scope),
+                    Symbol(("param" + str(self.param_count)),current_func_param.type, current_func_param.scope),
                 )
 
         else:

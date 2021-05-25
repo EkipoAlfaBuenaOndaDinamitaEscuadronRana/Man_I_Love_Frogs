@@ -132,17 +132,14 @@ class Quadruple(object):
     def __generate_quadruple(
         stack_values, stack_operators, result_quadruple_id, stack_types, stack_scopes, resulting_quads
     ):
-        print(stack_values)
-        print(stack_operators)
-        print(stack_types)
-        print(stack_scopes)
+
         result_id = "T" + str(result_quadruple_id)
         consideration = Quadruple.__type_consideration(stack_types, stack_operators)
         operator = Symbol(
             stack_operators[-1], SemanticTable.clasify_symbol_op(stack_operators.pop()), stack_scopes[-2])
         operand_1 = Symbol(stack_values[-2], stack_types[-2], stack_scopes[-3])
         operand_2 = Symbol(stack_values[-1], stack_types[-1], stack_scopes[-1])
-        quad_result = Symbol(result_id, consideration,  "TEMP")
+        quad_result = Symbol(result_id, consideration, stack_scopes[-2])
 
         q = Quadruple(operator, operand_1, operand_2, quad_result)
 
@@ -162,7 +159,7 @@ class Quadruple(object):
         consideration = Quadruple.__not_consideration(stack_types)
         operator = Symbol(stack_operators.pop(), "not", stack_scopes[-2])
         value = Symbol(stack_values.pop(), stack_types.pop(), stack_scopes.pop())
-        quad_result = Symbol(result_id, consideration, "TMP")
+        quad_result = Symbol(result_id, consideration,stack_scopes.pop())
 
         q = Quadruple(operator, value, None, quad_result)
 
@@ -177,9 +174,9 @@ class Quadruple(object):
     ):
 
         consideration = Quadruple.__type_consideration(stack_types, stack_operators)
-        operator = Symbol(stack_operators.pop(), "assignment")
+        operator = Symbol(stack_operators.pop(), "assignment", stack_scopes[-2])
         value = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-1])
-        quad_result = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-1])
+        quad_result = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-2])
 
         stack_types.append(consideration)
         q = Quadruple(operator, value, None, quad_result)

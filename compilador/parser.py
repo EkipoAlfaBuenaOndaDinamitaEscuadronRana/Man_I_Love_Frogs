@@ -788,6 +788,7 @@ def p_llamada(p):
     if quad_stack.get_param_count() == len(
         global_func_table.get_function_parameters(current_state.get_curr_state_opt())
     ):
+
         quad_stack.reset_param_count()
         quad_stack.push_quad(
             Quadruple(
@@ -849,12 +850,17 @@ def p_parametro(p):
     if current_state.get_curr_state_opt != None:
         if p[0] != None:
             current_state.pop_curr_state()
+            parameter_expresion = expresion_to_symbols(p[0], global_func_table, current_state)
+            quad_stack.push_list(
+                quad_stack.solve_expression(parameter_expresion),
+                current_state.get_curr_state_table()
+            )
             quad_stack.push_quad(
                 quad_stack.validate_parameters(
                     global_func_table.get_function_parameters(
                         current_state.get_curr_state_opt()
                     ),
-                    expresion_to_symbols(p[0], global_func_table, current_state),
+                    parameter_expresion,
                     current_state.get_curr_state_table()
                 ),
                 current_state.get_curr_state_table()
