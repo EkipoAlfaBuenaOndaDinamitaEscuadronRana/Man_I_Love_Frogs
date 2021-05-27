@@ -1,3 +1,4 @@
+from symbol import expr
 import compilador.lexer
 import compilador.helpers.helper_functions
 import compilador.objects.quadruple_stack
@@ -67,7 +68,7 @@ def p_global_vartable_distruct(p):
     )
     current_state.pop_curr_state()
     # quad_stack.print_quads()
-    # global_func_table.print_FuncTable()
+    global_func_table.print_FuncTable()
 
 
 # TERMINAL Y NO TERMINAL
@@ -203,6 +204,7 @@ def p_var(p):
 
     # manda parametros tipo y var1 y lo formatea en una vartable
     curr_vars = get_variables(p[1], p[2])
+    #print(get_vartable_formatted(curr_vars))
     # for symbol in curr_vars.keys():
     # print("VARS START")
     # print(str(symbol.get_name()) + " " + str(symbol.get_type()) + " " + str(curr_vars[symbol]))
@@ -212,6 +214,7 @@ def p_var(p):
         print("ERROR: Can't declare variable(s) in this scope")
         sys.exit()
     else:
+
         for symbol in curr_vars.keys():
             # Valida que no existan
             if global_func_table.get_function_variable_table(
@@ -225,16 +228,27 @@ def p_var(p):
                 sys.exit()
             else:
                 # Inserta a vartable
+                if symbol.is_dimensioned():
+                    dim = validate_dimensions(symbol)
+                    if dim == None :
+                        print("ERROR: Variable "+ str(symbol.get_name())+ " has invalid dimensions")
+                        sys.exit()
+                    else:
+                        symbol.set_dimension_sizes(dim)
+                        symbol.create_dimension_nodes()
+
                 symbol.set_scope(current_state.get_curr_state_table())
                 global_func_table.get_function_variable_table(
                     current_state.get_curr_state_table()
                 ).set_variable(symbol)
+
+
                 if symbol.type == "FROG":
                     atr_frog = Symbol(str(symbol.name) + ".hat", "STR", symbol.scope)
                     global_func_table.get_function_variable_table(
                         current_state.get_curr_state_table()
                     ).set_variable(atr_frog)
-
+        
         if current_state.get_curr_state_opt() == "as_on":
             quad_stack.push_list(
                 quad_stack.solve_expression(
@@ -299,15 +313,16 @@ def p_func_init(p):
             quad_stack.reset_temp_count()
             global_func_table.set_function(p[2], p[1], get_parameters(p[4]), None)
             # Inserta a tabla global variable de funcion
-            global_func_table.get_function_variable_table(
-                current_state.get_global_table()
-            ).set_variable(
-                Symbol(
-                    p[2],
-                    global_func_table.get_function_type(p[2]),
-                    current_state.get_global_table(),
+            if global_func_table.get_function_type(p[2]) != "VOID":
+                global_func_table.get_function_variable_table(
+                    current_state.get_global_table()
+                ).set_variable(
+                    Symbol(
+                        p[2],
+                        global_func_table.get_function_type(p[2]),
+                        current_state.get_global_table(),
+                    )
                 )
-            )
 
             # crea tabla de variables actual
             global_func_table.set_function_variable_table_at(p[2])
@@ -835,16 +850,17 @@ def p_llamada(p):
             ),
             current_state.get_curr_state_table(),
         )
-        quad_stack.parche_guadalupano(
+        if global_func_table.get_function_type(p[1]) != "VOID":
+            quad_stack.parche_guadalupano(
+                global_func_table.get_function_variable_table(
+                    current_state.get_global_table()
+                ).get_var_symbol(p[1]),
+                current_state.get_curr_state_table(),
+            )
             global_func_table.get_function_variable_table(
                 current_state.get_global_table()
-            ).get_var_symbol(p[1]),
-            current_state.get_curr_state_table(),
-        )
-        global_func_table.get_function_variable_table(
-            current_state.get_global_table()
-        ).add_address(p[1], quad_stack.qstack[quad_stack.count_prev].result_id)
-        current_state.pop_curr_state()
+            ).add_return_location(p[1], quad_stack.qstack[quad_stack.count_prev].result_id)
+            current_state.pop_curr_state()
     else:
         print("ERROR: Number of parameters sent is less than parameters asked")
         sys.exit()
@@ -1135,9 +1151,9 @@ def p_real_constants(p):
 # Regresa IDs validas para variables
 def p_id_var(p):
     """
-    id_var : ID
-           | ID index
-           | ID DOT cte_atr_obj
+    id_var : ID 
+            | ID index
+            | ID DOT cte_atr_obj
     """
     if len(p) == 2:
         p[0] = p[1]
@@ -1152,36 +1168,75 @@ def p_id_var(p):
     if current_state.get_curr_state_opt() != "varD":
         # if current_state.get_curr_state_opt() != "funcC":
         # Checa que la variable exista en la current table
-        if not global_func_table.get_function_variable_table(
+        if global_func_table.get_function_variable_table(
             current_state.get_curr_state_table()
         ).lookup_variable(p[1]):
+            if len(p) == 3:
+                if global_func_table.get_function_variable_table(current_state.get_curr_state_table()).get_var_symbol(p[1]).is_dimensioned():
+                    quad_stack.array_access(format_array_dimensions(expresion_to_symbols(p[0], global_func_table, current_state)), current_state.get_curr_state_table())
+                    current_state.pop_curr_state()
+                else:
+                    print('ERROR: Variable "'+ str(p[1]+ '" is not dimensioned'))
+                    sys.exit()
             # Checa que exista en la global table
-            if not global_func_table.get_function_variable_table(
-                current_state.get_global_table()
-            ).lookup_variable(p[1]):
-                print(
-                    'ERROR: Variable "'
-                    + str(
-                        p[1]
-                        + '" not declared in scope "'
-                        + str(current_state.get_curr_state_table())
-                        + '"'
-                    )
-                )
-                sys.exit()
+        elif global_func_table.get_function_variable_table(current_state.get_global_table()).lookup_variable(p[1]):
+            if len(p) == 3:
+                if global_func_table.get_function_variable_table(current_state.get_global_table()).get_var_symbol(p[1]).is_dimensioned():
+                    quad_stack.array_access(format_array_dimensions(expresion_to_symbols(p[0], global_func_table, current_state)), current_state.get_curr_state_table())
+                    current_state.pop_curr_state()
+
+                else:
+                    print('ERROR: Variable "'+ str(p[1]+ '" is not dimensioned'))
+                    sys.exit()
+        else:
+            print('ERROR: Variable "'+ str(p[1]+ '" not declared in scope "'+ str(current_state.get_curr_state_table())+ '"'))
+            sys.exit()       
+
+
+       
 
 
 # NO TERMINAL
 # Regresa el formato de un index
 def p_index(p):
     """
-    index : OSB var_cte CSB
-          | OSB var_cte CSB OSB var_cte CSB
+    index : OSB dimension CSB
+          | OSB dimension CSB OSB dimension CSB
     """
+
     if len(p) == 4:
         p[0] = [p[1], p[2], p[3]]
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
+
+# NO TERMINAL
+# Regresa el formato de un index
+def p_dimension(p):
+    """
+    dimension : CINT
+              | dim_val expresion
+    """
+
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[2]
+
+
+def p_dim_val(p):
+    """
+    dim_val : empty
+    """
+    p[0] = p[1]
+
+    if current_state.get_curr_state_opt() == "varD":
+        print('ERROR: Invalid dimension while declaring a dimensioned variable')
+        sys.exit()
+    else:
+        current_state.push_state(State(current_state.get_curr_state_table(), "dim"))
+
+
+
 
 
 # TERMINAL

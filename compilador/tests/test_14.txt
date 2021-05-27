@@ -1,0 +1,11 @@
+program arreglos; 
+int B[2][3];
+int A[10];
+int x = 0;
+{
+    int a = 3;
+    int b = 9;
+    int c = A[b - a];
+    int d = B[1][A[a]];
+}
+
