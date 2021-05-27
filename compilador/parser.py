@@ -1245,9 +1245,7 @@ def p_index(p):
         p[0] = [p[1], p[2], p[3]]
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
-
-    if current_state.get_curr_state_opt() == "dim":
-        current_state.pop_curr_state()
+       
 
 
 # NO TERMINAL
@@ -1262,6 +1260,9 @@ def p_dimension(p):
         p[0] = p[1]
     else:
         p[0] = p[2]
+
+    if current_state.get_curr_state_opt() == "dim" and len(p) > 2:
+        current_state.pop_curr_state()
 
 
 def p_dim_val(p):

@@ -107,7 +107,9 @@ def get_variables(type, line):
                 dim_2 = expresion_to_string(dim_2)
                 line.pop(2)
                 line.pop(1)
-
+            if line[1] == "=":
+                print("ERROR: Can't assign a value dimensioned type in declaration")
+                sys.exit()
             if len(dim_2) > 0:
                 dim_1
                 currSymbol = Symbol(line[0], type, dimension_sizes=[dim_1, dim_2])

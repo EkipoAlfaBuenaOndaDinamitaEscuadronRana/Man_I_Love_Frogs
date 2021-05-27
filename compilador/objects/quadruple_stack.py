@@ -89,8 +89,8 @@ class QuadrupleStack(object):
         # for k,v in symbol.items():
         #     print(k)
         #     if k == "dim":
-        #     for e in v:
-        #         print(get_symbol_formatted(e))
+        #         for e in v:
+        #             print(get_symbol_formatted(e))
 
         #     else:
         #     print(get_symbol_formatted(v))
