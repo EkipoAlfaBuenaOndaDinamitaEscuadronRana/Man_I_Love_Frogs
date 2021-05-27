@@ -144,7 +144,7 @@ def t_CSTRING(t):
 
 
 def t_ID(t):
-    r"[A-Za-z]([A-Za-z]|[0-9])*"
+    r"[A-Za-z]([A-Za-z]|[0-9]|[_])*"
     t.type = reserved.get(t.value, "ID")
     return t
 

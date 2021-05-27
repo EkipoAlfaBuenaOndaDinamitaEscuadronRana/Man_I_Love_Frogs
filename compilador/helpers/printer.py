@@ -98,7 +98,7 @@ def get_vartable_formatted(vt):
 
 
 def get_symbol_formatted(s):
-    headers = ["Name", "Type","Dimensions", "Dimension_Nodes","Scope", "Address"]
+    headers = ["Name", "Type", "Dimensions", "Dimension_Nodes", "Scope", "Address"]
     values = []
     if type(s) == symbol.Symbol:
         row = []
@@ -108,14 +108,14 @@ def get_symbol_formatted(s):
         if len(s.dimension_nodes) > 0 and s.dimension_nodes != None:
             d_list = []
             d_head = ["DIM", "LI", "LS", "M"]
-            for k , d in s.dimension_nodes.items():
+            for k, d in s.dimension_nodes.items():
                 d_row = []
                 d_row.append(k)
                 d_row.append(d["LI"])
                 d_row.append(d["LS"])
                 d_row.append(d["M"])
                 d_list.append(d_row)
-            
+
             row.append(tabulate(d_list, d_head, tablefmt="fancy_grid"))
         else:
             row.append(s.dimension_nodes)
@@ -150,17 +150,17 @@ def get_symbol_formatted(s):
                 row.append(v.name)
                 row.append(v.type)
                 row.append(v.dimension_sizes)
-                if len(v.dimension_nodes) > 0 and  v.dimension_nodes != None:
+                if len(v.dimension_nodes) > 0 and v.dimension_nodes != None:
                     d_list = []
                     d_head = ["DIM", "LI", "LS", "M"]
-                    for k , d in v.dimension_nodes.items():
+                    for k, d in v.dimension_nodes.items():
                         d_row = []
                         d_row.append(k)
                         d_row.append(d["LI"])
                         d_row.append(d["LS"])
                         d_row.append(d["M"])
                         d_list.append(d_row)
-                    
+
                     row.append(tabulate(d_list, d_head, tablefmt="fancy_grid"))
                 else:
                     row.append(v.dimension_nodes)

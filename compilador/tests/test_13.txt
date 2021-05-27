@@ -13,10 +13,3 @@ func int factorial(int n){
     int respuesta = factorial(5);
 }
 
-/*
- int a = 5;
-    int b = 7;
-    A[a] = b;
-    B[a + b][b] = 0;
-    A[B[1][1]] = 1;
-    */

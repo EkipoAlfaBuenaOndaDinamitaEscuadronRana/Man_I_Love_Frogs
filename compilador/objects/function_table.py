@@ -26,7 +26,6 @@ class FunctionTable(object):
             symbol.set_scope(name)
             self.functions[name]["vt"].set_variable(symbol)
 
-
     def set_function_size_at(self, name):
         self.functions[name]["s"] = self.functions[name]["vt"].get_size()
 
