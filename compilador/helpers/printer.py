@@ -100,6 +100,7 @@ def get_vartable_formatted(vt):
 def get_symbol_formatted(s):
     headers = ["Name", "Type", "Dimensions", "Dimension_Nodes", "Scope", "Address"]
     values = []
+
     if type(s) == symbol.Symbol:
         row = []
         row.append(s.name)
