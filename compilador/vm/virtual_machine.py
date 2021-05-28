@@ -260,10 +260,6 @@ class VirtualMachine(object):
                 dir_result = curr_quad.result_id.global_direction
                 self.__resolve_write(dir_result)
 
-            elif operation == "READ":
-                dir_result = curr_quad.result_id.global_direction
-                self.__resolve_read(dir_result)
-
             elif operation == "ERA":
                 pass
 
