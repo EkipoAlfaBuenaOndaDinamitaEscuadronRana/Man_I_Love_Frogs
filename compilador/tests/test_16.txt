@@ -1,0 +1,11 @@
+program simpleIfs;
+
+{
+    if (1 == 2) {
+      write("uno");
+    } else if ( 3 == 4) {
+      write("dos");
+    } else {
+      write("tres");
+    }
+}

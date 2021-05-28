@@ -42,7 +42,6 @@ class VirtualMachine(object):
             return []
 
         local_segment_size = local_size // num_local_segments
-
         local_memory_size = local_size // num_local_segments
         start_direction = local_start_direction
 
@@ -188,6 +187,39 @@ class VirtualMachine(object):
     def __resolve_write(self, dir_result):
         print(self.get_direction_symbol(dir_result).value)
 
+    # TODO: No lo he probado lo suficiente
+    def __resolve_read(self, dir_result):
+        input = input()
+        symbol = self.get_direction_symbol(dir_result)
+
+        if symbol.type == "INT":
+            symbol.value = int(input)
+
+        elif symbol.type == "FLT":
+            symbol.value = float(input)
+
+        elif symbol.type == "CHAR":
+            # TODO: Ver como validar que sea un solo char
+            symbol.value = input[0]
+
+        elif symbol.type == "STR":
+            symbol.value = input
+
+        elif symbol.type == "BOOL":
+            booleans = {
+                "true": True,
+                "false": False,
+                "1": True,
+                "0": False
+            }
+            symbol.value = booleans[input]
+
+        elif symbol.type == "NULL":
+            # TODO: Ver como validar que sea siempre null
+            if input == "null":
+                symbol.value = None
+
+
     def run(self, quad_dir):
         running = True
         instruction = 1
@@ -222,6 +254,10 @@ class VirtualMachine(object):
                 instruction = curr_quad.result_id.name
                 continue
 
+            elif operation == "GOTOF" and not curr_quad.operand_1.value:
+                    instruction = curr_quad.result_id.name
+                    continue
+
             elif operation == "ENDOF":
                 running = False
                 continue
@@ -230,8 +266,65 @@ class VirtualMachine(object):
                 dir_result = curr_quad.result_id.global_direction
                 self.__resolve_write(dir_result)
 
+            elif operation == "READ":
+                dir_result = curr_quad.result_id.global_direction
+                self.__resolve_read(dir_result)
+
+            elif operation == "ERA":
+                pass
+
             instruction += 1
             if instruction > len(quad_dir):
                 running = False
 
         return game_instructions
+
+# comparison
+beq = Symbol("BEQ", "matching")
+
+# compiler functions
+goto = Symbol("GOTO")
+gotof = Symbol("GOTOF")
+write = Symbol("WRITE")
+endof = Symbol("ENDOF")
+dir_two = Symbol(2)
+dir_six = Symbol(6)
+dir_ten = Symbol(10)
+dir_ele = Symbol(11)
+
+# Directions
+t1 = Symbol("T1", "BOOL")
+t2 = Symbol("T2", "BOOL")
+
+uno = Symbol("uno", "STR")
+dos = Symbol("dos", "STR")
+tres = Symbol("tres", "STR")
+
+# Constants
+one_const = Symbol(1, "INT")
+two_const = Symbol(2, "INT")
+tree_const = Symbol(3, "INT")
+four_const = Symbol(4, "INT")
+
+# Variable Table
+vt = VariableTable()
+
+# Function Table
+ft = FunctionTable()
+ft.set_function("main", "void", [], vt)
+
+# Virtual Machine
+vm = VirtualMachine(3000, 1000, 6000, ft)
+
+main_quads = {
+    1: Quadruple(goto, None, None, dir_two),
+    2: Quadruple(beq, one_const, two_const, t1),
+    3: Quadruple(gotof, t1, None, dir_six),
+    4: Quadruple(write, None, None, uno),
+    5: Quadruple(goto, None, None, dir_ele),
+    6: Quadruple(beq, tree_const, four_const, t2), #########
+    7: Quadruple(write, None, None, t1),
+    8: Quadruple(add, a, b, t2),
+    9: Quadruple(write, None, None, t2),
+    10: Quadruple(endof, None, None, None),
+}

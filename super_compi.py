@@ -9,5 +9,5 @@ if len(sys.argv) > 1:
         print(parser_file(sys.argv[i]))
         i += 1
 else:
-    print("DEFAULT: compilador/tests/test_15.txt")
-    print(parser_file("compilador/tests/test_15.txt"))
+    print("DEFAULT: compilador/tests/test_16.txt")
+    print(parser_file("compilador/tests/test_16.txt"))
