@@ -6,8 +6,11 @@ from compilador.objects.function_table import *
 class SemanticTable:
     types = {"INT", "FLT", "CHAR", "STR", "BOOL", "NULL"}
 
-    #                  <     >     <=     >=
+    #                 <     >     <=     >=
     comparison_op = {"LT", "GT", "LTE", "GTE"}
+
+    #               ==     !=      ||    &&
+    matching_op = {"BEQ", "BNEQ", "OR", "AND"}
 
     operations_op = {
         "ADD",  # +
@@ -24,9 +27,6 @@ class SemanticTable:
         "DIVEQ",  # /=
         "MODEQ",  # %=
     }
-
-    #               ==     !=      ||    &&
-    matching_op = {"BEQ", "BNEQ", "OR", "AND"}
 
     __operations = {
         "INT": {

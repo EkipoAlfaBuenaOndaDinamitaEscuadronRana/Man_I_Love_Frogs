@@ -152,6 +152,22 @@ class VirtualMachine(object):
             self.get_direction_symbol(dir_result).value = val_opnd_1 / val_opnd_2
         elif operation == "MOD":
             self.get_direction_symbol(dir_result).value = val_opnd_1 % val_opnd_2
+        elif operation == "BEQ":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 == val_opnd_2
+        elif operation == "BNEQ":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 != val_opnd_2
+        elif operation == "OR":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 or val_opnd_2
+        elif operation == "AND":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 and val_opnd_2
+        elif operation == "LT":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 < val_opnd_2
+        elif operation == "GT":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 > val_opnd_2
+        elif operation == "LTE":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 <= val_opnd_2
+        elif operation == "GTE":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 >= val_opnd_2
 
     def __resolve_eq(self, assign_op, dir_opnd, dir_result):
         val_opnd = self.get_direction_symbol(dir_opnd).value
@@ -175,6 +191,7 @@ class VirtualMachine(object):
     def run(self, quad_dir):
         running = True
         instruction = 1
+        game_instructions = []
 
         while running:
             curr_quad = quad_dir[instruction]
@@ -214,50 +231,4 @@ class VirtualMachine(object):
             if instruction > len(quad_dir):
                 running = False
 
-
-# Operators
-eq = Symbol("EQ", "assignment")
-add = Symbol("ADD", "operation")
-
-# States
-goto = Symbol("GOTO")
-write = Symbol("WRITE")
-endof = Symbol("ENDOF")
-
-# Constants
-one = Symbol(1, "INT")
-two = Symbol(5, "INT")
-one.scope = "Constant Segment"
-two.scope = "Constant Segment"
-
-# Variables
-a = Symbol("A", "INT")
-b = Symbol("B", "INT")
-t4 = Symbol("T4", "INT")  # Duda: Me generó T4, ¿qué pedo xD?
-a.scope = "main"
-b.scope = "main"
-t4.scope = "main"
-
-# Variable Table
-vt = VariableTable()
-vt.set_variable(a)
-vt.set_variable(b)
-
-# Function Table
-ft = FunctionTable()
-ft.set_function("main", "void", [], vt)
-
-# Virtual Machine
-vm = VirtualMachine(3000, 1000, 6000, ft)
-
-quads = {
-    1: Quadruple(goto, None, None, 2),  # Empieza en 1  # ESTO ES UN quadruplo
-    2: Quadruple(eq, one, None, a),
-    3: Quadruple(eq, two, None, b),
-    4: Quadruple(add, a, b, t4),
-    5: Quadruple(write, None, None, t4),
-    6: Quadruple(endof, None, None, None),
-}
-
-vm.quadruple_direction_allocator(quads)
-vm.run(quads)
+        return game_instructions

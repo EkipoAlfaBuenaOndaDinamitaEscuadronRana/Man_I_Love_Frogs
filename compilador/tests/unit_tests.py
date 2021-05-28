@@ -747,3 +747,80 @@ class TestVirtualMachine(unittest.TestCase):
 
         self.assertEqual(t1.segment_direction, 143)
         self.assertEqual(t1.global_direction, 3143)
+
+    def __run(self):
+        # Operators
+        eq = Symbol("EQ", "assignment")
+        add = Symbol("ADD", "operation")
+        OR = Symbol("OR", "operation")
+
+        # States
+        goto = Symbol("GOTO")
+        write = Symbol("WRITE")
+        endof = Symbol("ENDOF")
+
+        # Constants
+        one = Symbol(1, "INT")
+        two = Symbol(5, "INT")
+        true = Symbol(True, "BOOL")
+        false = Symbol(False, "BOOL")
+        one.scope = "Constant Segment"
+        two.scope = "Constant Segment"
+        true.scope = "Constant Segment"
+        false.scope = "Constant Segment"
+
+        # Variables
+        a = Symbol("A", "INT")
+        b = Symbol("B", "INT")
+        t2 = Symbol("T4", "INT")
+        boolA = Symbol("boolA", "BOOL")
+        boolB = Symbol("boolB", "BOOL")
+        t1 = Symbol("T1", "BOOL")
+        a.scope = "main"
+        b.scope = "main"
+        t2.scope = "main"
+        boolA.scope = "main"
+        boolB.scope = "main"
+        t1.scope = "main"
+
+        # Variable Table
+        vt = VariableTable()
+        vt.set_variable(a)
+        vt.set_variable(b)
+        vt.set_variable(boolA)
+        vt.set_variable(boolB)
+
+        # Function Table
+        ft = FunctionTable()
+        ft.set_function("main", "void", [], vt)
+
+        # Virtual Machine
+        vm = VirtualMachine(3000, 1000, 6000, ft)
+
+        '''
+        program supersimple;
+        {
+            bool boolA = true;
+            bool boolB = false;
+            int a = 1;
+            int b = 2;
+
+            write(boolA || boolB);
+            write(a + b);
+        }
+        '''
+        main_quads = {
+            1: Quadruple(goto, None, None, 2),
+            2: Quadruple(eq, true, None, boolA),
+            3: Quadruple(eq, false, None, boolB),
+            4: Quadruple(eq, one, None, a),
+            5: Quadruple(eq, two, None, b),
+            6: Quadruple(OR, boolA, boolB, t1),
+            7: Quadruple(write, None, None, t1),
+            8: Quadruple(add, a, b, t2),
+            9: Quadruple(write, None, None, t2),
+            10: Quadruple(endof, None, None, None),
+        }
+
+        vm.quadruple_direction_allocator(main_quads)
+        self.assertEqual(vm.run(main_quads), [])
