@@ -1,3 +1,4 @@
+from compilador.objects.quadruple import Quadruple
 from router_solver import *
 import compilador.objects.function_table
 import compilador.objects.symbol
@@ -203,6 +204,24 @@ def format_array_dimensions(exp):
     return data
 
 
+def modify_quad_object(exp, ft):
+    ele = [exp.operand_1, exp.operand_2, exp.result_id]
+    result = []
+    for e in ele:
+        if e != None and ft.get_function_variable_table(e.scope).lookup_variable(
+            e.name
+        ):
+            result.append(
+                ft.get_function_variable_table(e.scope).get_var_symbol(e.name)
+            )
+        elif e != None and ft.lookup_temporal(e):
+            result.append(ft.get_temporal(e))
+        else:
+            result.append(e)
+
+    return Quadruple(exp.operator, result.pop(0), result.pop(0), result.pop(0))
+
+
 def expresion_to_symbols(exp, ft, s, d=None):
     if type(exp) != list:
         exp = [exp]
@@ -246,6 +265,7 @@ def expresion_to_symbols(exp, ft, s, d=None):
                     e
                 )
             )
+
         elif ft.get_function_variable_table(s.get_global_table()).lookup_variable(e):
             sym_list.append(
                 ft.get_function_variable_table(s.get_global_table()).get_var_symbol(e)

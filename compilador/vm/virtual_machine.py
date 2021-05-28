@@ -206,19 +206,13 @@ class VirtualMachine(object):
             symbol.value = input
 
         elif symbol.type == "BOOL":
-            booleans = {
-                "true": True,
-                "false": False,
-                "1": True,
-                "0": False
-            }
+            booleans = {"true": True, "false": False, "1": True, "0": False}
             symbol.value = booleans[input]
 
         elif symbol.type == "NULL":
             # TODO: Ver como validar que sea siempre null
             if input == "null":
                 symbol.value = None
-
 
     def run(self, quad_dir):
         running = True
@@ -255,8 +249,8 @@ class VirtualMachine(object):
                 continue
 
             elif operation == "GOTOF" and not curr_quad.operand_1.value:
-                    instruction = curr_quad.result_id.name
-                    continue
+                instruction = curr_quad.result_id.name
+                continue
 
             elif operation == "ENDOF":
                 running = False
@@ -278,68 +272,3 @@ class VirtualMachine(object):
                 running = False
 
         return game_instructions
-
-# comparison
-beq = Symbol("BEQ", "matching")
-
-# compiler functions
-goto = Symbol("GOTO")
-gotof = Symbol("GOTOF")
-write = Symbol("WRITE")
-endof = Symbol("ENDOF")
-dir_two = Symbol(2)
-dir_six = Symbol(6)
-dir_ten = Symbol(10)
-dir_ele = Symbol(11)
-
-# Variables
-t1 = Symbol("T1", "BOOL")
-t2 = Symbol("T2", "BOOL")
-uno = Symbol("uno", "STR")
-dos = Symbol("dos", "STR")
-tres = Symbol("tres", "STR")
-one_const = Symbol(1, "INT")
-two_const = Symbol(2, "INT")
-tree_const = Symbol(3, "INT")
-four_const = Symbol(4, "INT")
-
-t1.scope = "main"
-t2.scope = "main"
-uno.scope = "main"
-dos.scope = "main"
-tres.scope = "main"
-one_const.scope = "Constant Segment"
-two_const.scope = "Constant Segment"
-tree_const.scope = "Constant Segment"
-four_const.scope = "Constant Segment"
-
-# Variable Table
-vt = VariableTable()
-
-# Function Table
-ft = FunctionTable()
-ft.set_function("main", "void", [], vt)
-
-# Virtual Machine
-vm = VirtualMachine(3000, 1000, 6000, ft)
-
-main_quads = {
-    1: Quadruple(goto, None, None, dir_two),
-    2: Quadruple(beq, one_const, two_const, t1),
-    3: Quadruple(gotof, t1, None, dir_six),
-    4: Quadruple(write, None, None, uno),
-    5: Quadruple(goto, None, None, dir_ele),
-    6: Quadruple(beq, tree_const, four_const, t2),
-    7: Quadruple(gotof, t2, None, dir_ten),
-    8: Quadruple(write, None, None, dos),
-    9: Quadruple(goto, None, None, dir_ele),
-    10: Quadruple(write, None, None, tres),
-    11: Quadruple(endof, None, None, None),
-}
-vm.quadruple_direction_allocator(main_quads)
-
-for q in main_quads:
-    print("======================================")
-    main_quads[q].print_quad()
-
-vm.run(main_quads)
