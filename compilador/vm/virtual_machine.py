@@ -215,8 +215,11 @@ class VirtualMachine(object):
                 self.__resolve_eq(operation, dir_opnd, dir_result)
 
             elif operation == "GOTO":
-                # REVISA ESTOOO
-                instruction = curr_quad.result_id
+                instruction = curr_quad.result_id.name
+                continue
+
+            elif operation == "GOSUB":
+                instruction = curr_quad.result_id.name
                 continue
 
             elif operation == "ENDOF":

@@ -758,10 +758,11 @@ class TestVirtualMachine(unittest.TestCase):
         goto = Symbol("GOTO")
         write = Symbol("WRITE")
         endof = Symbol("ENDOF")
+        dir_two = Symbol(2)
 
         # Constants
         one = Symbol(1, "INT")
-        two = Symbol(5, "INT")
+        two = Symbol(2, "INT")
         true = Symbol(True, "BOOL")
         false = Symbol(False, "BOOL")
         one.scope = "Constant Segment"
@@ -810,7 +811,7 @@ class TestVirtualMachine(unittest.TestCase):
         }
         '''
         main_quads = {
-            1: Quadruple(goto, None, None, 2),
+            1: Quadruple(goto, None, None, dir_two),
             2: Quadruple(eq, true, None, boolA),
             3: Quadruple(eq, false, None, boolB),
             4: Quadruple(eq, one, None, a),
