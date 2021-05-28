@@ -35,7 +35,7 @@ class VirtualMachine(object):
         local_size,
         local_start_direction,
     ):
-        num_local_segments = len(self.func_table.functions) - 1
+        num_local_segments = len(self.func_table.functions)
         if not num_local_segments:
             return []
 
@@ -46,11 +46,10 @@ class VirtualMachine(object):
 
         segments = []
         for func_name in self.func_table.functions:
-            if func_name != "main":
-                segments.append(
-                    MemorySegment(func_name, local_segment_size, start_direction)
-                )
-                start_direction += local_memory_size
+            segments.append(
+                MemorySegment(func_name, local_segment_size, start_direction)
+            )
+            start_direction += local_memory_size
 
         return segments
 
