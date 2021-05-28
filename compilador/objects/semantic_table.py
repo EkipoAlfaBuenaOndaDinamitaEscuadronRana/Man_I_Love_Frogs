@@ -9,7 +9,7 @@ class SemanticTable:
     #                  <     >     <=     >=
     comparison_op = {"LT", "GT", "LTE", "GTE"}
 
-    __operations_op = {
+    operations_op = {
         "ADD",  # +
         "SUB",  # -
         "MUL",  # *
@@ -17,7 +17,7 @@ class SemanticTable:
         "MOD",  # %
     }
 
-    __assignment_operations_op = {
+    assignment_operations_op = {
         "ADDEQ",  # +=
         "SUBEQ",  # -=
         "MULEQ",  # *=
@@ -182,10 +182,10 @@ class SemanticTable:
     }
 
     def clasify_symbol_op(symbol_op):
-        if symbol_op in SemanticTable.__operations_op:
+        if symbol_op in SemanticTable.operations_op:
             return "operation"
 
-        elif symbol_op in SemanticTable.__assignment_operations_op:
+        elif symbol_op in SemanticTable.assignment_operations_op:
             return "assignment_operation"
 
         elif symbol_op in SemanticTable.comparison_op:

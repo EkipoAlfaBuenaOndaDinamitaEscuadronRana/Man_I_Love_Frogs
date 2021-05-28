@@ -7,6 +7,8 @@ import compilador.objects.variable_tables
 from compilador.objects.variable_tables import *
 import compilador.objects.quadruple
 from compilador.objects.quadruple import *
+import compilador.objects.semantic_table
+from compilador.objects.semantic_table import *
 
 
 class VirtualMachine(object):
@@ -136,3 +138,34 @@ class VirtualMachine(object):
 
                 if self.__not_allocated(curr_quad.result_id):
                     self.insert_symbol_in_segment(result_id.scope, result_id)
+
+    def run(self, quad_dir):
+        running = True
+        instruction = 0
+
+        while running:
+            curr_quad = quad_dir[instruction]
+            operation = curr_quad.operato
+
+            if operation in set.union(
+                SemanticTable.operations_op,
+                SemanticTable.comparison_op,
+                SemanticTable.matching_op,
+            ):
+                self.__resolve_op(curr_quad)
+
+            elif operation in set.union(SemanticTable.assignment_operations_op, {"EQ"}):
+                self.__resolve_eq(curr_quad)
+
+            elif operation == "GOTO":
+                # REVISA ESTOOO
+                instruction = curr_quad.result_id
+                continue
+
+            elif operation == "ENDOF":
+                running = False
+                continue
+
+            instruction += 1
+            if instruction > len(quad_dir):
+                running = False
