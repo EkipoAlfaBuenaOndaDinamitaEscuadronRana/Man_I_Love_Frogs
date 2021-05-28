@@ -77,13 +77,21 @@ class Symbol(object):
     """
 
     def __init__(
-        self, name=None, type=None, scope=None, address=[], dimension_sizes=[]
+        self,
+        name=None,
+        type=None,
+        scope=None,
+        return_location=[],
+        dimension_sizes=[],
+        address=[],
     ):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None
         self.scope = scope
         self.dimension_sizes = dimension_sizes
+        self.dimension_nodes = {}
         self.dimensions = len(dimension_sizes)
+        self.return_location = return_location
         self.address = address
         self.segment_direction = None
         self.global_direction = None
@@ -127,21 +135,69 @@ class Symbol(object):
     def set_name(self, name):
         self.name = name
 
+    def is_dimensioned(self):
+        if type(self.dimension_sizes) == list:
+            return len(self.dimension_sizes) > 0
+        else:
+            return self.dimension_sizes > 0
+
+    def create_dimension_nodes(self):
+        DIM = 1
+        R = 1
+        for d in self.dimension_sizes:
+            node = {}
+            node["LI"] = 0
+            node["LS"] = d - 1
+            R = (node["LS"] - node["LI"] + 1) * R
+            self.dimension_nodes[DIM] = node
+            DIM += 1
+        Offset = 0
+        self.dimension_sizes = R
+        for k, v in self.dimension_nodes.items():
+            m = R / (v["LS"] - v["LI"] + 1)
+            v["M"] = m
+            R = m
+            Offset = Offset + v["LI"] * m
+        self.dimension_nodes[DIM - 1]["M"] = Offset
+
+    def set_address(self, offset):
+        self.address = []
+        self.address.append(offset)
+        if type(self.dimension_sizes) == int or len(self.dimension_sizes) > 0:
+            self.address.append(offset + self.dimension_sizes)
+            return offset + self.dimension_sizes + 1
+        else:
+            self.address.append(offset)
+            return offset + 1
+
+    def get_address(self):
+        return self.address
+
+    def get_dimension_nodes_len(self):
+        return len(self.dimension_nodes)
+
+    def set_dimension_sizes(self, d_sizes):
+        if type(d_sizes) == list:
+            self.dimension_sizes = d_sizes
+
+    def get_dimension_sizes(self):
+        return self.dimension_sizes
+
     def set_scope(self, scope):
         self.scope = scope
 
     def set_type(self, type):
         self.type = type_dictionary[type] if type in type_dictionary else None
 
-    def set_address(self, address):
-        self.address.append(address)
+    def set_return_location(self, loc):
+        self.return_location.append(loc)
 
     def get_name(self):
         return self.name
 
-    def get_address(self):
-        if len(self.address) > 0:
-            return self.address.pop()
+    def get_return_location(self):
+        if len(self.return_location) > 0:
+            return self.return_location.pop()
         else:
             return None
 

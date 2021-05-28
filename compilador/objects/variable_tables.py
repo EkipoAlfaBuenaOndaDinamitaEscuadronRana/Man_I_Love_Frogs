@@ -7,12 +7,15 @@ import collections
 class VariableTable(object):
     def __init__(self):
         self.variables = {}
+        self.offsets = {"INT": 0, "FLT": 0, "CHAR": 0, "BOOL": 0, "STR": 0, "FROG": 0}
 
     def reset_functionTable(self):
         self.variables = {}
+        self.offsets = {"INT": 0, "FLT": 0, "CHAR": 0, "BOOL": 0, "STR": 0, "FROG": 0}
 
     def set_variable(self, symbol):
         self.variables[symbol.name] = symbol
+        self.add_address(symbol)
 
     def get_variable_type(self, name):
         return self.variables[name].type
@@ -20,8 +23,13 @@ class VariableTable(object):
     def get_var_symbol(self, name):
         return self.variables[name]
 
-    def add_address(self, name, address):
-        self.variables[name].set_address(address)
+    def add_address(self, symbol):
+        self.offsets[symbol.type] = self.variables[symbol.name].set_address(
+            self.offsets[symbol.type]
+        )
+
+    def add_return_location(self, name, loc):
+        self.variables[name].set_return_location(loc)
 
     def get_size(self):
         return len(self.variables)

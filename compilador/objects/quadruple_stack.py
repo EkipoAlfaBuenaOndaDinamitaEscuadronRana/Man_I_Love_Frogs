@@ -2,6 +2,10 @@ from typing import SupportsComplex
 from router_solver import *
 import compilador.objects.quadruple
 from compilador.objects.quadruple import *
+import compilador.objects.base_address
+from compilador.objects.base_address import *
+import compilador.helpers.helper_functions
+from compilador.helpers.helper_functions import *
 import re
 import sys
 
@@ -18,6 +22,7 @@ class QuadrupleStack(object):
         self.funcjump = {}
         self.param_count = 0
         self.temp_count = 1
+        self.array_stack = []
 
     # para borrar el contendio cuando se empieza a leer un programa
     def reset_quad(self):
@@ -29,6 +34,7 @@ class QuadrupleStack(object):
         self.funcjump = {}
         self.param_count = 0
         self.temp_count = 1
+        self.array_stack = []
 
     # INSERTAR / RESOLVER QUADRUPLOS
     # Insertar un quadruplo al stack
@@ -45,6 +51,22 @@ class QuadrupleStack(object):
 
     # Manda a resolver los quadruplos
     def solve_expression(self, expresion):
+        i = 0
+        while i < len(expresion):
+            if expresion[i].is_dimensioned():
+                stack = []
+                count = i
+                expresion[count] = self.array_stack.pop()
+                count += 1
+                stack.append(expresion[count])
+                while len(stack) > 0 and count < len(expresion):
+                    if expresion[count].name == "OSB":
+                        stack.append(expresion[count])
+                    elif expresion[count].name == "CSB":
+                        stack.pop()
+                    expresion.pop(count)
+            i += 1
+
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
             print(sol)
@@ -62,6 +84,163 @@ class QuadrupleStack(object):
                 if result.start() == 0 and result.end() == (len(str(temp))):
                     temp = int(temp[1:])
                     self.temp_count = temp + 1
+
+    def array_access(self, symbol, scope):
+        # for k,v in symbol.items():
+        #     print(k)
+        #     if k == "dim":
+        #         for e in v:
+        #             print(get_symbol_formatted(e))
+
+        #     else:
+        #     print(get_symbol_formatted(v))
+
+        # 1: ya se hizo, es en el ID validar que exista
+        #    y que tenga dimensiones y asi
+
+        # 2: En primer [
+        #    inicializa DIM a 1
+        #    PilaDim(id,DIM)
+        #    get Node of Dim 1
+        #    POper fake bottom
+
+        DIM_COUNT = 1  # Todavia no se si lo vaya a usar hmm, no defini pila de dim
+        array_id = symbol["name"]
+        DIM = symbol["dim"]
+        if array_id.get_dimension_nodes_len() != len(DIM):
+            print(
+                'ERROR: wrong dimensions sent to variable "' + str(array_id.name) + '"'
+            )
+            sys.exit()
+
+        # 3: despues de exp
+        #    QUAD -> Ver exp LI LS
+        #    if si hay un next node
+        #    aux = exp
+        #    QUAD -> * aux mdim tj
+        #    pusho(tj)
+        #    if dim > 1
+        #    aux2 = pop o
+        #    aux1 = pop p
+        #    QUAD -> + aux1 aux2 Tk
+
+        # 4: en la comma (entre dim)
+        #    DIM++
+        #    update dim en pila de DIM
+        #    move to next node
+
+        for d in DIM:
+            if self.expresion_or_id(d, "INT", "index"):
+                exp_sent = d[0]
+            else:
+                i = 0
+                while i < len(d):
+                    count = i
+                    if d[i].is_dimensioned():
+                        stack = []
+                        array_content = []
+                        array_content.append(d[count])
+                        count += 1
+                        stack.append(d[count])
+                        while len(stack) > 0 and count < len(d):
+                            if d[count].name == "OSB":
+                                stack.append(d[count])
+                            elif d[count].name == "CSB":
+                                stack.pop()
+                            array_content.append(d[count])
+                            count += 1
+                        self.array_access(format_array_dimensions(array_content), scope)
+                    i += count + 1
+                self.push_list(self.solve_expression(d), scope)
+                exp_sent = self.qstack[self.count_prev].result_id
+            self.push_quad(
+                Quadruple(
+                    Symbol("VER", "instructions", scope),
+                    exp_sent,
+                    Symbol(
+                        array_id.dimension_nodes[DIM_COUNT]["LI"], "INT", array_id.scope
+                    ),
+                    Symbol(
+                        array_id.dimension_nodes[DIM_COUNT]["LS"], "INT", array_id.scope
+                    ),
+                ),
+                scope,
+            )
+            self.array_stack.append(exp_sent)
+            if DIM_COUNT < len(DIM):
+                self.push_quad(
+                    Quadruple(
+                        Symbol("MUL", "operation", scope),
+                        self.array_stack.pop(),
+                        Symbol(
+                            int(array_id.dimension_nodes[DIM_COUNT]["M"]),
+                            "INT",
+                            array_id.scope,
+                        ),
+                        Symbol(str("T" + str(self.temp_count)), "INT", array_id.scope),
+                    ),
+                    scope,
+                )
+                self.temp_count += 1
+                self.array_stack.append(self.qstack[self.count_prev].result_id)
+            if DIM_COUNT > 1:
+                aux_2 = self.array_stack.pop()
+                aux_1 = self.array_stack.pop()
+                self.push_quad(
+                    Quadruple(
+                        Symbol("+", "operation", scope),
+                        aux_1,
+                        aux_2,
+                        Symbol(str("T" + str(self.temp_count)), "INT", array_id.scope),
+                    ),
+                    scope,
+                )
+                self.temp_count += 1
+                self.array_stack.append(self.qstack[self.count_prev].result_id)
+            DIM_COUNT += 1
+
+        # 5: despues de que se acaba ]
+        #    Aux1=pilaO.pop
+        #    QUAD -> + aux1 K Ti
+        #    + ti virtual addres Tn
+        #    PilaO.Push((Tn))
+        #    Pop Fake Botom
+        aux_1 = self.array_stack.pop()
+        self.push_quad(
+            Quadruple(
+                Symbol("+", "operation", scope),
+                aux_1,
+                Symbol(
+                    int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),
+                    "INT",
+                    array_id.scope,
+                ),
+                Symbol(str("T" + str(self.temp_count)), "INT", array_id.scope),
+            ),
+            scope,
+        )
+        self.temp_count += 1
+        self.array_stack.append(self.qstack[self.count_prev].result_id)
+        aux_1 = self.array_stack.pop()
+        self.push_quad(
+            Quadruple(
+                Symbol("+", "operation", scope),
+                aux_1,
+                BaseAddress(
+                    str(str(array_id.name) + "-BA"),
+                    array_id.name,
+                    array_id.type,
+                    array_id.scope,
+                    array_id.address[0],
+                ),
+                Symbol(
+                    "(" + str("T" + str(self.temp_count)) + ")", "INT", array_id.scope
+                ),
+            ),
+            scope,
+        )
+        self.temp_count += 1
+        self.array_stack.append(self.qstack[self.count_prev].result_id)
 
     # SET / GETS
     # Para poder guardar donde esta el inicio de una funcion
@@ -351,14 +530,26 @@ class QuadrupleStack(object):
                 + str(
                     "-"
                     if v.operator == None
-                    else (v.operator.name if type(v.operator) == Symbol else v.operator)
+                    else (
+                        v.operator.name
+                        if (
+                            type(v.operator) == Symbol
+                            or type(v.operator) == BaseAddress
+                        )
+                        else v.operator
+                    )
                 )
                 + " "
                 + str(
                     "-"
                     if v.operand_1 == None
                     else (
-                        v.operand_1.name if type(v.operand_1) == Symbol else v.operand_1
+                        v.operand_1.name
+                        if (
+                            type(v.operand_1) == Symbol
+                            or type(v.operand_1) == BaseAddress
+                        )
+                        else v.operand_1
                     )
                 )
                 + " "
@@ -366,7 +557,12 @@ class QuadrupleStack(object):
                     "-"
                     if v.operand_2 == None
                     else (
-                        v.operand_2.name if type(v.operand_2) == Symbol else v.operand_2
+                        v.operand_2.name
+                        if (
+                            type(v.operand_2) == Symbol
+                            or type(v.operand_2) == BaseAddress
+                        )
+                        else v.operand_2
                     )
                 )
                 + " "
@@ -374,7 +570,12 @@ class QuadrupleStack(object):
                     "-"
                     if v.result_id == None
                     else (
-                        v.result_id.name if type(v.result_id) == Symbol else v.result_id
+                        v.result_id.name
+                        if (
+                            type(v.result_id) == Symbol
+                            or type(v.result_id) == BaseAddress
+                        )
+                        else v.result_id
                     )
                 )
                 + "\n"
@@ -390,14 +591,26 @@ class QuadrupleStack(object):
                 + str(
                     "-"
                     if v.operator == None
-                    else (v.operator.name if type(v.operator) == Symbol else v.operator)
+                    else (
+                        v.operator.name
+                        if (
+                            type(v.operator) == Symbol
+                            or type(v.operator) == BaseAddress
+                        )
+                        else v.operator
+                    )
                 )
                 + " "
                 + str(
                     "-"
                     if v.operand_1 == None
                     else (
-                        v.operand_1.name if type(v.operand_1) == Symbol else v.operand_1
+                        v.operand_1.name
+                        if (
+                            type(v.operand_1) == Symbol
+                            or type(v.operand_1) == BaseAddress
+                        )
+                        else v.operand_1
                     )
                 )
                 + " "
@@ -405,7 +618,12 @@ class QuadrupleStack(object):
                     "-"
                     if v.operand_2 == None
                     else (
-                        v.operand_2.name if type(v.operand_2) == Symbol else v.operand_2
+                        v.operand_2.name
+                        if (
+                            type(v.operand_2) == Symbol
+                            or type(v.operand_2) == BaseAddress
+                        )
+                        else v.operand_2
                     )
                 )
                 + " "
@@ -413,7 +631,12 @@ class QuadrupleStack(object):
                     "-"
                     if v.result_id == None
                     else (
-                        v.result_id.name if type(v.result_id) == Symbol else v.result_id
+                        v.result_id.name
+                        if (
+                            type(v.result_id) == Symbol
+                            or type(v.result_id) == BaseAddress
+                        )
+                        else v.result_id
                     )
                 )
                 + r"\n"
