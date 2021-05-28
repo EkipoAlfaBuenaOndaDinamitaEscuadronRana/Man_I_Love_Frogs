@@ -12,4 +12,5 @@ func int square(int a){
     if (x == 10){
         b = square(a);
     }
+
 }

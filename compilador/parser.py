@@ -1423,11 +1423,16 @@ def p_error(p):
     sys.exit()
 
 
+# def p_comment_block(p):
+#     """
+#     comment_block:
+#     """
 # TERMINAL
 # Regresa nada cuando se llama un empty
 def p_empty(p):
     """
     empty :
+
     """
     p[0] = None
 
