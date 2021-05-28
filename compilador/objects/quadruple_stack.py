@@ -104,7 +104,7 @@ class QuadrupleStack(object):
         #    get Node of Dim 1
         #    POper fake bottom
 
-        DIM_COUNT = 1  # Todavia no se si lo vaya a usar hmm, no defini pila de dim
+        DIM_COUNT = 1 
         array_id = symbol["name"]
         DIM = symbol["dim"]
         if array_id.get_dimension_nodes_len() != len(DIM):
@@ -132,6 +132,9 @@ class QuadrupleStack(object):
         for d in DIM:
             if self.expresion_or_id(d, "INT", "index"):
                 exp_sent = d[0]
+                if exp_sent.type == "NULL":
+                    print('ERROR: using a non-int value to try to access an array')
+                    sys.exit()
             else:
                 i = 0
                 while i < len(d):
@@ -153,6 +156,11 @@ class QuadrupleStack(object):
                     i += count + 1
                 self.push_list(self.solve_expression(d), scope)
                 exp_sent = self.qstack[self.count_prev].result_id
+                if not Symbol.check_type_compatibility("INT", exp_sent.type) or exp_sent.type == "NULL":
+                    print('ERROR: using a non-int value to try to access an array')
+                    sys.exit()
+                    
+            
             self.push_quad(
                 Quadruple(
                     Symbol("VER", "instructions", scope),

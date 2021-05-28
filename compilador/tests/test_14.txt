@@ -1,19 +1,11 @@
 program arreglos; 
 int B[2][3];
-string A[10];
+int A[10];
 int x = 0;
 {
     int a = 3;
     int b = 9;
     int d = B[1][A[a - 1]];
-    string c = A[b - a];
-
-    int i, j;
-    int x[10][10];
-    for(i = 0; i < 10; i = i + 1){
-        for(j = 0; j < 10; j = j + 1){
-            x[i][j] = i * j;
-        }   
-    }
+    int c = A[b - a];
 }
 
