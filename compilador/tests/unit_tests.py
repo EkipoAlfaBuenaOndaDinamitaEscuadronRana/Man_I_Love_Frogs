@@ -798,7 +798,7 @@ class TestVirtualMachine(unittest.TestCase):
         # Virtual Machine
         vm = VirtualMachine(3000, 1000, 6000, ft)
 
-        '''
+        """
         program supersimple;
         {
             bool boolA = true;
@@ -809,7 +809,7 @@ class TestVirtualMachine(unittest.TestCase):
             write(boolA || boolB);
             write(a + b);
         }
-        '''
+        """
         main_quads = {
             1: Quadruple(goto, None, None, dir_two),
             2: Quadruple(eq, true, None, boolA),
