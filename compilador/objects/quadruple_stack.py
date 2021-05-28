@@ -234,7 +234,7 @@ class QuadrupleStack(object):
                     array_id.address[0],
                 ),
                 Symbol(
-                    "(" + str("T" + str(self.temp_count)) + ")", "INT", array_id.scope
+                    "(" + str("T" + str(self.temp_count)) + ")", array_id.type, array_id.scope
                 ),
             ),
             scope,
@@ -462,7 +462,7 @@ class QuadrupleStack(object):
         # Le avisa al inicio a donde ir si se acaba y al final a donde ir si sigue
         end = self.jumpStack.pop()
         ret = self.jumpStack.pop()
-        self.push_quad(Quadruple(Symbol("GOTO", "instruction"), None, None, ret), scope)
+        self.push_quad(Quadruple(Symbol("GOTO", "instruction"), None, None, Symbol(ret, "address", scope)), scope)
         self.fill(end, scope)
 
     def if_1(self, scope):
@@ -506,7 +506,6 @@ class QuadrupleStack(object):
     def fill(self, index, scope):
         if self.qstack[index].result_id == "MISSING_ADDRESS":
             self.qstack[index].result_id = Symbol(self.count, "address", scope)
-
         else:
             print("ERROR: Error filling jump quadruple")
             sys.exit()

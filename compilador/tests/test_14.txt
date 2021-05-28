@@ -1,12 +1,12 @@
 program arreglos; 
 int B[2][3];
-int A[10];
+string A[10];
 int x = 0;
 {
     int a = 3;
     int b = 9;
     int d = B[1][A[a - 1]];
-    int c = A[b - a];
+    string c = A[b - a];
 
     int i, j;
     int x[10][10];
