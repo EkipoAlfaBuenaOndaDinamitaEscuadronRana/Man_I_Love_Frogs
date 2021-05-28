@@ -138,23 +138,72 @@ class VirtualMachine(object):
                 if self.__not_allocated(curr_quad.result_id):
                     self.insert_symbol_in_segment(result_id.scope, result_id)
 
+    def __resolve_op(self, operation, dir_opnd_1, dir_opnd_2, dir_result):
+        val_opnd_1 = self.get_direction_symbol(dir_opnd_1).value
+        val_opnd_2 = self.get_direction_symbol(dir_opnd_2).value
+
+        if operation == "ADD":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 + val_opnd_2
+        elif operation == "SUB":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 - val_opnd_2
+        elif operation == "MUL":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 * val_opnd_2
+        elif operation == "DIV":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 / val_opnd_2
+        elif operation == "MOD":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 % val_opnd_2
+
+    def __resolve_eq(self, assign_op, dir_opnd, dir_result):
+        val_opnd = self.get_direction_symbol(dir_opnd).value
+
+        if assign_op == "EQ":
+            self.get_direction_symbol(dir_result).value = val_opnd
+        elif assign_op == "ADDEQ":
+            self.get_direction_symbol(dir_result).value += val_opnd
+        elif assign_op == "SUBEQ":
+            self.get_direction_symbol(dir_result).value -= val_opnd
+        elif assign_op == "MULEQ":
+            self.get_direction_symbol(dir_result).value *= val_opnd
+        elif assign_op == "DIVEQ":
+            self.get_direction_symbol(dir_result).value /= val_opnd
+        elif assign_op == "MODEQ":
+            self.get_direction_symbol(dir_result).value %= val_opnd
+
+    def __resolve_write(self, dir_result):
+        print(self.get_direction_symbol(dir_result).value)
+
+
     def run(self, quad_dir):
         running = True
-        instruction = 0
+        instruction = 1
 
         while running:
             curr_quad = quad_dir[instruction]
-            operation = curr_quad.operato
+            operation = curr_quad.operator.name
+
+            # if type(operation) == Symbol:
+            #     operation = operation.name
+
+            # print("-----------------------------------")
+            # curr_quad.print_quad()
+            # print("-----------------------------------")
 
             if operation in set.union(
                 SemanticTable.operations_op,
                 SemanticTable.comparison_op,
                 SemanticTable.matching_op,
             ):
-                self.__resolve_op(curr_quad)
+                dir_opnd_1 = curr_quad.operand_1.global_direction
+                dir_opnd_2 = curr_quad.operand_2.global_direction
+                dir_result = curr_quad.result_id.global_direction
+
+                self.__resolve_op(operation, dir_opnd_1, dir_opnd_2, dir_result)
 
             elif operation in set.union(SemanticTable.assignment_operations_op, {"EQ"}):
-                self.__resolve_eq(curr_quad)
+                dir_opnd = curr_quad.operand_1.global_direction
+                dir_result = curr_quad.result_id.global_direction
+
+                self.__resolve_eq(operation, dir_opnd, dir_result)
 
             elif operation == "GOTO":
                 # REVISA ESTOOO
@@ -165,6 +214,103 @@ class VirtualMachine(object):
                 running = False
                 continue
 
+            elif operation == "WRITE":
+                dir_result = curr_quad.result_id.global_direction
+                self.__resolve_write(dir_result)
+
             instruction += 1
             if instruction > len(quad_dir):
                 running = False
+
+# Operators
+eq = Symbol("EQ", "assignment")
+add = Symbol("ADD", "operation")
+
+# States
+goto = Symbol("GOTO")
+write = Symbol("WRITE")
+endof = Symbol("ENDOF")
+
+# Constants
+one = Symbol(1, "INT")
+two = Symbol(5, "INT")
+one.scope = "Constant Segment"
+two.scope = "Constant Segment"
+
+# Variables
+a = Symbol("A", "INT")
+b = Symbol("B", "INT")
+t4 = Symbol("T4", "INT") # Duda: Me generó T4, ¿qué pedo xD?
+a.scope = "main"
+b.scope = "main"
+t4.scope = "main"
+
+# Variable Table
+vt = VariableTable()
+vt.set_variable(a, 1) # Duda: Las variables ya vienen asignadas cuando llegan a la VM?
+vt.set_variable(b, 2) # Duda: ¿Las asignaciones deberían estar en Symbolo o en numerito?
+
+# Function Table
+ft = FunctionTable()
+ft.set_function("main", "void", [], vt)
+
+# Virtual Machine
+vm = VirtualMachine(3000, 1000, 6000, ft)
+
+quads = {
+    1: Quadruple( # Duda: ¿Si empieza en 1?
+        goto, # ESTO ES UN quadruplo
+        None,
+        None,
+        2
+    ),
+    2: Quadruple(
+        eq,
+        one,
+        None,
+        a
+    ),
+    3: Quadruple(
+        eq,
+        two,
+        None,
+        b
+    ),
+    4: Quadruple(
+        add,
+        a,
+        b,
+        t4
+    ),
+    5: Quadruple(
+        write,
+        None,
+        None,
+        t4
+    ),
+    6: Quadruple(
+        endof,
+        None,
+        None,
+        None
+    ),
+}
+
+# print("Before allocation:")
+# for q in quads:
+#     print("\n-------------------------------------------------------\n")
+#     quads[q].print_quad()
+
+vm.quadruple_direction_allocator(quads)
+
+# print("\n-------------------------------------------------------\n")
+# print("Afer allocation:")
+# for q in quads:
+#     print("\n-------------------------------------------------------\n")
+#     quads[q].print_quad()
+
+# print("-------Termino el allocation-----------------------------")
+# print("\n\nAddress 3000: ", end="")
+# vm.get_direction_symbol(3000).print_symbol()
+# print("-------Termino el search-----------------------------\n")
+vm.run(quads)
