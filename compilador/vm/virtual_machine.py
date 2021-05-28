@@ -292,19 +292,26 @@ dir_six = Symbol(6)
 dir_ten = Symbol(10)
 dir_ele = Symbol(11)
 
-# Directions
+# Variables
 t1 = Symbol("T1", "BOOL")
 t2 = Symbol("T2", "BOOL")
-
 uno = Symbol("uno", "STR")
 dos = Symbol("dos", "STR")
 tres = Symbol("tres", "STR")
-
-# Constants
 one_const = Symbol(1, "INT")
 two_const = Symbol(2, "INT")
 tree_const = Symbol(3, "INT")
 four_const = Symbol(4, "INT")
+
+t1.scope = "main"
+t2.scope = "main"
+uno.scope = "main"
+dos.scope = "main"
+tres.scope = "main"
+one_const.scope = "Constant Segment"
+two_const.scope = "Constant Segment"
+tree_const.scope = "Constant Segment"
+four_const.scope = "Constant Segment"
 
 # Variable Table
 vt = VariableTable()
@@ -322,9 +329,17 @@ main_quads = {
     3: Quadruple(gotof, t1, None, dir_six),
     4: Quadruple(write, None, None, uno),
     5: Quadruple(goto, None, None, dir_ele),
-    6: Quadruple(beq, tree_const, four_const, t2), #########
-    7: Quadruple(write, None, None, t1),
-    8: Quadruple(add, a, b, t2),
-    9: Quadruple(write, None, None, t2),
-    10: Quadruple(endof, None, None, None),
+    6: Quadruple(beq, tree_const, four_const, t2),
+    7: Quadruple(gotof, t2, None, dir_ten),
+    8: Quadruple(write, None, None, dos),
+    9: Quadruple(goto, None, None, dir_ele),
+    10: Quadruple(write, None, None, tres),
+    11: Quadruple(endof, None, None, None),
 }
+vm.quadruple_direction_allocator(main_quads)
+
+for q in main_quads:
+    print("======================================")
+    main_quads[q].print_quad()
+
+vm.run(main_quads)
