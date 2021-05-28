@@ -240,10 +240,8 @@ t4.scope = "main"
 
 # Variable Table
 vt = VariableTable()
-vt.set_variable(a, 1)  # Duda: Las variables ya vienen asignadas cuando llegan a la VM?
-vt.set_variable(
-    b, 2
-)  # Duda: ¿Las asignaciones deberían estar en Symbolo o en numerito?
+vt.set_variable(a)
+vt.set_variable(b)
 
 # Function Table
 ft = FunctionTable()

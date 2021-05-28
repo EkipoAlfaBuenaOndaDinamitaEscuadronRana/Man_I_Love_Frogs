@@ -16,6 +16,8 @@ operators = {
     "%": Symbol("MOD", "operation"),
     "(": Symbol("OP", "parentheses"),
     ")": Symbol("CP", "parentheses"),
+    "[": Symbol("OSB", "parentheses"),
+    "]": Symbol("CSB", "parentheses"),
     "!": Symbol("NOT", "not"),
     "=": Symbol("EQ", "assignment"),
     "<": Symbol("LT", "comparison"),
@@ -89,13 +91,37 @@ def get_variables(type, line):
             line = line[2:]
             varList.update({currSymbol: expresion_to_string(line[:-1])})
             line = line[-1]
+        elif line[1] == "[":
+            dim_1 = []
+            dim_2 = []
+            while line[2] != "]":
+                dim_1.append(line[2])
+                line.pop(2)
+            dim_1 = expresion_to_string(dim_1)
+            line.pop(2)
+            line.pop(1)
+            if line[1] == "[":
+                while line[2] != "]":
+                    dim_2.append(line[2])
+                    line.pop(2)
+                dim_2 = expresion_to_string(dim_2)
+                line.pop(2)
+                line.pop(1)
+            if line[1] == "=":
+                print("ERROR: Can't assign a value dimensioned type in declaration")
+                sys.exit()
+            if len(dim_2) > 0:
+                dim_1
+                currSymbol = Symbol(line[0], type, dimension_sizes=[dim_1, dim_2])
+            else:
+                currSymbol = Symbol(line[0], type, dimension_sizes=[dim_1])
+            varList.update({currSymbol: None})
+            line.pop(0)
         else:
             currSymbol = Symbol(line[0], type)
             varList.update({currSymbol: None})
             line.pop(0)
 
-    # for e in varList:
-    # print("OUTPUT: " + str(e.name) + " " + str(e.type) + " " + str(varList[e]))
     return varList
 
 
@@ -112,8 +138,8 @@ def dec_to_as(exp):
 
 def constant_eval(const):
     patterns = {
-        "INT": r"\d+",
-        "FLT": r"\d+\.\d+",
+        "INT": r"(\d+|-\d+)",
+        "FLT": r"(\d+\.\d+|-\d+\.\d+)",
         "CHAR": r'("|\')([^\"|^\'])("|\')',
         "BOOL": r"(?:true|false)",
         "NULL": r"null",
@@ -128,6 +154,55 @@ def constant_eval(const):
     return None
 
 
+def validate_dimensions(symbol):
+    dim_list_input = symbol.dimension_sizes
+    dim_list_output = []
+    for d in dim_list_input:
+        d = int(d)
+        if d > 0:
+            dim_list_output.append(d)
+
+    if len(dim_list_input) == len(dim_list_output):
+        return dim_list_output
+    else:
+        return None
+
+
+def format_array_dimensions(exp):
+    data = {
+        "name": exp.pop(0),
+        "dim": [],
+    }
+    dim_1 = []
+    dim_2 = []
+    stack = []
+    stack.append(exp[0])
+    dim_1.append(exp.pop(0))
+    while len(exp) > 0 and len(stack) > 0:
+        if exp[0].name == "OSB":
+            stack.append(exp[0])
+        elif exp[0].name == "CSB":
+            stack.pop()
+        dim_1.append(exp.pop(0))
+    dim_1.pop(0)
+    dim_1.pop(-1)
+    data["dim"].append(dim_1)
+    if len(exp) > 0 and exp[0].name == "OSB":
+        stack.append(exp[0])
+        dim_2.append(exp.pop(0))
+        while len(exp) > 0 and len(stack) > 0:
+            if exp[0].name == "OSB":
+                stack.append(exp[0])
+            elif exp[0].name == "CSB":
+                stack.pop()
+            dim_2.append(exp.pop(0))
+        dim_2.pop(0)
+        dim_2.pop(-1)
+        data["dim"].append(dim_2)
+
+    return data
+
+
 def expresion_to_symbols(exp, ft, s, d=None):
     if type(exp) != list:
         exp = [exp]
@@ -138,12 +213,31 @@ def expresion_to_symbols(exp, ft, s, d=None):
         exp = dec_to_as(exp)
     for e in exp:
         if e in operators:
-            sym_list.append(operators[e])
+            op = operators[e]
+            op.set_scope(s.get_curr_state_table())
+            sym_list.append(op)
         elif ft.lookup_function(e) and ("(" in exp and ")" in exp):
-            sym_list.append(Symbol(e, ft.get_function_type(e)))
-            start = exp.index("(")
-            end = exp.index(")") + 1
-            del exp[start:end]
+            ret_loc = (
+                ft.get_function_variable_table(s.get_global_table())
+                .get_var_symbol(e)
+                .get_return_location()
+            )
+            if ret_loc != None:
+                sym_list.append(ret_loc)
+            else:
+                sym_list.append(
+                    Symbol(e, ft.get_function_type(e), s.get_global_table())
+                )
+            stack = []
+            count = exp.index("(")
+            stack.append(exp[count])
+            del exp[count]
+            while len(stack) > 0 and count < len(exp):
+                if exp[count] == "(":
+                    stack.append(exp[count])
+                elif exp[count] == ")":
+                    stack.pop()
+                exp.pop(count)
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e
         ):
@@ -158,11 +252,11 @@ def expresion_to_symbols(exp, ft, s, d=None):
             )
         else:
             c_type = constant_eval(e)
-
             if c_type != None:
-                sym_list.append(Symbol(e, c_type))
+                sym_list.append(Symbol(e, c_type, "Constant Segment"))
+
             else:
-                print('ERROR: token " ' + str(e) + ' " not valid or not found')
+                print('ERROR: token "' + str(e) + '" not valid or not found')
                 sys.exit()
 
     return sym_list

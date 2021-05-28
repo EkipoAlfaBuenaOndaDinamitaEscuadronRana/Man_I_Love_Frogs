@@ -1,7 +1,14 @@
-program supersimple;
-{
-    int a = 1;
-    int b = 2;
+program recursion;
 
-    write(a + b);
+func int factorial(int n){
+  if (n == 0){
+      return 1;
+  } else{
+      return n * factorial(n-1);
+  }
+
+}
+
+{
+    int respuesta = factorial(5);
 }

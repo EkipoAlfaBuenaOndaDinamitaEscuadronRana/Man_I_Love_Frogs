@@ -14,6 +14,11 @@ func int random(int a, int b, int c){
 }
 
 {
-    int a;
-    a = random(5, 10, 4);
+    int a, b, c, d;
+    a = 1 + random(5, -10, 4);
+    b = random(a, 3, 100);
+    c = random(random(5 , 5 , 5) , 5 , 5);
+    d = random(1,2,3) + random(4,5,6);
+    
+
 }
