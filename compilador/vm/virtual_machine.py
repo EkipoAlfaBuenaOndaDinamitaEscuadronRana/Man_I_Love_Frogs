@@ -172,7 +172,6 @@ class VirtualMachine(object):
     def __resolve_write(self, dir_result):
         print(self.get_direction_symbol(dir_result).value)
 
-
     def run(self, quad_dir):
         running = True
         instruction = 1
@@ -180,13 +179,6 @@ class VirtualMachine(object):
         while running:
             curr_quad = quad_dir[instruction]
             operation = curr_quad.operator.name
-
-            # if type(operation) == Symbol:
-            #     operation = operation.name
-
-            # print("-----------------------------------")
-            # curr_quad.print_quad()
-            # print("-----------------------------------")
 
             if operation in set.union(
                 SemanticTable.operations_op,
@@ -222,6 +214,7 @@ class VirtualMachine(object):
             if instruction > len(quad_dir):
                 running = False
 
+
 # Operators
 eq = Symbol("EQ", "assignment")
 add = Symbol("ADD", "operation")
@@ -240,15 +233,17 @@ two.scope = "Constant Segment"
 # Variables
 a = Symbol("A", "INT")
 b = Symbol("B", "INT")
-t4 = Symbol("T4", "INT") # Duda: Me generó T4, ¿qué pedo xD?
+t4 = Symbol("T4", "INT")  # Duda: Me generó T4, ¿qué pedo xD?
 a.scope = "main"
 b.scope = "main"
 t4.scope = "main"
 
 # Variable Table
 vt = VariableTable()
-vt.set_variable(a, 1) # Duda: Las variables ya vienen asignadas cuando llegan a la VM?
-vt.set_variable(b, 2) # Duda: ¿Las asignaciones deberían estar en Symbolo o en numerito?
+vt.set_variable(a, 1)  # Duda: Las variables ya vienen asignadas cuando llegan a la VM?
+vt.set_variable(
+    b, 2
+)  # Duda: ¿Las asignaciones deberían estar en Symbolo o en numerito?
 
 # Function Table
 ft = FunctionTable()
@@ -258,59 +253,13 @@ ft.set_function("main", "void", [], vt)
 vm = VirtualMachine(3000, 1000, 6000, ft)
 
 quads = {
-    1: Quadruple( # Duda: ¿Si empieza en 1?
-        goto, # ESTO ES UN quadruplo
-        None,
-        None,
-        2
-    ),
-    2: Quadruple(
-        eq,
-        one,
-        None,
-        a
-    ),
-    3: Quadruple(
-        eq,
-        two,
-        None,
-        b
-    ),
-    4: Quadruple(
-        add,
-        a,
-        b,
-        t4
-    ),
-    5: Quadruple(
-        write,
-        None,
-        None,
-        t4
-    ),
-    6: Quadruple(
-        endof,
-        None,
-        None,
-        None
-    ),
+    1: Quadruple(goto, None, None, 2),  # Empieza en 1  # ESTO ES UN quadruplo
+    2: Quadruple(eq, one, None, a),
+    3: Quadruple(eq, two, None, b),
+    4: Quadruple(add, a, b, t4),
+    5: Quadruple(write, None, None, t4),
+    6: Quadruple(endof, None, None, None),
 }
 
-# print("Before allocation:")
-# for q in quads:
-#     print("\n-------------------------------------------------------\n")
-#     quads[q].print_quad()
-
 vm.quadruple_direction_allocator(quads)
-
-# print("\n-------------------------------------------------------\n")
-# print("Afer allocation:")
-# for q in quads:
-#     print("\n-------------------------------------------------------\n")
-#     quads[q].print_quad()
-
-# print("-------Termino el allocation-----------------------------")
-# print("\n\nAddress 3000: ", end="")
-# vm.get_direction_symbol(3000).print_symbol()
-# print("-------Termino el search-----------------------------\n")
 vm.run(quads)
