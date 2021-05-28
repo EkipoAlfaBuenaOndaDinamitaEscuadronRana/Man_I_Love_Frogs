@@ -108,6 +108,8 @@ class MemorySegment(object):
         if symbol_position + s_size - 1 < initial_position + self.__subsegment_size:
             self.__assign_memory(symbol, symbol_position)
             self.__substract_memory(symbol)
+            if self.name == "Constant Segment":
+                symbol.value = symbol.name
 
             return True
 

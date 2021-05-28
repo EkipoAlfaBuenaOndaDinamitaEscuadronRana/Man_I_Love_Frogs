@@ -7,6 +7,8 @@ import compilador.objects.variable_tables
 from compilador.objects.variable_tables import *
 import compilador.objects.quadruple
 from compilador.objects.quadruple import *
+import compilador.objects.semantic_table
+from compilador.objects.semantic_table import *
 
 
 class VirtualMachine(object):
@@ -135,3 +137,101 @@ class VirtualMachine(object):
 
                 if self.__not_allocated(curr_quad.result_id):
                     self.insert_symbol_in_segment(result_id.scope, result_id)
+
+    def __resolve_op(self, operation, dir_opnd_1, dir_opnd_2, dir_result):
+        val_opnd_1 = self.get_direction_symbol(dir_opnd_1).value
+        val_opnd_2 = self.get_direction_symbol(dir_opnd_2).value
+
+        if operation == "ADD":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 + val_opnd_2
+        elif operation == "SUB":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 - val_opnd_2
+        elif operation == "MUL":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 * val_opnd_2
+        elif operation == "DIV":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 / val_opnd_2
+        elif operation == "MOD":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 % val_opnd_2
+        elif operation == "BEQ":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 == val_opnd_2
+        elif operation == "BNEQ":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 != val_opnd_2
+        elif operation == "OR":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 or val_opnd_2
+        elif operation == "AND":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 and val_opnd_2
+        elif operation == "LT":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 < val_opnd_2
+        elif operation == "GT":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 > val_opnd_2
+        elif operation == "LTE":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 <= val_opnd_2
+        elif operation == "GTE":
+            self.get_direction_symbol(dir_result).value = val_opnd_1 >= val_opnd_2
+
+    def __resolve_eq(self, assign_op, dir_opnd, dir_result):
+        val_opnd = self.get_direction_symbol(dir_opnd).value
+
+        if assign_op == "EQ":
+            self.get_direction_symbol(dir_result).value = val_opnd
+        elif assign_op == "ADDEQ":
+            self.get_direction_symbol(dir_result).value += val_opnd
+        elif assign_op == "SUBEQ":
+            self.get_direction_symbol(dir_result).value -= val_opnd
+        elif assign_op == "MULEQ":
+            self.get_direction_symbol(dir_result).value *= val_opnd
+        elif assign_op == "DIVEQ":
+            self.get_direction_symbol(dir_result).value /= val_opnd
+        elif assign_op == "MODEQ":
+            self.get_direction_symbol(dir_result).value %= val_opnd
+
+    def __resolve_write(self, dir_result):
+        print(self.get_direction_symbol(dir_result).value)
+
+    def run(self, quad_dir):
+        running = True
+        instruction = 1
+        game_instructions = []
+
+        while running:
+            curr_quad = quad_dir[instruction]
+            operation = curr_quad.operator.name
+
+            if operation in set.union(
+                SemanticTable.operations_op,
+                SemanticTable.comparison_op,
+                SemanticTable.matching_op,
+            ):
+                dir_opnd_1 = curr_quad.operand_1.global_direction
+                dir_opnd_2 = curr_quad.operand_2.global_direction
+                dir_result = curr_quad.result_id.global_direction
+
+                self.__resolve_op(operation, dir_opnd_1, dir_opnd_2, dir_result)
+
+            elif operation in set.union(SemanticTable.assignment_operations_op, {"EQ"}):
+                dir_opnd = curr_quad.operand_1.global_direction
+                dir_result = curr_quad.result_id.global_direction
+
+                self.__resolve_eq(operation, dir_opnd, dir_result)
+
+            elif operation == "GOTO":
+                instruction = curr_quad.result_id.name
+                continue
+
+            elif operation == "GOSUB":
+                instruction = curr_quad.result_id.name
+                continue
+
+            elif operation == "ENDOF":
+                running = False
+                continue
+
+            elif operation == "WRITE":
+                dir_result = curr_quad.result_id.global_direction
+                self.__resolve_write(dir_result)
+
+            instruction += 1
+            if instruction > len(quad_dir):
+                running = False
+
+        return game_instructions

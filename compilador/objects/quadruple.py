@@ -561,3 +561,32 @@ class Quadruple(object):
                 response.append(operators.get(symbol, Symbol(symbol, "FLT")))
 
         return response
+
+    def print_quad(self):
+        if type(self.operator) == Symbol:
+            print("OPERATOR: ")
+            self.operator.print_symbol()
+            print()
+        else:
+            print("OPERATOR: \n{}\n".format(self.operator))
+
+        if type(self.operand_1) == Symbol:
+            print("OPERAND_1: ")
+            self.operand_1.print_symbol()
+            print()
+        else:
+            print("OPERAND_1: \n{}\n".format(self.operand_1))
+
+        if type(self.operand_2) == Symbol:
+            print("OPERAND_2: ")
+            self.operand_2.print_symbol()
+            print()
+        else:
+            print("OPERAND_2: \n{}\n".format(self.operand_2))
+
+        if type(self.result_id) == Symbol:
+            print("RESULT_ID:")
+            self.result_id.print_symbol()
+            print()
+        else:
+            print("RESULT_ID: \n{}\n".format(self.result_id))
