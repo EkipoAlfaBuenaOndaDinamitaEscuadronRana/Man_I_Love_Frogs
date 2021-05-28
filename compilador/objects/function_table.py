@@ -23,10 +23,16 @@ class FunctionTable(object):
     def set_function_variable_table_at(self, name):
         self.functions[name]["vt"] = VariableTable()
         for symbol in self.functions[name]["p"]:
-            self.functions[name]["vt"].set_variable(symbol, None)
+            symbol.set_scope(name)
+            self.functions[name]["vt"].set_variable(symbol)
 
     def set_function_size_at(self, name):
         self.functions[name]["s"] = self.functions[name]["vt"].get_size()
+
+    def insert_to_constant_table(self, constant):
+        for c in constant:
+            if not self.functions["Constant Segment"]["vt"].lookup_variable(c.name):
+                self.functions["Constant Segment"]["vt"].set_variable(c)
 
     def get_function(self, name):
         return self.functions[name]

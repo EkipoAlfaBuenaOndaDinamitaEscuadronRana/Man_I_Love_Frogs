@@ -15,6 +15,7 @@ reserved = {
     "int": "INT",  # int
     "float": "FLT",  # float
     "string": "STR",  # string
+    "char": "CHAR",
     "bool": "BOOL",  # bool
     "frog": "FROG",  # player
     "void": "VOID",  # void
@@ -43,8 +44,8 @@ tokens = [
     "CCB",  # }
     "OP",  # (
     "CP",  # )
-    "OSB",  # {
-    "CSB",  # }
+    "OSB",  # [
+    "CSB",  # ]
     "GT",  # >
     "GTE",  # >=
     "LT",  # <
@@ -143,7 +144,7 @@ def t_CSTRING(t):
 
 
 def t_ID(t):
-    r"[A-za-z]([A-za-z]|[0-9])*"
+    r"[A-Za-z]([A-Za-z]|[0-9]|[_])*"
     t.type = reserved.get(t.value, "ID")
     return t
 
