@@ -104,7 +104,7 @@ class QuadrupleStack(object):
         #    get Node of Dim 1
         #    POper fake bottom
 
-        DIM_COUNT = 1 
+        DIM_COUNT = 1
         array_id = symbol["name"]
         DIM = symbol["dim"]
         if array_id.get_dimension_nodes_len() != len(DIM):
@@ -133,7 +133,7 @@ class QuadrupleStack(object):
             if self.expresion_or_id(d, "INT", "index"):
                 exp_sent = d[0]
                 if exp_sent.type == "NULL":
-                    print('ERROR: using a non-int value to try to access an array')
+                    print("ERROR: using a non-int value to try to access an array")
                     sys.exit()
             else:
                 i = 0
@@ -156,11 +156,13 @@ class QuadrupleStack(object):
                     i += count + 1
                 self.push_list(self.solve_expression(d), scope)
                 exp_sent = self.qstack[self.count_prev].result_id
-                if not Symbol.check_type_compatibility("INT", exp_sent.type) or exp_sent.type == "NULL":
-                    print('ERROR: using a non-int value to try to access an array')
+                if (
+                    not Symbol.check_type_compatibility("INT", exp_sent.type)
+                    or exp_sent.type == "NULL"
+                ):
+                    print("ERROR: using a non-int value to try to access an array")
                     sys.exit()
-                    
-            
+
             self.push_quad(
                 Quadruple(
                     Symbol("VER", "instructions", scope),
@@ -242,7 +244,9 @@ class QuadrupleStack(object):
                     array_id.address[0],
                 ),
                 Symbol(
-                    "(" + str("T" + str(self.temp_count)) + ")", array_id.type, array_id.scope
+                    "(" + str("T" + str(self.temp_count)) + ")",
+                    array_id.type,
+                    array_id.scope,
                 ),
             ),
             scope,
@@ -470,7 +474,12 @@ class QuadrupleStack(object):
         # Le avisa al inicio a donde ir si se acaba y al final a donde ir si sigue
         end = self.jumpStack.pop()
         ret = self.jumpStack.pop()
-        self.push_quad(Quadruple(Symbol("GOTO", "instruction"), None, None, Symbol(ret, "address", scope)), scope)
+        self.push_quad(
+            Quadruple(
+                Symbol("GOTO", "instruction"), None, None, Symbol(ret, "address", scope)
+            ),
+            scope,
+        )
         self.fill(end, scope)
 
     def if_1(self, scope):

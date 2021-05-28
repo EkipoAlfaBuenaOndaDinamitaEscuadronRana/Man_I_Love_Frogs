@@ -29,9 +29,9 @@ def p_inicial(p):
         p[0] = quad_stack.return_quads_test()
     else:
         ret = {
-        "q" : quad_stack.qstack,
-        "ft" : global_func_table,
-        "str" : quad_stack.return_quads() 
+            "q": quad_stack.qstack,
+            "ft": global_func_table,
+            "str": quad_stack.return_quads(),
         }
 
         p[0] = ret
@@ -72,7 +72,7 @@ def p_global_vartable_distruct(p):
         current_state.get_curr_state_table(),
     )
     current_state.pop_curr_state()
-    quad_stack.print_quads()
+    # quad_stack.print_quads()
     # global_func_table.print_FuncTable()
 
 
