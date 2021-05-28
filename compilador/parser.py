@@ -28,7 +28,13 @@ def p_inicial(p):
     if p[1] == ":":
         p[0] = quad_stack.return_quads_test()
     else:
-        p[0] = quad_stack.return_quads()
+        ret = {
+            "q": quad_stack.qstack,
+            "ft": global_func_table,
+            "str": quad_stack.return_quads(),
+        }
+
+        p[0] = ret
 
 
 def p_start(p):
@@ -66,6 +72,15 @@ def p_global_vartable_distruct(p):
         current_state.get_curr_state_table(),
     )
     current_state.pop_curr_state()
+
+    # for k,v in quad_stack.qstack.items():
+    #     print(k)
+    #     print(v.operator)
+    #     print(v.operand_1)
+    #     print(v.operand_2)
+    #     print(v.result_id)
+    #     print("----------------")
+
     # quad_stack.print_quads()
     # global_func_table.print_FuncTable()
 
@@ -254,9 +269,11 @@ def p_var(p):
         if current_state.get_curr_state_opt() == "as_on":
             quad_stack.push_list(
                 quad_stack.solve_expression(
-                    expresion_to_symbols(p[2], global_func_table, current_state, True)
+                    expresion_to_symbols(p[2], global_func_table, current_state, True),
+                    global_func_table,
                 ),
                 current_state.get_curr_state_table(),
+                global_func_table,
             )
             current_state.pop_curr_state()
         # ESTADO: POP VAR DEC PERO NO LA VARTABLE
@@ -613,9 +630,11 @@ def p_asignatura(p):
     if current_state.get_curr_state_opt() != "varD":
         quad_stack.push_list(
             quad_stack.solve_expression(
-                expresion_to_symbols(p[0], global_func_table, current_state)
+                expresion_to_symbols(p[0], global_func_table, current_state),
+                global_func_table,
             ),
             current_state.get_curr_state_table(),
+            global_func_table,
         )
     else:
         current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
@@ -858,6 +877,7 @@ def p_llamada(p):
                     current_state.get_global_table()
                 ).get_var_symbol(p[1]),
                 current_state.get_curr_state_table(),
+                global_func_table,
             )
             global_func_table.get_function_variable_table(
                 current_state.get_global_table()
@@ -912,8 +932,9 @@ def p_parametro(p):
                 p[0], global_func_table, current_state
             )
             quad_stack.push_list(
-                quad_stack.solve_expression(parameter_expresion),
+                quad_stack.solve_expression(parameter_expresion, global_func_table),
                 current_state.get_curr_state_table(),
+                global_func_table,
             )
             quad_stack.push_quad(
                 quad_stack.validate_parameters(
@@ -948,9 +969,11 @@ def p_expresion(p):
     ):
         quad_stack.push_list(
             quad_stack.solve_expression(
-                expresion_to_symbols(p[0], global_func_table, current_state)
+                expresion_to_symbols(p[0], global_func_table, current_state),
+                global_func_table,
             ),
             current_state.get_curr_state_table(),
+            global_func_table,
         )
 
 
@@ -1192,6 +1215,7 @@ def p_id_var(p):
                                 )
                             ),
                             current_state.get_curr_state_table(),
+                            global_func_table,
                         )
                 else:
                     print('ERROR: Variable "' + str(p[1] + '" is not dimensioned'))
@@ -1216,6 +1240,7 @@ def p_id_var(p):
                                 )
                             ),
                             current_state.get_curr_state_table(),
+                            global_func_table,
                         )
                 else:
                     print('ERROR: Variable "' + str(p[1] + '" is not dimensioned'))

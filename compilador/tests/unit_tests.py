@@ -19,7 +19,8 @@ import unittest
 class TestYacc(unittest.TestCase):
     def test_yacc(self):
         def test_file(file_name, answer):
-            result = parser_file(file_name)
+            data = parser_file(file_name)
+            result = data["str"]
             if result == answer:
                 return "."
             else:
@@ -28,7 +29,7 @@ class TestYacc(unittest.TestCase):
         test_answers = [
             "*",
             "01 | GOTO - - 2\n02 | ENDOF - - -\n",
-            "01 | GOTO - - 2\n02 | EQ 1 - a\n03 | ENDOF - - -\n",
+            "01 | GOTO - - 2\n02 | ADD 1 2 T1\n03 | EQ T1 - a\n04 | WRITE - - a\n05 | ENDOF - - -\n",
             "01 | GOTO - - 6\n02 | EQ 2 - b\n03 | MUL a a T1\n04 | RETURN T1 - -\n05 | ENDFUNC - - -\n06 | EQ 10 - x\n07 | BEQ x 10 T1\n08 | GOTOF T1 - 14\n09 | ERA square - -\n10 | PARAM a - param1\n11 | GOSUB square - 3\n12 | EQ square - T2\n13 | EQ T2 - b\n14 | ENDOF - - -\n",
             "01 | GOTO - - 2\n02 | EQ 10 - x\n03 | EQ 2 - y\n04 | MUL x y T1\n05 | EQ T1 - a\n06 | ADD x y T2\n07 | EQ T2 - b\n08 | DIV x y T3\n09 | EQ T3 - c\n10 | SUB x y T4\n11 | EQ T4 - d\n12 | ENDOF - - -\n",
             "01 | GOTO - - 5\n02 | EQ 1 - a\n03 | EQ 2 - b\n04 | EQ 0 - c\n05 | GT a b T1\n06 | GOTOF T1 - 10\n07 | ADD a 1 T2\n08 | EQ T2 - c\n09 | GOTO - - 17\n10 | BEQ b a T3\n11 | GOTOF T3 - 15\n12 | ADD b 1 T4\n13 | EQ T4 - c\n14 | GOTO - - 17\n15 | ADD 1 2 T5\n16 | EQ T5 - c\n17 | ENDOF - - -\n",

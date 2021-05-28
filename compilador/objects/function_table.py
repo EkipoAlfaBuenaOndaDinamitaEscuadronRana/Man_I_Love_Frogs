@@ -8,9 +8,25 @@ from compilador.objects.symbol import *
 class FunctionTable(object):
     def __init__(self):
         self.functions = {}
+        self.temp_table = {}
 
     def reset_functionTable(self):
         self.functions = {}
+        self.temp_table = {}
+
+    def push_temporal(self, symbol):
+        data = str([symbol.name, symbol.scope])
+        self.temp_table[data] = symbol
+
+    def get_temporal(self, symbol):
+        return self.temp_table[str([symbol.name, symbol.scope])]
+
+    def lookup_temporal(self, symbol):
+        data = str([symbol.name, symbol.scope])
+        if data in self.temp_table:
+            return True
+        else:
+            return False
 
     def set_function(self, name, type, parameters, variable_table):
         self.functions[name] = {
