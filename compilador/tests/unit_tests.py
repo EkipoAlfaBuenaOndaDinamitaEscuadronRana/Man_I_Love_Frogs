@@ -748,7 +748,7 @@ class TestVirtualMachine(unittest.TestCase):
         self.assertEqual(t1.segment_direction, 143)
         self.assertEqual(t1.global_direction, 3143)
 
-    def __run(self):
+    def test_run(self):
         # Operators
         eq = Symbol("EQ", "assignment")
         add = Symbol("ADD", "operation")
