@@ -485,10 +485,10 @@ class QuadrupleStack(object):
                 self.solve_expression(
                     self.wait_to_call.pop(),
                     ft,
-            ),
-            scope,
-            ft,
-        )
+                ),
+                scope,
+                ft,
+            )
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while

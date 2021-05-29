@@ -549,7 +549,10 @@ def p_asignatura(p):
     # Resuleve la expresion que se esta asignando
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
     # print("p_asignatura: " + str(p[0]))
-    if current_state.get_curr_state_opt() != "varD" and current_state.get_curr_state_opt() != "wait":
+    if (
+        current_state.get_curr_state_opt() != "varD"
+        and current_state.get_curr_state_opt() != "wait"
+    ):
         quad_stack.push_list(
             quad_stack.solve_expression(
                 expresion_to_symbols(p[0], global_func_table, current_state),
@@ -559,7 +562,9 @@ def p_asignatura(p):
             global_func_table,
         )
     elif current_state.get_curr_state_opt() == "wait":
-        quad_stack.wait_to_call.append(expresion_to_symbols(p[0], global_func_table, current_state))
+        quad_stack.wait_to_call.append(
+            expresion_to_symbols(p[0], global_func_table, current_state)
+        )
     else:
         current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
 
@@ -574,7 +579,10 @@ def p_compound_assignment(p):
     # Resuleve la expresion que se esta asignando
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
     # print("p_asignatura: " + str(p[0]))
-    if current_state.get_curr_state_opt() != "varD" and current_state.get_curr_state_opt() != "wait":
+    if (
+        current_state.get_curr_state_opt() != "varD"
+        and current_state.get_curr_state_opt() != "wait"
+    ):
         quad_stack.push_list(
             quad_stack.solve_expression(
                 expresion_to_symbols(p[0], global_func_table, current_state),
@@ -584,7 +592,9 @@ def p_compound_assignment(p):
             global_func_table,
         )
     elif current_state.get_curr_state_opt() == "wait":
-        quad_stack.wait_to_call.append(expresion_to_symbols(p[0], global_func_table, current_state))
+        quad_stack.wait_to_call.append(
+            expresion_to_symbols(p[0], global_func_table, current_state)
+        )
     else:
         current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
 
@@ -908,6 +918,7 @@ def p_ciclo_cero_fill(p):
     else:
         current_state.push_state(State(current_state.get_curr_state_table(), "wait"))
 
+
 # TERMINAL
 # Indica a donde regresar a validar la condicion del ciclo
 def p_ciclo_cero(p):
@@ -915,7 +926,8 @@ def p_ciclo_cero(p):
     ciclo_cero : empty
     """
     p[0] = p[1]
-    quad_stack.ciclo_cero(current_state.get_curr_state_table,global_func_table)
+    quad_stack.ciclo_cero(current_state.get_curr_state_table, global_func_table)
+
 
 # TERMINAL
 # Indica a donde regresar a validar la condicion del ciclo
@@ -947,7 +959,6 @@ def p_ciclo_tres(p):
     p[0] = p[1]
     quad_stack.ciclo_3(current_state.get_curr_state_table())
 
-    
 
 ############################################ LLAMADA A FUNCION ############################################
 
@@ -1078,9 +1089,8 @@ def p_expresion(p):
     if (
         current_state.get_curr_state_opt() != "as_on"
         and current_state.get_curr_state_opt() != "param_check"
-        and current_state.get_curr_state_opt() != "dim" 
-        and current_state.get_curr_state_opt() != "wait" 
-
+        and current_state.get_curr_state_opt() != "dim"
+        and current_state.get_curr_state_opt() != "wait"
     ):
         quad_stack.push_list(
             quad_stack.solve_expression(
