@@ -95,8 +95,8 @@ def p_program(p):
             | PROGRAM global_vartable SCOL gotomain main_vartable_init main_vartable_distruct
     """
 
-    if len(p) == 6:
-        p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    if len(p) == 7:
+        p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
 
@@ -573,6 +573,7 @@ def p_compound_assignment(p):
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
     # print("p_compound_assignment: " + str(p[0]))
     if current_state.get_curr_state_opt() != "varD":
+
         quad_stack.push_list(
             quad_stack.solve_expression(
                 expresion_to_symbols(p[0], global_func_table, current_state),
@@ -1396,7 +1397,6 @@ def p_index(p):
         p[0] = [p[1], p[2], p[3]]
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
-
 
 # NO TERMINAL
 # Regresa el formato de un index
