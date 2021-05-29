@@ -148,6 +148,10 @@ class VirtualMachine(object):
         val_opnd_2 = self.get_direction_symbol(dir_opnd_2).value
         result = self.get_direction_symbol(dir_result)
 
+        print("------------dir_opnd_1-------------:", dir_opnd_1)
+        print("------------dir_opnd_2-------------:", dir_opnd_2)
+        print("------------operation-------------:", operation)
+
         if operation == "ADD":
             result.value = val_opnd_1 + val_opnd_2
         elif operation == "SUB":
@@ -175,6 +179,9 @@ class VirtualMachine(object):
         elif operation == "GTE":
             result.value = val_opnd_1 >= val_opnd_2
 
+
+        print("------------result.value-------------:", result.value)
+
     def __resolve_eq(self, assign_op, dir_opnd, dir_result):
         val_operand = self.get_direction_symbol(dir_opnd).value
         result = self.get_direction_symbol(dir_result)
@@ -192,10 +199,11 @@ class VirtualMachine(object):
         elif assign_op == "MODEQ":
             result.value %= val_operand
 
-    def __resolve_param(self, dir_operand, dir_result):
+    def __resolve_param(self, dir_operand, dir_result, saved_params):
         val_operand = self.get_direction_symbol(dir_operand).value
         result = self.get_direction_symbol(dir_result)
         result.value = val_operand
+        saved_params.append(result)
 
     def __resolve_write(self, dir_result):
         print(self.get_direction_symbol(dir_result).value)
@@ -233,10 +241,15 @@ class VirtualMachine(object):
 
         return Instruction(frog, operation, times)
 
+    def __add_params(self, saved_params, func_name):
+        for param in self.func_table.functions[func_name]["p"]:
+            param.value = saved_params.pop(0).value
+
     def run(self, quad_dir):
         era = False
         running = True
         instruction = 1
+        saved_params = []
         saved_positions = []
         game_instructions = []
 
@@ -269,6 +282,8 @@ class VirtualMachine(object):
 
             elif operation == "GOSUB":
                 saved_positions.append(instruction + 1)
+                operation_name = curr_quad.operand_1.name
+                self.__add_params(saved_params, operation_name)
                 instruction = curr_quad.result_id.name
                 continue
 
@@ -290,11 +305,14 @@ class VirtualMachine(object):
             elif operation == "PARAM":
                 dir_operand = curr_quad.operand_1.global_direction
                 dir_result = curr_quad.result_id.global_direction
-                self.__resolve_param(dir_operand, dir_result)
+                self.__resolve_param(dir_operand, dir_result, saved_params)
 
             elif operation == "ENDFUNC":
                 instruction = saved_positions.pop()
                 continue
+
+            elif operation == "RETURN":
+                
 
             elif type == "obj_method":
                 dir_frog = curr_quad.operand_1.global_direction

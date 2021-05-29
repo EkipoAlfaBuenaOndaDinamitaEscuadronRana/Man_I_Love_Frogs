@@ -22,10 +22,10 @@ class Executer(object):
             print(self.pretty_quads)
         else:
             print("Program Quads after assignations:")
-            print("-------------------------------------")
             for q in self.quads:
+                print("--{}----------------------------------".format(q))
                 self.quads[q].print_quad()
-                print("-------------------------------------")
+            print("-------------------------------------")
 
 
     def __print_instructions(self, instructions):
