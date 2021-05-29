@@ -15,8 +15,10 @@ class Character(object):
             self.y += self.__speed
 
     def move_up(self, times):
-        if self.y - self.__speed >= 0:
-            self.y -= self.__speed
+        movement = self.__speed
+
+        if self.y - movement >= 0:
+            self.y -= movement
 
     def move_right(self, display_width, times):
         if self.x + self.width + self.__speed <= display_width:

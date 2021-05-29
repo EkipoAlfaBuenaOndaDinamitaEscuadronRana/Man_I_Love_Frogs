@@ -44,27 +44,27 @@ class TestYacc(unittest.TestCase):
         ]
 
         test_results = []
-        test_results.append(test_file("./compilador/tests/test_1.txt", test_answers[1]))
-        test_results.append(test_file("./compilador/tests/test_2.txt", test_answers[2]))
-        test_results.append(test_file("./compilador/tests/test_3.txt", test_answers[3]))
-        test_results.append(test_file("./compilador/tests/test_4.txt", test_answers[4]))
-        test_results.append(test_file("./compilador/tests/test_5.txt", test_answers[5]))
-        test_results.append(test_file("./compilador/tests/test_6.txt", test_answers[6]))
-        test_results.append(test_file("./compilador/tests/test_7.txt", test_answers[7]))
+        test_results.append(test_file("./compilador/tests/test_1.milf", test_answers[1]))
+        test_results.append(test_file("./compilador/tests/test_2.milf", test_answers[2]))
+        test_results.append(test_file("./compilador/tests/test_3.milf", test_answers[3]))
+        test_results.append(test_file("./compilador/tests/test_4.milf", test_answers[4]))
+        test_results.append(test_file("./compilador/tests/test_5.milf", test_answers[5]))
+        test_results.append(test_file("./compilador/tests/test_6.milf", test_answers[6]))
+        test_results.append(test_file("./compilador/tests/test_7.milf", test_answers[7]))
         # Pendiente -> Simple For
         # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
-        test_results.append(test_file("./compilador/tests/test_9.txt", test_answers[9]))
+        test_results.append(test_file("./compilador/tests/test_9.milf", test_answers[9]))
         test_results.append(
-            test_file("./compilador/tests/test_10.txt", test_answers[10])
+            test_file("./compilador/tests/test_10.milf", test_answers[10])
         )
         test_results.append(
-            test_file("./compilador/tests/test_11.txt", test_answers[11])
+            test_file("./compilador/tests/test_11.milf", test_answers[11])
         )
         test_results.append(
-            test_file("./compilador/tests/test_12.txt", test_answers[12])
+            test_file("./compilador/tests/test_12.milf", test_answers[12])
         )
         test_results.append(
-            test_file("./compilador/tests/test_13.txt", test_answers[13])
+            test_file("./compilador/tests/test_13.milf", test_answers[13])
         )
 
         if "F" in test_results:
@@ -807,8 +807,8 @@ class TestVirtualMachine(unittest.TestCase):
             int a = 1;
             int b = 2;
 
-            write(boolA || boolB);
-            write(a + b);
+            boolA = boolA || boolB;
+            a = a + b;
         }
         """
         main_quads = {
@@ -818,9 +818,9 @@ class TestVirtualMachine(unittest.TestCase):
             4: Quadruple(eq, one, None, a),
             5: Quadruple(eq, two, None, b),
             6: Quadruple(OR, boolA, boolB, t1),
-            7: Quadruple(write, None, None, t1),
+            7: Quadruple(eq, t1, None, boolA),
             8: Quadruple(add, a, b, t2),
-            9: Quadruple(write, None, None, t2),
+            9: Quadruple(eq, t2, None, a),
             10: Quadruple(endof, None, None, None),
         }
 
