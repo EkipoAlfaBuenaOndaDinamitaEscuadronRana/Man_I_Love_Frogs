@@ -74,15 +74,15 @@ def p_global_vartable_distruct(p):
     )
     current_state.pop_curr_state()
 
-    # for k,v in quad_stack.qstack.items():
-    #     print(k)
-    #     print(v.operator)
-    #     print(v.operand_1)
-    #     print(v.operand_2)
-    #     print(v.result_id)
-    #     print("----------------")
+    for k,v in quad_stack.qstack.items():
+        print(k)
+        print(v.operator)
+        print(v.operand_1)
+        print(v.operand_2)
+        print(v.result_id)
+        print("----------------")
 
-    # quad_stack.print_quads()
+    quad_stack.print_quads()
     # global_func_table.print_FuncTable()
 
 
@@ -122,6 +122,12 @@ def p_global_vartable(p):
     # CREA VAR TABLE
     global_func_table.set_function("Global Segment", "void", [], VariableTable())
     # Limpea la quad_stack
+
+def p_gotomain(p):
+    """
+    gotomain : empty
+    """
+    p[0] = p[1]
     quad_stack.push_quad(
         Quadruple(
             Symbol("GOTO", "instruction", current_state.get_curr_state_table()),
@@ -133,12 +139,13 @@ def p_global_vartable(p):
     )
     quad_stack.jumpStack.append(quad_stack.count_prev)
 
+
 ############################################ BLOQUE GLOBALE ############################################
 # NO TERMINAL Y TERMINAL
 # Deja que se declaren funciones y variables globales pero no obliga
 def p_bloque_g(p):
     """
-    bloque_g : var_global func_global
+    bloque_g : var_global gotomain func_global
     """
 
     p[0] = [p[1], p[2]]
@@ -534,7 +541,6 @@ def p_asignatura(p):
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
     # print("p_asignatura: " + str(p[0]))
     if current_state.get_curr_state_opt() != "varD":
-        print(p[0])
         quad_stack.push_list(
             quad_stack.solve_expression(
                 expresion_to_symbols(p[0], global_func_table, current_state),
