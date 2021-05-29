@@ -51,11 +51,7 @@ class QuadrupleStack(object):
 
     # Manda a resolver los quadruplos
     def solve_expression(self, expresion, ft):
-
         i = len(expresion) - 1
-        # print(self.count)
-        # print("---------------- 0")
-        # print(get_symbol_formatted(expresion))
         while i > -1:
             if expresion[i].is_dimensioned():
                 if (i > 0 and expresion[i - 1].name != "OSB") or i == 0:
@@ -67,22 +63,13 @@ class QuadrupleStack(object):
                     for x in range(arr_name.get_dimension_size()):
                         stack.append(expresion[count])
                         expresion.pop(count)
-                        # print("---------------- 1")
-                        # print(get_symbol_formatted(expresion))
-                        # print(get_symbol_formatted(stack))
                         while count >= 0 and count < len(expresion) and len(stack) > 0:
                             if expresion[count].name == "OSB":
                                 stack.append(expresion[count])
                             elif expresion[count].name == "CSB":
                                 stack.pop()
                             expresion.pop(count)
-                #             print("---------------- 2")
-                #             print(get_symbol_formatted(expresion))
-                #             print(get_symbol_formatted(stack))
-            # print("---------------- 3")
-            # print(get_symbol_formatted(expresion))
             i -= 1
-        # print(get_symbol_formatted(expresion))
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
             print(sol)
