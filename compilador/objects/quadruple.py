@@ -592,3 +592,10 @@ class Quadruple(object):
             print()
         else:
             print("RESULT_ID: \n{}\n".format(self.result_id))
+
+    def print_quads(quads, header=None):
+        if header:
+            print("----------------{}-----------------".format(header))
+        for q in quads:
+            quads[q].print_quad()
+            print("------------------------------------")

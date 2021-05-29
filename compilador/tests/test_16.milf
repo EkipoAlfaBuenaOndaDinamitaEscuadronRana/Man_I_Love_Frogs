@@ -1,16 +1,13 @@
-program parentesisReturn; 
-
-int i,j,p,k;
-int Arreglo[10];
-float valor;
-int Matriz[3][8];
+program simpleIfs;
 
 {
-    for(j = 0; j < 2; j += 1){
-        for(k = 0; k < 7; k += 1){
-            Matriz[j][k] = Arreglo[j + k - p * k] * p + j;
-        }
-            
+    if (1 == 3) {
+      write("uno");
+    } else if (3 == 4) {
+      write("dos");
+    } else if (4 > 5) {
+      write("tres");
+    } else {
+      write("cuatro");
     }
-
 }

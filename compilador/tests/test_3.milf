@@ -9,10 +9,7 @@ func int square(int a){
 
 {
     int x = 10;
-    bool flag = true;
-    
-    if (!flag){
+    if (x == 10){
         b = square(a);
     }
-
 }
