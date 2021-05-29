@@ -1,9 +1,12 @@
 program forsimplequad;
-int a;
+int a = 0;
 int b = 10;
+
 {
+    /*
     for(6 times){
         a = a + 1
-    }
+    } 
+    */
     b = b + a;
 }
