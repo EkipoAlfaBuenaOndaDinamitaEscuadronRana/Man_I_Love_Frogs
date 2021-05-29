@@ -19,6 +19,7 @@ class VirtualMachine(object):
         self.constant_segment = MemorySegment(
             "Constant Segment", constant_size, global_size
         )
+        self.declared_symbols = []
 
         if func_table:
             local_size_memory = global_size + constant_size
@@ -62,8 +63,9 @@ class VirtualMachine(object):
 
         return None
 
-    # TODO: Ahorita se inserta con nombre del segmento, estaría cool que fuera también con la dirección
     def insert_symbol_in_segment(self, segment_name, symbol):
+        self.declared_symbols.append(symbol)
+
         # A symbol in global segment arrive
         if segment_name == "Global Segment":
             return self.global_segment.insert_symbol(symbol)
@@ -114,7 +116,9 @@ class VirtualMachine(object):
             return segment.search_symbol(direction)
 
     def __not_allocated(self, symbol):
-        return symbol and not (symbol.segment_direction and symbol.global_direction)
+        return symbol and not (
+            symbol.segment_direction != None and symbol.global_direction != None
+        )
 
     def quadruple_direction_allocator(self, quad_dir):
         current_scope = ""
@@ -128,7 +132,7 @@ class VirtualMachine(object):
                 operand_2 = curr_quad.operand_2
                 result_id = curr_quad.result_id
 
-                if self.__not_allocated(operand_1):
+                if self.__not_allocated(operand_1) and operand_1.name != "READ":
                     self.insert_symbol_in_segment(operand_1.scope, operand_1)
 
                 if self.__not_allocated(operand_2):
@@ -152,7 +156,7 @@ class VirtualMachine(object):
         elif operation == "MOD":
             self.get_direction_symbol(dir_result).value = val_opnd_1 % val_opnd_2
         elif operation == "BEQ":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 == val_opnd_2
+            self.get_direction_symbol(dir_r3esult).value = val_opnd_1 == val_opnd_2
         elif operation == "BNEQ":
             self.get_direction_symbol(dir_result).value = val_opnd_1 != val_opnd_2
         elif operation == "OR":
@@ -189,29 +193,29 @@ class VirtualMachine(object):
 
     # TODO: No lo he probado lo suficiente
     def __resolve_read(self, dir_result):
-        input = input()
+        user_input = input()
         symbol = self.get_direction_symbol(dir_result)
 
         if symbol.type == "INT":
-            symbol.value = int(input)
+            symbol.value = int(user_input)
 
         elif symbol.type == "FLT":
-            symbol.value = float(input)
+            symbol.value = float(user_input)
 
         elif symbol.type == "CHAR":
             # TODO: Ver como validar que sea un solo char
-            symbol.value = input[0]
+            symbol.value = user_input[0]
 
         elif symbol.type == "STR":
-            symbol.value = input
+            symbol.value = user_input
 
         elif symbol.type == "BOOL":
             booleans = {"true": True, "false": False, "1": True, "0": False}
-            symbol.value = booleans[input]
+            symbol.value = booleans[user_input]
 
         elif symbol.type == "NULL":
             # TODO: Ver como validar que sea siempre null
-            if input == "null":
+            if user_input == "null":
                 symbol.value = None
 
     def run(self, quad_dir):
@@ -235,10 +239,15 @@ class VirtualMachine(object):
                 self.__resolve_op(operation, dir_opnd_1, dir_opnd_2, dir_result)
 
             elif operation in set.union(SemanticTable.assignment_operations_op, {"EQ"}):
-                dir_opnd = curr_quad.operand_1.global_direction
-                dir_result = curr_quad.result_id.global_direction
+                if operation == "EQ" and curr_quad.operand_1.name == "READ":
+                    dir_result = curr_quad.result_id.global_direction
+                    self.__resolve_read(dir_result)
 
-                self.__resolve_eq(operation, dir_opnd, dir_result)
+                else:
+                    dir_opnd = curr_quad.operand_1.global_direction
+                    dir_result = curr_quad.result_id.global_direction
+
+                    self.__resolve_eq(operation, dir_opnd, dir_result)
 
             elif operation == "GOTO":
                 instruction = curr_quad.result_id.name
