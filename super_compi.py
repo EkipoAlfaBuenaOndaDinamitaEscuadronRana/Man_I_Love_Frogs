@@ -15,7 +15,7 @@ if len(sys.argv) > 1:
         # vm.run(data['q'])
         i += 1
 else:
-    running_file = "compilador/tests/test_19.milf"
+    running_file = "compilador/tests/test_12.txt"
     print("DEFAULT: {}".format(running_file))
     data = parser_file(running_file)
     print(data["str"])
@@ -23,5 +23,9 @@ else:
     quads = data["q"]
 
     vm = VirtualMachine(3000, 1000, 6000, data["ft"])
+
+    # Quadruple.print_quads(quads, "pre")
     vm.quadruple_direction_allocator(quads)
-    vm.run(quads)
+    # Quadruple.print_quads(quads, "post")
+    instructions = vm.run(quads)
+    Instruction.print_instructions(instructions)

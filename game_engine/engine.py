@@ -1,8 +1,8 @@
 from router_solver import *
 import pygame
 import game_engine.character
-import game_engine.instruction
 from game_engine.character import *
+import game_engine.instruction
 from game_engine.instruction import *
 
 
@@ -14,18 +14,19 @@ class Engine:
     def instruction_movement(instruction, characters):
         character = characters[instruction.character_name]
         movement = instruction.movement
+        times = instruction.times
 
-        if movement == "down":
-            character.move_down(Engine.__display_height)
+        if movement == "JD":
+            character.move_down(Engine.__display_height, times)
 
-        if movement == "up":
-            character.move_up()
+        if movement == "JU":
+            character.move_up(times)
 
-        if movement == "right":
-            character.move_right(Engine.__display_width)
+        if movement == "JR":
+            character.move_right(Engine.__display_width, times)
 
-        if movement == "left":
-            character.move_left()
+        if movement == "JL":
+            character.move_left(times)
 
     """
     characters = {
@@ -35,7 +36,12 @@ class Engine:
 
     instructions = [
         Instruction("Rosita Fresita", "right"),
-        Instruction("Dino Adrian", "down")
+        Instruction("Dino Adrian", "down"),
+    ]
+
+    instructions = [
+        Instruction("Rosita Fresita", "JR", 1),
+        Instruction("Dino Adrian", "JD", 1),
     ]
     """
 
