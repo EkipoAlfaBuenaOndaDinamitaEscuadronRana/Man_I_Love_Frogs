@@ -77,7 +77,6 @@ class TestYacc(unittest.TestCase):
             test_file("./compilador/tests/test_21.milf", test_answers[21]),
             test_file("./compilador/tests/test_22.milf", test_answers[22]),
         ]
-        print(test_results)
         if "F" in test_results:
             result = "Failed"
         else:
