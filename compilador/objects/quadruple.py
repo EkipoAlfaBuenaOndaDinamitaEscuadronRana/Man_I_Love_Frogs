@@ -125,6 +125,9 @@ class Quadruple(object):
         return "BOOL" if stack_types[-1] == "BOOL" else "error"
 
     def __type_consideration(stack_types, stack_operators):
+        # print(stack_types)
+        # print(stack_operators)
+        # print("---------------")
         return SemanticTable.considerate(
             stack_types[-2], stack_operators[-1], stack_types[-1]
         )
@@ -189,11 +192,10 @@ class Quadruple(object):
         stack_scopes,
         resulting_quads,
     ):
-
         consideration = Quadruple.__type_consideration(stack_types, stack_operators)
         operator = Symbol(stack_operators.pop(), "assignment", stack_scopes[-2])
         value = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-1])
-        quad_result = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-2])
+        quad_result = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-3])
 
         stack_types.append(consideration)
         q = Quadruple(operator, value, None, quad_result)

@@ -7,5 +7,4 @@ program objects;
     pepe.jump_left();
     pepe.jump_right(5);
     pepe.jump_up(a);
-
 }

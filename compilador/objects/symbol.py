@@ -160,6 +160,9 @@ class Symbol(object):
             Offset = Offset + v["LI"] * m
         self.dimension_nodes[DIM - 1]["M"] = Offset
 
+    def get_dimension_size(self):
+        return list(self.dimension_nodes.keys())[-1]
+
     def set_address(self, offset):
         self.address = []
         self.address.append(offset)

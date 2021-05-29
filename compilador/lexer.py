@@ -72,6 +72,7 @@ tokens = [
     "CSTRING",  # "([ ^ " | ^' ])*"
     "CCHAR",  # "([ ^ " | ^' ])"
     "CBOOL",  # (true | false | [0-9]*) TODO: ¿Tambien es un int?
+
 ] + list(reserved.values())
 
 t_SCOL = r"\;"
@@ -106,6 +107,11 @@ t_DIVEQ = r"\/\="
 t_MODEQ = r"\%\="
 
 t_ignore = r" "
+
+
+def t_ccode_comment(t):
+     r'(/\*(.|\n)*?\*/)|(//.*)'
+     pass
 
 
 def t_tab(t):
