@@ -9,7 +9,7 @@ class Character(object):
         self.height = height
         self.__speed = speed
 
-    #TODO: Calculate this correctly
+    # TODO: Calculate this correctly
     def move_down(self, display_height, times):
         if self.y + self.height + self.__speed <= display_height:
             self.y += self.__speed

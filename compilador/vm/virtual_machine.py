@@ -9,6 +9,7 @@ import compilador.objects.quadruple
 from compilador.objects.quadruple import *
 import compilador.objects.semantic_table
 from compilador.objects.semantic_table import *
+
 # import game_engine.character
 # from game_engine.character import *
 import game_engine.instruction
