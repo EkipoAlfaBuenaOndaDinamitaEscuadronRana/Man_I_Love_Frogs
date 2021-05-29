@@ -819,3 +819,23 @@ class TestVirtualMachine(unittest.TestCase):
 
         vm.quadruple_direction_allocator(main_quads)
         self.assertEqual(vm.run(main_quads), [])
+
+
+class TestExecuter(unittest.TestCase):
+    def test_run(self):
+
+        expected_instructions = [
+            Instruction("pepe", "JL", 1),
+            Instruction("pepe", "JR", 5),
+            Instruction("pepe", "JU", 1),
+        ]
+
+        exe = Executer("compilador/tests/test_12.milf")
+        run_instructions = exe.run(
+            print_running=False,
+            print_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+
+        self.assertEqual(expected_instructions, run_instructions)

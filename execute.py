@@ -25,6 +25,10 @@ class Executer(object):
         print("-------------------------------------")
         Instruction.print_instructions(instructions)
 
+    def __print_running(self):
+        print("Running: {}".format(self.running_file))
+        print("-------------------------------------")
+
     def run(self, **kwargs):
         if kwargs.get("print_quads"):
             self.__print_quads()
@@ -32,8 +36,9 @@ class Executer(object):
         vm = VirtualMachine(3000, 1000, 6000, self.function_table)
         vm.quadruple_direction_allocator(self.quads)
 
-        print("Running: {}".format(self.running_file))
-        print("-------------------------------------")
+        if kwargs.get("print_running"):
+            self.__print_quads()
+
         instructions = vm.run(self.quads)
 
         if kwargs.get("print_instructions"):
