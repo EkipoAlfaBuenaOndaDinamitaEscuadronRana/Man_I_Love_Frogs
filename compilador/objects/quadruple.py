@@ -189,11 +189,10 @@ class Quadruple(object):
         stack_scopes,
         resulting_quads,
     ):
-
         consideration = Quadruple.__type_consideration(stack_types, stack_operators)
         operator = Symbol(stack_operators.pop(), "assignment", stack_scopes[-2])
         value = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-1])
-        quad_result = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-2])
+        quad_result = Symbol(stack_values.pop(), stack_types[-1], stack_scopes[-3])
 
         stack_types.append(consideration)
         q = Quadruple(operator, value, None, quad_result)

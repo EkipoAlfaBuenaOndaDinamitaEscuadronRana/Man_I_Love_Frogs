@@ -2,4 +2,6 @@ program test;
 int a = 1 + 2;
 {
     write(a);
+    a = 10;
+    write(a);
 }

@@ -74,15 +74,15 @@ def p_global_vartable_distruct(p):
     )
     current_state.pop_curr_state()
 
-    for k,v in quad_stack.qstack.items():
-        print(k)
-        print(v.operator)
-        print(v.operand_1)
-        print(v.operand_2)
-        print(v.result_id)
-        print("----------------")
+    # for k,v in quad_stack.qstack.items():
+    #     print(k)
+    #     print(v.operator)
+    #     print(v.operand_1)
+    #     print(v.operand_2)
+    #     print(v.result_id)
+    #     print("----------------")
 
-    quad_stack.print_quads()
+    # quad_stack.print_quads()
     # global_func_table.print_FuncTable()
 
 
