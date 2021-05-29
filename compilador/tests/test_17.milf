@@ -28,7 +28,7 @@ func void inicia(int y){
     j = p * 2;
     inicia(p * j - 5);
     for(i = 0; i < 9; i += 1){
-        Arreglo[i] = Arreglo[i] * fact(Arreglo[i] - p);
+        Arreglo[p] = Arreglo[i] * fact(Arreglo[i] - p);
     }
     for(j = 0; j < 2; j += 1){
         for(k = 0; k < 7; k += 1){

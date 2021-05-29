@@ -51,36 +51,24 @@ class QuadrupleStack(object):
 
     # Manda a resolver los quadruplos
     def solve_expression(self, expresion, ft):
-        i = 0
-        print(self.count)
-        print("---------------- 0")
-        print(get_symbol_formatted(expresion))
-        while i < len(expresion):
-            count = 1
+        i = len(expresion) - 1
+        while i >= 0:
             if expresion[i].is_dimensioned():
                 stack = []
                 count = i
                 arr_name = expresion[count]
-                expresion[count] = self.array_stack.pop(0)
+                expresion[count] = self.array_stack.pop()
                 count += 1
                 for x in range(arr_name.get_dimension_size()):
                     stack.append(expresion[count])
                     expresion.pop(count)
-                    print("---------------- 1")
-                    print(get_symbol_formatted(expresion))
-                    print(get_symbol_formatted(stack))
-                    while count < len(expresion) and len(stack) > 0 :
+                    while count >= 0  and count < len(expresion) and len(stack) > 0 :
                         if expresion[count].name == "OSB":
                             stack.append(expresion[count])
                         elif expresion[count].name == "CSB":
                             stack.pop()
                         expresion.pop(count)
-                        print("---------------- 2")
-                        print(get_symbol_formatted(expresion))
-                        print(get_symbol_formatted(stack))
-            print("---------------- 3")
-            print(get_symbol_formatted(expresion))
-            i += count
+            i -= 1
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
             print(sol)
@@ -92,6 +80,8 @@ class QuadrupleStack(object):
     def get_last_temporal(self, list, ft):
         r = r"T(\d+)"
         r2 = r"\(T(\d+)\)"
+        flag = False
+
         for q in list:
             temp_obj = q.result_id
             temp = q.result_id.name
@@ -101,7 +91,10 @@ class QuadrupleStack(object):
                     if not ft.lookup_temporal(temp_obj):
                         ft.push_temporal(temp_obj)
                     temp = int(temp[1:])
-                    self.temp_count = temp + 1
+                    if temp >= self.temp_count:
+                        self.temp_count = temp + 1
+                    else:
+                        flag = True
             else:
                 result = re.match(r2, temp)
                 if result:
@@ -109,7 +102,14 @@ class QuadrupleStack(object):
                         if not ft.lookup_temporal(temp_obj):
                             ft.push_temporal(temp_obj)
                         temp = int(temp[2:-1])
-                        self.temp_count = temp + 1
+                        if type(q.operand_2) == BaseAddress:
+                            if temp >= self.temp_count:
+                                self.temp_count = temp + 1
+                            else:
+                                flag = True
+
+        if flag:
+            self.temp_count += 1     
 
     def array_access(self, symbol, scope, ft):
         # for k,v in symbol.items():
@@ -468,7 +468,7 @@ class QuadrupleStack(object):
                 self.jumpStackR.pop()
 
             while len(self.jumpStackR) > 0:
-                end = self.jumpStackR.pop()
+                end = self.jumpStackR.pop()    
                 self.fill(end, scope)
 
     # Para llenar el quadruplo de go to main
@@ -544,8 +544,7 @@ class QuadrupleStack(object):
         # ESTE VA EN EL ELSE
         self.push_quad(
             Quadruple(
-                Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"
-            ),
+                Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"),
             scope,
         )
         not_true = self.jumpStack.pop()
