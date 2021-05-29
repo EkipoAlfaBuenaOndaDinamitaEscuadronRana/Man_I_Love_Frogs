@@ -209,18 +209,21 @@ class Symbol(object):
 
     def print_symbol(self):
         if self.name:
-            print("VAR: ", self.name)
+            print("VAR:", self.name)
 
         if self.type:
-            print("TYPE: ", self.type)
+            print("TYPE:", self.type)
 
         if len(self.dimension_sizes):
-            print("DIMENSIONS: ", self.dimensions)
-            print("DIMENSION_SIZES: ", self.dimension_sizes)
+            print("DIMENSIONS:", self.dimensions)
+            print("DIMENSION_SIZES:", self.dimension_sizes)
 
         if self.segment_direction != None and self.global_direction != None:
-            print("SEGMENT_DIRECTION: ", self.segment_direction)
-            print("GLOBAL_DIRECTION: ", self.global_direction)
+            print("SEGMENT_DIRECTION:", self.segment_direction)
+            print("GLOBAL_DIRECTION:", self.global_direction)
+
+        if self.scope:
+            print("SCOPE:", self.scope)
 
         if self.value:
             print("VALUE: ", self.value)
