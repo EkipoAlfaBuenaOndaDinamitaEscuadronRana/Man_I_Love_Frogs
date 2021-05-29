@@ -18,6 +18,7 @@ quad_stack = QuadrupleStack()
 # TERMINAL Y NO TERMINAL
 # Permite que empiece un programa pero no lo obliga a hacerlo
 
+############################################ DECLARACIÓNES GLOBALES ############################################
 
 def p_inicial(p):
     """
@@ -132,7 +133,7 @@ def p_global_vartable(p):
     )
     quad_stack.jumpStack.append(quad_stack.count_prev)
 
-
+############################################ BLOQUE GLOBALE ############################################
 # NO TERMINAL Y TERMINAL
 # Deja que se declaren funciones y variables globales pero no obliga
 def p_bloque_g(p):
@@ -144,7 +145,7 @@ def p_bloque_g(p):
 
     # print("p_bloque_g: " + str(p[0]))
 
-
+############################################ DECLARAICÓN DE VARIABLES ############################################
 def p_var_global(p):
     """
     var_global : var_dec var var_global
@@ -155,34 +156,6 @@ def p_var_global(p):
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3]]
-
-
-def p_func_global(p):
-    """
-    func_global : func_declaration func func_global
-                | empty
-
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    else:
-        p[0] = [p[1], p[2], p[3]]
-
-
-# NO TERMINAL
-# Validación e insersion de variable a symboltable
-def p_func_declar_init(p):
-
-    """
-    func_declaration : empty
-    """
-    p[0] = p[1]
-
-    # print("p_func_declaration: " + str(p[0]))
-    # DECLARA ESTADO FUNCION SIENDO DECLARADA
-    # ESTADO: push FUNC DECLARATION
-    current_state.push_state(State("funcD", "varD"))
-
 
 # NO TERMINAL
 # Empieza declaración de variable
@@ -297,15 +270,33 @@ def p_var1(p):
     # print("p_var1: " + str(p[0]))
 
 
-# NO TERMINAL
-# Hace el header y cuerpo de una funcion
-def p_func(p):
-    """
-    func : FUNC func_init bloque func_distruct
-    """
-    p[0] = [p[1], p[2], p[3], p[4]]
+############################################ DECLARACIÓN DE FUNCIONES ############################################
 
-    # print("p_func: " + str(p[0]))
+def p_func_global(p):
+    """
+    func_global : func_declaration func func_global
+                | empty
+
+    """
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = [p[1], p[2], p[3]]
+
+
+# NO TERMINAL
+# Validación e insersion de variable a symboltable
+def p_func_declar_init(p):
+
+    """
+    func_declaration : empty
+    """
+    p[0] = p[1]
+
+    # print("p_func_declaration: " + str(p[0]))
+    # DECLARA ESTADO FUNCION SIENDO DECLARADA
+    # ESTADO: push FUNC DECLARATION
+    current_state.push_state(State("funcD", "varD"))
 
 
 # NO TERMINAL
@@ -396,6 +387,19 @@ def p_func_parameters(p):
     # print("p_func_parameters: " + str(p[0]))
 
 
+# NO TERMINAL
+# Hace el header y cuerpo de una funcion
+def p_func(p):
+    """
+    func : FUNC func_init bloque func_distruct
+    """
+    p[0] = [p[1], p[2], p[3], p[4]]
+
+    # print("p_func: " + str(p[0]))
+
+
+############################################ DECLARACIÓN DE TIPOS DE DATOS ############################################
+
 # TERMINAL Y NO TERMINAL
 # Regresa los tipos permitidos en funciones
 def p_tipo_func(p):
@@ -428,6 +432,7 @@ def p_tipo(p):
     """
     p[0] = p[1]
 
+############################################ DECLARACIÓN DE MAIN ############################################
 
 # TERMINAL
 # Crea la vartable del main
@@ -465,6 +470,7 @@ def p_main_vartable_distruct(p):
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
     current_state.pop_curr_state()
 
+############################################ BLOQUES ############################################
 
 # NO TERMINAL
 # Empieza un bloque
@@ -491,6 +497,7 @@ def p_bloque1(p):
 
     # print("p_bloque1: " + str(p[0]))
 
+############################################ ESTATUTOS ############################################
 
 # NO TERMINAL
 # Llama estatutos
@@ -515,6 +522,87 @@ def p_estatuto(p):
 
     # print("p_estatuto: " + str(p[0]))
 
+############################################ ASIGNATURA ############################################
+
+# NO TERMINAL
+# Hace una asignacion a una variable
+def p_asignatura(p):
+    """
+    asignatura : id_var EQ as_on expresion as_off
+    """
+    # Resuleve la expresion que se esta asignando
+    p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    # print("p_asignatura: " + str(p[0]))
+    if current_state.get_curr_state_opt() != "varD":
+        print(p[0])
+        quad_stack.push_list(
+            quad_stack.solve_expression(
+                expresion_to_symbols(p[0], global_func_table, current_state),
+                global_func_table,
+            ),
+            current_state.get_curr_state_table(),
+            global_func_table,
+        )
+    else:
+        current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
+
+
+# NO TERMINAL
+# Regresa una expresion de asignación compuesta o una expresion
+def p_compound_assignment(p):
+
+    """
+    compound_assignment : id_var op_compass as_on expresion as_off
+    """
+    # Resuleve la expresion que se esta asignando
+    p[0] = [p[1], p[2], p[3], p[4], p[5]]
+    # print("p_compound_assignment: " + str(p[0]))
+    if current_state.get_curr_state_opt() != "varD":
+        quad_stack.push_list(
+            quad_stack.solve_expression(
+                expresion_to_symbols(p[0], global_func_table, current_state),
+                global_func_table,
+            ),
+            current_state.get_curr_state_table(),
+            global_func_table,
+        )
+    else:
+        current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
+
+
+# TERMINAL
+# Regresa +=, -=, *=, /=, %=
+def p_op_compass(p):
+    """
+    op_compass : ADDEQ
+               | SUBEQ
+               | MULEQ
+               | DIVEQ
+               | MODEQ
+    """
+    p[0] = p[1]
+
+
+# TERMINAL
+# Prende estado de asignación
+def p_as_on(p):
+    """
+    as_on : empty
+    """
+    p[0] = p[1]
+    current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
+
+
+# TERMINAL
+# Apaga estado de asignación
+def p_as_off(p):
+    """
+    as_off : empty
+    """
+    p[0] = p[1]
+    current_state.pop_curr_state()
+
+############################################ RETURN ############################################
 
 # TERMINAL Y NO TERMINAL
 # Hace el return de una expresion o un return vacio
@@ -562,6 +650,55 @@ def p_return(p):
     #         sys.exit()
 
 
+
+############################################ READ / WRITE ############################################
+
+# NO TERMINAL
+# Escribe un write con una expresion
+def p_escritura(p):
+    """
+    escritura : WRITE OP expresion CP
+    """
+    p[0] = [p[1], p[2], p[3], p[4]]
+
+    quad_stack.push_quad(
+        quad_stack.write_quad(
+            expresion_to_symbols(p[3], global_func_table, current_state),
+            current_state.get_curr_state_table(),
+        ),
+        current_state.get_curr_state_table(),
+    )
+
+
+# TERMINAL
+# Hace una lectura
+def p_lectura(p):
+    """
+    lectura : READ OP lectura1 CP
+    """
+    p[0] = [p[1], p[2], p[3], p[4]]
+
+    quad_stack.read_quad(
+        expresion_to_symbols([p[1], p[3]], global_func_table, current_state),
+        current_state.get_curr_state_table(),
+    )
+
+
+def p_lectura1(p):
+    """
+    lectura1 : id_var COMMA lectura1
+             | id_var
+
+    """
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = [p[1], p[3]]
+
+
+
+############################################ DECLARACIÓN DE ESTATUOS NO LINEALES ############################################
+
 # NO TERMINAL
 # cambia estado
 def p_estado_no_var(p):
@@ -572,8 +709,6 @@ def p_estado_no_var(p):
     p[0] = [p[1], p[2], p[3]]
 
     # print("p_estado_no_var " + str(p[0]))
-
-
 # TERMINAL
 # CAMBIA ESTADO
 def p_no_var_on(p):
@@ -619,47 +754,7 @@ def p_estatuto_con_bloque(p):
     # print("p_estatuto_con_bloque: " + str(p[0]))
 
 
-# NO TERMINAL
-# Hace una asignacion a una variable
-def p_asignatura(p):
-    """
-    asignatura : id_var EQ as_on expresion as_off
-    """
-    # Resuleve la expresion que se esta asignando
-    p[0] = [p[1], p[2], p[3], p[4], p[5]]
-    # print("p_asignatura: " + str(p[0]))
-    if current_state.get_curr_state_opt() != "varD":
-        quad_stack.push_list(
-            quad_stack.solve_expression(
-                expresion_to_symbols(p[0], global_func_table, current_state),
-                global_func_table,
-            ),
-            current_state.get_curr_state_table(),
-            global_func_table,
-        )
-    else:
-        current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
-
-
-# TERMINAL
-# Prende estado de asignación
-def p_as_on(p):
-    """
-    as_on : empty
-    """
-    p[0] = p[1]
-    current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
-
-
-# TERMINAL
-# Apaga estado de asignación
-def p_as_off(p):
-    """
-    as_off : empty
-    """
-    p[0] = p[1]
-    current_state.pop_curr_state()
-
+############################################ DECLARACIÓN DE IFS ############################################
 
 # NO TERMINAL
 # Formato de if
@@ -713,49 +808,7 @@ def p_condicion1(p):
     else:
         p[0] = [p[1], p[2]]
 
-
-# NO TERMINAL
-# Escribe un write con una expresion
-def p_escritura(p):
-    """
-    escritura : WRITE OP expresion CP
-    """
-    p[0] = [p[1], p[2], p[3], p[4]]
-
-    quad_stack.push_quad(
-        quad_stack.write_quad(
-            expresion_to_symbols(p[3], global_func_table, current_state),
-            current_state.get_curr_state_table(),
-        ),
-        current_state.get_curr_state_table(),
-    )
-
-
-# TERMINAL
-# Hace una lectura
-def p_lectura(p):
-    """
-    lectura : READ OP lectura1 CP
-    """
-    p[0] = [p[1], p[2], p[3], p[4]]
-
-    quad_stack.read_quad(
-        expresion_to_symbols([p[1], p[3]], global_func_table, current_state),
-        current_state.get_curr_state_table(),
-    )
-
-
-def p_lectura1(p):
-    """
-    lectura1 : id_var COMMA lectura1
-             | id_var
-
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    else:
-        p[0] = [p[1], p[3]]
-
+############################################ CICLOS ############################################
 
 # NO TERMINAL
 # Regresa el tipo de ciclo que se usa
@@ -775,6 +828,12 @@ def p_while(p):
     """
     p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]]
 
+def p_ciclo_cero_fill(p):
+    """
+    ciclo_cero_fill : empty
+    """
+    p[0] = p[1]
+    quad_stack.ciclo_cero(current_state.get_curr_state_table())
 
 # TERMINAL
 # Indica a donde regresar a validar la condicion del ciclo
@@ -854,17 +913,19 @@ def p_for_simple(p):
 # Regresa el formato de un for complejo
 def p_for_complex(p):
     """
-    for_complex : asignatura SCOL ciclo_uno expresion SCOL ciclo_dos asignatura ciclo_cero_fill
+    for_complex : asignatura SCOL ciclo_uno expresion SCOL ciclo_dos assign_for ciclo_cero_fill
     """
     p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
 
-
-def p_ciclo_cero_fill(p):
+def p_assign_for(p):
     """
-    ciclo_cero_fill : empty
+    assign_for : asignatura
+               | compound_assignment
     """
     p[0] = p[1]
-    quad_stack.ciclo_cero(current_state.get_curr_state_table())
+
+############################################ LLAMADA A FUNCION ############################################
+
     
 # NO TERMINAL
 # inicia una llamada a una funcion
@@ -970,44 +1031,7 @@ def p_parametro(p):
         print("ERROR: Error trying to validate parameters")
         sys.exit()
 
-
-# NO TERMINAL
-# Regresa una expresion de asignación compuesta o una expresion
-def p_compound_assignment(p):
-
-    """
-    compound_assignment : id_var op_compass as_on expresion as_off
-    """
-    # Resuleve la expresion que se esta asignando
-    p[0] = [p[1], p[2], p[3], p[4], p[5]]
-    # print("p_compound_assignment: " + str(p[0]))
-    if current_state.get_curr_state_opt() != "varD":
-        quad_stack.push_list(
-            quad_stack.solve_expression(
-                expresion_to_symbols(p[0], global_func_table, current_state),
-                global_func_table,
-            ),
-            current_state.get_curr_state_table(),
-            global_func_table,
-        )
-    else:
-        current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
-
-
-
-
-# TERMINAL
-# Regresa +=, -=, *=, /=, %=
-def p_op_compass(p):
-    """
-    op_compass : ADDEQ
-               | SUBEQ
-               | MULEQ
-               | DIVEQ
-               | MODEQ
-    """
-    p[0] = p[1]
-
+############################################ EXPRESIONES ############################################
 
 # NO TERMINAL
 # Regresa una expresion logica o una expresion
@@ -1024,6 +1048,7 @@ def p_expresion(p):
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3]]
+    
 
     if (
         current_state.get_curr_state_opt() != "as_on"
@@ -1172,6 +1197,7 @@ def p_op_not(p):
     else:
         p[0] = [p[1], p[2]]
 
+############################################ VARIABLES Y CONSTANTES ############################################
 
 # TERMINAL Y NO TERMINAL
 # Regresa variables constantes o equivalentes
@@ -1211,6 +1237,45 @@ def p_real_constants(p):
         expresion_to_symbols(constant, global_func_table, current_state)
     )
 
+
+# TERMINAL
+# Regresa un valor constante a un BOOL
+def p_bool_cte(p):
+    """
+    bool_cte : TRUE
+             | FALSE
+    """
+    p[0] = p[1]
+
+
+# TERMINAL
+# Regresa IDs validas para funciones
+def p_id_func(p):
+    """
+    id_func : ID
+    """
+    p[0] = p[1]
+
+    if current_state.get_curr_state_table() != "funcD":
+        if not global_func_table.lookup_function(p[1]):
+            print("ERROR: Call of undeclaration function: " + str(p[1]))
+            sys.exit()
+        else:
+            # Se mete el ERA quad
+            quad_stack.push_quad(
+                Quadruple(
+                    Symbol("ERA", "instruction", current_state.get_curr_state_table()),
+                    Symbol(
+                        p[1],
+                        global_func_table.get_function_type(p[1]),
+                        current_state.get_curr_state_table(),
+                    ),
+                    None,
+                    None,
+                ),
+                current_state.get_curr_state_table(),
+            )
+            current_state.push_state(State(current_state.get_curr_state_table(), p[1]))
 
 # TERMINAL Y NO TERMINAL
 # Regresa IDs validas para variables
@@ -1294,6 +1359,7 @@ def p_id_var(p):
             )
             sys.exit()
 
+############################################ ARREGLOS ############################################
 
 # NO TERMINAL
 # Regresa el formato de un index
@@ -1338,35 +1404,7 @@ def p_dim_val(p):
     else:
         current_state.push_state(State(current_state.get_curr_state_table(), "dim"))
 
-
-# TERMINAL
-# Regresa IDs validas para funciones
-def p_id_func(p):
-    """
-    id_func : ID
-    """
-    p[0] = p[1]
-
-    if current_state.get_curr_state_table() != "funcD":
-        if not global_func_table.lookup_function(p[1]):
-            print("ERROR: Call of undeclaration function: " + str(p[1]))
-            sys.exit()
-        else:
-            # Se mete el ERA quad
-            quad_stack.push_quad(
-                Quadruple(
-                    Symbol("ERA", "instruction", current_state.get_curr_state_table()),
-                    Symbol(
-                        p[1],
-                        global_func_table.get_function_type(p[1]),
-                        current_state.get_curr_state_table(),
-                    ),
-                    None,
-                    None,
-                ),
-                current_state.get_curr_state_table(),
-            )
-            current_state.push_state(State(current_state.get_curr_state_table(), p[1]))
+############################################ OBJETOS ############################################
 
 
 # TERMINAL Y NO TERMINAL
@@ -1443,22 +1481,7 @@ def p_cte_mtd_obj(p):
     """
     p[0] = p[1]
 
-
-# TERMINAL
-# Regresa un valor constante a un BOOL
-def p_bool_cte(p):
-    """
-    bool_cte : TRUE
-             | FALSE
-    """
-    p[0] = p[1]
-
-
-def p_error(p):
-    print("Syntax error found")
-    print(p)
-    sys.exit()
-
+############################################ EMPTY Y ERROR ############################################
 
 # TERMINAL
 # Regresa nada cuando se llama un empty
@@ -1468,6 +1491,14 @@ def p_empty(p):
 
     """
     p[0] = None
+
+def p_error(p):
+    print("Syntax error found")
+    print(p)
+    sys.exit()
+
+
+
 
 
 def run(p):

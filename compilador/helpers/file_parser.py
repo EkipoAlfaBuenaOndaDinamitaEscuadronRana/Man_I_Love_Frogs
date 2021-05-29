@@ -20,6 +20,9 @@ def parser_file(file_name, test=None):
 
     if line:
         if test:
+            
             line = ":" + line
+        
         quads = parser_loc.parse(line)
+    
     return quads
