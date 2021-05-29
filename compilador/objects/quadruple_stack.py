@@ -58,7 +58,7 @@ class QuadrupleStack(object):
         # print(get_symbol_formatted(expresion))
         while i > -1:
             if expresion[i].is_dimensioned():
-                if (i > 0 and expresion[i-1].name != "OSB") or i == 0:
+                if (i > 0 and expresion[i - 1].name != "OSB") or i == 0:
                     stack = []
                     count = i
                     arr_name = expresion[count]
@@ -82,7 +82,7 @@ class QuadrupleStack(object):
             # print("---------------- 3")
             # print(get_symbol_formatted(expresion))
             i -= 1
-        #print(get_symbol_formatted(expresion))
+        # print(get_symbol_formatted(expresion))
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
             print(sol)
@@ -196,7 +196,7 @@ class QuadrupleStack(object):
                             format_array_dimensions(array_content), scope, ft
                         )
                     i += count + 1
-                
+
                 self.push_list(self.solve_expression(d, ft), scope, ft)
                 exp_sent = self.qstack[self.count_prev].result_id
                 if (

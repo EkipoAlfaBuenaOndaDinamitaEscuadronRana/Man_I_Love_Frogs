@@ -1398,6 +1398,7 @@ def p_index(p):
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
 
+
 # NO TERMINAL
 # Regresa el formato de un index
 def p_dimension(p):
