@@ -39,6 +39,7 @@ class Engine:
         Instruction("Dino Adrian", "JD", 1),
     ]
     """
+
     def start(characters, instructions):
         pygame.init()
 

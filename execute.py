@@ -15,11 +15,19 @@ class Executer(object):
         self.pretty_quads = self.data["str"]
         self.function_table = self.data["ft"]
 
+    def __print_quads(self):
+        print("Program Quads:")
+        print("-------------------------------------")
+        print(self.pretty_quads)
+
+    def __print_instructions(self, instructions):
+        print("\nResulting Instructions:")
+        print("-------------------------------------")
+        Instruction.print_instructions(instructions)
+
     def run(self, **kwargs):
         if kwargs.get("print_quads"):
-            print("Program Quads:")
-            print("-------------------------------------")
-            print(self.pretty_quads)
+            self.__print_quads()
 
         vm = VirtualMachine(3000, 1000, 6000, self.function_table)
         vm.quadruple_direction_allocator(self.quads)
@@ -29,16 +37,13 @@ class Executer(object):
         instructions = vm.run(self.quads)
 
         if kwargs.get("print_instructions"):
-            print("\nResulting Instructions:")
-            print("-------------------------------------")
-            Instruction.print_instructions(instructions)
+            self.__print_instructions(instructions)
 
-        if len(instructions):
+        if kwargs.get("run_game") and len(instructions):
             characters = {
                 "pepe": Character(100, 100, 30, 30, 50),
             }
 
             Engine.start(characters, instructions)
 
-
-Executer("compilador/tests/test_12.milf").run(print_quads=True, print_instructions=True)
+        return instructions
