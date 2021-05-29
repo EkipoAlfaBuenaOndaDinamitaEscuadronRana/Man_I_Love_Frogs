@@ -43,29 +43,22 @@ class TestYacc(unittest.TestCase):
             "01 | GOTO - - 15\n02 | BEQ n 0 T1\n03 | GOTOF T1 - 7\n04 | RETURN 1 - -\n05 | GOTO - - 14\n06 | GOTO - - 15\n07 | ERA factorial - -\n08 | SUB n 1 T2\n09 | PARAM T2 - param1\n10 | GOSUB factorial - 2\n11 | EQ factorial - T3\n12 | MUL n T3 T4\n13 | RETURN T4 - -\n14 | ENDFUNC - - -\n15 | ERA factorial - -\n16 | PARAM 5 - param1\n17 | GOSUB factorial - 2\n18 | EQ factorial - T1\n19 | EQ T1 - respuesta\n20 | ENDOF - - -\n",
         ]
 
-        test_results = []
-        test_results.append(test_file("./compilador/tests/test_1.milf", test_answers[1]))
-        test_results.append(test_file("./compilador/tests/test_2.milf", test_answers[2]))
-        test_results.append(test_file("./compilador/tests/test_3.milf", test_answers[3]))
-        test_results.append(test_file("./compilador/tests/test_4.milf", test_answers[4]))
-        test_results.append(test_file("./compilador/tests/test_5.milf", test_answers[5]))
-        test_results.append(test_file("./compilador/tests/test_6.milf", test_answers[6]))
-        test_results.append(test_file("./compilador/tests/test_7.milf", test_answers[7]))
-        # Pendiente -> Simple For
-        # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
-        test_results.append(test_file("./compilador/tests/test_9.milf", test_answers[9]))
-        test_results.append(
-            test_file("./compilador/tests/test_10.milf", test_answers[10])
-        )
-        test_results.append(
-            test_file("./compilador/tests/test_11.milf", test_answers[11])
-        )
-        test_results.append(
-            test_file("./compilador/tests/test_12.milf", test_answers[12])
-        )
-        test_results.append(
-            test_file("./compilador/tests/test_13.milf", test_answers[13])
-        )
+        test_results = [
+            test_file("./compilador/tests/test_1.milf", test_answers[1]),
+            test_file("./compilador/tests/test_2.milf", test_answers[2]),
+            test_file("./compilador/tests/test_3.milf", test_answers[3]),
+            test_file("./compilador/tests/test_4.milf", test_answers[4]),
+            test_file("./compilador/tests/test_5.milf", test_answers[5]),
+            test_file("./compilador/tests/test_6.milf", test_answers[6]),
+            test_file("./compilador/tests/test_7.milf", test_answers[7]),
+            # Pendiente -> Simple For
+            # test_file("./compilador/tests/test_8.milf", test_answers[8]),
+            test_file("./compilador/tests/test_9.milf", test_answers[9]),
+            test_file("./compilador/tests/test_10.milf", test_answers[10]),
+            test_file("./compilador/tests/test_11.milf", test_answers[11]),
+            test_file("./compilador/tests/test_12.milf", test_answers[12]),
+            test_file("./compilador/tests/test_13.milf", test_answers[13]),
+        ]
 
         if "F" in test_results:
             result = "Failed"

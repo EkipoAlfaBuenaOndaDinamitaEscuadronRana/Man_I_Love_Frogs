@@ -15,8 +15,7 @@ class Character(object):
             self.y += self.__speed
 
     def move_up(self, times):
-        movement = self.__speed
-
+        movement = self.__speed * times
         if self.y - movement >= 0:
             self.y -= movement
 
@@ -25,5 +24,6 @@ class Character(object):
             self.x += self.__speed
 
     def move_left(self, times):
+        movement = self.__speed * times
         if self.x - self.__speed >= 0:
-            self.x -= self.__speed
+            self.x -= movement
