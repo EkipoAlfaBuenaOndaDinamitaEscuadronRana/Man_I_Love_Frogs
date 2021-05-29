@@ -62,7 +62,7 @@ class QuadrupleStack(object):
                 for x in range(arr_name.get_dimension_size()):
                     stack.append(expresion[count])
                     expresion.pop(count)
-                    while count >= 0  and count < len(expresion) and len(stack) > 0 :
+                    while count >= 0 and count < len(expresion) and len(stack) > 0:
                         if expresion[count].name == "OSB":
                             stack.append(expresion[count])
                         elif expresion[count].name == "CSB":
@@ -109,7 +109,7 @@ class QuadrupleStack(object):
                                 flag = True
 
         if flag:
-            self.temp_count += 1     
+            self.temp_count += 1
 
     def array_access(self, symbol, scope, ft):
         # for k,v in symbol.items():
@@ -468,14 +468,14 @@ class QuadrupleStack(object):
                 self.jumpStackR.pop()
 
             while len(self.jumpStackR) > 0:
-                end = self.jumpStackR.pop()    
+                end = self.jumpStackR.pop()
                 self.fill(end, scope)
 
     # Para llenar el quadruplo de go to main
     def go_to_main(self, scope):
         end = self.jumpStack.pop()
         self.fill(end, scope)
-    
+
     def ciclo_cero(self, scope):
         end = self.jumpStack.pop()
         self.fill(end, scope)
@@ -544,7 +544,8 @@ class QuadrupleStack(object):
         # ESTE VA EN EL ELSE
         self.push_quad(
             Quadruple(
-                Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"),
+                Symbol("GOTO", "instruction", scope), None, None, "MISSING_ADDRESS"
+            ),
             scope,
         )
         not_true = self.jumpStack.pop()

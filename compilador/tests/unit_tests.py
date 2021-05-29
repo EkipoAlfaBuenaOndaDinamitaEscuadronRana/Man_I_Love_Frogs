@@ -19,6 +19,7 @@ import unittest
 class TestYacc(unittest.TestCase):
     def test_yacc(self):
         def test_file(file_name, answer):
+            print("==============================================", file_name)
             data = parser_file(file_name)
             result = data["str"]
             if result == answer:
@@ -44,7 +45,7 @@ class TestYacc(unittest.TestCase):
         ]
 
         test_results = [
-            test_file("./compilador/tests/test_1.milf", test_answers[1]),
+            # test_file("./compilador/tests/test_1.milf", test_answers[1]),
             test_file("./compilador/tests/test_2.milf", test_answers[2]),
             test_file("./compilador/tests/test_3.milf", test_answers[3]),
             test_file("./compilador/tests/test_4.milf", test_answers[4]),
@@ -64,6 +65,8 @@ class TestYacc(unittest.TestCase):
             result = "Failed"
         else:
             result = "Passed"
+
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$", test_results)
 
         self.assertEqual(result, "Passed")
 

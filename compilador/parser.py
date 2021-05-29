@@ -20,6 +20,7 @@ quad_stack = QuadrupleStack()
 
 ############################################ DECLARACIÓNES GLOBALES ############################################
 
+
 def p_inicial(p):
     """
     inicial : empty start
@@ -101,7 +102,7 @@ def p_program(p):
 
     # print("p_program: " + str(p[0]))
     # for i in range(len(p)):
-        # print("p[" + str(i) + "]: " + str(p[i]))
+    # print("p[" + str(i) + "]: " + str(p[i]))
 
 
 def p_global_vartable(p):
@@ -122,6 +123,7 @@ def p_global_vartable(p):
     # CREA VAR TABLE
     global_func_table.set_function("Global Segment", "void", [], VariableTable())
     # Limpea la quad_stack
+
 
 def p_gotomain(p):
     """
@@ -152,6 +154,7 @@ def p_bloque_g(p):
 
     # print("p_bloque_g: " + str(p[0]))
 
+
 ############################################ DECLARAICÓN DE VARIABLES ############################################
 def p_var_global(p):
     """
@@ -163,6 +166,7 @@ def p_var_global(p):
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3]]
+
 
 # NO TERMINAL
 # Empieza declaración de variable
@@ -278,6 +282,7 @@ def p_var1(p):
 
 
 ############################################ DECLARACIÓN DE FUNCIONES ############################################
+
 
 def p_func_global(p):
     """
@@ -439,6 +444,7 @@ def p_tipo(p):
     """
     p[0] = p[1]
 
+
 ############################################ DECLARACIÓN DE MAIN ############################################
 
 # TERMINAL
@@ -477,6 +483,7 @@ def p_main_vartable_distruct(p):
     global_func_table.set_function_size_at(current_state.get_curr_state_table())
     current_state.pop_curr_state()
 
+
 ############################################ BLOQUES ############################################
 
 # NO TERMINAL
@@ -504,6 +511,7 @@ def p_bloque1(p):
 
     # print("p_bloque1: " + str(p[0]))
 
+
 ############################################ ESTATUTOS ############################################
 
 # NO TERMINAL
@@ -528,6 +536,7 @@ def p_estatuto(p):
         p[0] = [p[1], p[2]]
 
     # print("p_estatuto: " + str(p[0]))
+
 
 ############################################ ASIGNATURA ############################################
 
@@ -608,6 +617,7 @@ def p_as_off(p):
     p[0] = p[1]
     current_state.pop_curr_state()
 
+
 ############################################ RETURN ############################################
 
 # TERMINAL Y NO TERMINAL
@@ -656,7 +666,6 @@ def p_return(p):
     #         sys.exit()
 
 
-
 ############################################ READ / WRITE ############################################
 
 # NO TERMINAL
@@ -702,7 +711,6 @@ def p_lectura1(p):
         p[0] = [p[1], p[3]]
 
 
-
 ############################################ DECLARACIÓN DE ESTATUOS NO LINEALES ############################################
 
 # NO TERMINAL
@@ -715,6 +723,8 @@ def p_estado_no_var(p):
     p[0] = [p[1], p[2], p[3]]
 
     # print("p_estado_no_var " + str(p[0]))
+
+
 # TERMINAL
 # CAMBIA ESTADO
 def p_no_var_on(p):
@@ -814,6 +824,7 @@ def p_condicion1(p):
     else:
         p[0] = [p[1], p[2]]
 
+
 ############################################ CICLOS ############################################
 
 # NO TERMINAL
@@ -834,12 +845,14 @@ def p_while(p):
     """
     p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]]
 
+
 def p_ciclo_cero_fill(p):
     """
     ciclo_cero_fill : empty
     """
     p[0] = p[1]
     quad_stack.ciclo_cero(current_state.get_curr_state_table())
+
 
 # TERMINAL
 # Indica a donde regresar a validar la condicion del ciclo
@@ -849,7 +862,6 @@ def p_ciclo_uno(p):
     """
     p[0] = p[1]
     quad_stack.ciclo_1()
-    
 
 
 # TERMINAL
@@ -923,6 +935,7 @@ def p_for_complex(p):
     """
     p[0] = [p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
 
+
 def p_assign_for(p):
     """
     assign_for : asignatura
@@ -930,9 +943,10 @@ def p_assign_for(p):
     """
     p[0] = p[1]
 
+
 ############################################ LLAMADA A FUNCION ############################################
 
-    
+
 # NO TERMINAL
 # inicia una llamada a una funcion
 def p_llamada(p):
@@ -1037,6 +1051,7 @@ def p_parametro(p):
         print("ERROR: Error trying to validate parameters")
         sys.exit()
 
+
 ############################################ EXPRESIONES ############################################
 
 # NO TERMINAL
@@ -1054,7 +1069,6 @@ def p_expresion(p):
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3]]
-    
 
     if (
         current_state.get_curr_state_opt() != "as_on"
@@ -1203,6 +1217,7 @@ def p_op_not(p):
     else:
         p[0] = [p[1], p[2]]
 
+
 ############################################ VARIABLES Y CONSTANTES ############################################
 
 # TERMINAL Y NO TERMINAL
@@ -1282,6 +1297,7 @@ def p_id_func(p):
                 current_state.get_curr_state_table(),
             )
             current_state.push_state(State(current_state.get_curr_state_table(), p[1]))
+
 
 # TERMINAL Y NO TERMINAL
 # Regresa IDs validas para variables
@@ -1365,6 +1381,7 @@ def p_id_var(p):
             )
             sys.exit()
 
+
 ############################################ ARREGLOS ############################################
 
 # NO TERMINAL
@@ -1409,6 +1426,7 @@ def p_dim_val(p):
         sys.exit()
     else:
         current_state.push_state(State(current_state.get_curr_state_table(), "dim"))
+
 
 ############################################ OBJETOS ############################################
 
@@ -1487,6 +1505,7 @@ def p_cte_mtd_obj(p):
     """
     p[0] = p[1]
 
+
 ############################################ EMPTY Y ERROR ############################################
 
 # TERMINAL
@@ -1498,13 +1517,11 @@ def p_empty(p):
     """
     p[0] = None
 
+
 def p_error(p):
     print("Syntax error found")
     print(p)
     sys.exit()
-
-
-
 
 
 def run(p):

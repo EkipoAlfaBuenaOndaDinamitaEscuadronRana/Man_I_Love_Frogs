@@ -158,7 +158,7 @@ class VirtualMachine(object):
         elif operation == "MOD":
             self.get_direction_symbol(dir_result).value = val_opnd_1 % val_opnd_2
         elif operation == "BEQ":
-            self.get_direction_symbol(dir_r3esult).value = val_opnd_1 == val_opnd_2
+            self.get_direction_symbol(dir_result).value = val_opnd_1 == val_opnd_2
         elif operation == "BNEQ":
             self.get_direction_symbol(dir_result).value = val_opnd_1 != val_opnd_2
         elif operation == "OR":

@@ -37,7 +37,7 @@ class Executer(object):
         vm.quadruple_direction_allocator(self.quads)
 
         if kwargs.get("print_running"):
-            self.__print_quads()
+            self.__print_running()
 
         instructions = vm.run(self.quads)
 
