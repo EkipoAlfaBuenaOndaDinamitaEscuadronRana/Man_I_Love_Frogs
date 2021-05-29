@@ -34,7 +34,7 @@ func void inicia(int y){
         for(k = 0; k < 7; k += 1){
             Matriz[j][k] = Arreglo[j + k - fact(p) + p * k] * p + j;
         }
-            
+
     }
 
     while( i >= 0){

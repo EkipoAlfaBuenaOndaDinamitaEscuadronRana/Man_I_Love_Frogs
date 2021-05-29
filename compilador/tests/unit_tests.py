@@ -851,7 +851,8 @@ class TestExecuter(unittest.TestCase):
         exe = Executer("compilador/tests/test_12.milf")
         run_instructions = exe.run(
             print_running=False,
-            print_quads=False,
+            print_pre_quads=False,
+            print_post_quads=False,
             print_instructions=False,
             run_game=False,
         )

@@ -1,0 +1,9 @@
+program simpleFunc;
+
+func int square(int a){
+    return a * a;
+}
+
+{
+    int b = square(2);
+}
