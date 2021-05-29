@@ -92,7 +92,7 @@ def p_global_vartable_distruct(p):
 def p_program(p):
     """
     program : PROGRAM global_vartable SCOL bloque_g main_vartable_init bloque main_vartable_distruct
-            | PROGRAM global_vartable SCOL main_vartable_init main_vartable_distruct
+            | PROGRAM global_vartable SCOL gotomain main_vartable_init main_vartable_distruct
     """
 
     if len(p) == 6:
