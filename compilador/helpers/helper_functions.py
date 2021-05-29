@@ -230,7 +230,6 @@ def expresion_to_symbols(exp, ft, s, d=None):
     sym_list = []
     if d:
         exp = dec_to_as(exp)
-    
     for e in exp:
         if e in operators:
             op = operators[e]

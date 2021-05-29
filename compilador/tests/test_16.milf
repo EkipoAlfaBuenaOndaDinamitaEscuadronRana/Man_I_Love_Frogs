@@ -1,7 +1,14 @@
-program test;
+program parentesisReturn; 
+
+int b, a = 2;
+
+func int square(int a){
+    return (a * a);
+}
 
 {
-    string a;
-    read(a);
+    
+    b = square(a);
+    write(a);
 
 }

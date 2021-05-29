@@ -10,7 +10,7 @@ func int fact(int j){
     if (j == 1){
         return j;
     } else {
-        return j * fact(j - 1);
+        return (j * fact(j - 1));
     }
 }
 

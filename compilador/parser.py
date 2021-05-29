@@ -621,7 +621,7 @@ def p_return(p):
         p[0] = [p[1], p[2]]
         if (
             global_func_table.get_function_type(current_state.get_curr_state_table())
-            != "void"
+            != "VOID"
         ):
             print("ERROR: No return in a non void function")
             sys.exit()
@@ -638,7 +638,7 @@ def p_return(p):
 
         if (
             global_func_table.get_function_type(current_state.get_curr_state_table())
-            == "void"
+            == "VOID"
         ):
             print("ERROR: Tyring to return a value in a void function")
             sys.exit()
@@ -1182,13 +1182,13 @@ def p_op_mdr(p):
 # Regresa una expresion en parentesis o una constante
 def p_factor(p):
     """
-    factor : OP expresion CP
+    factor : OP as_on expresion as_off CP
            | op_not
     """
     if len(p) == 2:
         p[0] = p[1]
     else:
-        p[0] = [p[1], p[2], p[3]]
+        p[0] = [p[1], p[3], p[5]]
 
 
 # NO TERMINAL
