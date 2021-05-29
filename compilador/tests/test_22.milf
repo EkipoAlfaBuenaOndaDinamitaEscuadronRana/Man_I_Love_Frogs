@@ -1,9 +1,46 @@
-program simpleFunc;
+program ejemplo;
+int i,j,p,k;
+int Arreglo[10];
+float valor;
+int Matriz[3][8];
 
-func int square(int a){
-    return a * a;
+func int fact(int j){
+    int i;
+    i = j + (p - j * 2 + j);
+    if (j == 1){
+        return j;
+    } else {
+        return (j * fact(j - 1));
+    }
+}
+
+func void inicia(int y){
+    int x;
+    x = 0;
+    while (x < 11){
+        Arreglo[x] = y * x;
+        x += 1;
+    }
 }
 
 {
-    int b = square(2);
+    read(p);
+    j = p * 2;
+    inicia(p * j - 5);
+    for(i = 0; i < 9; i += 1){
+        Arreglo[p] = Arreglo[i] * fact(Arreglo[i] - p);
+    }
+    for(j = 0; j < 2; j += 1){
+        for(k = 0; k < 7; k += 1){
+            Matriz[j][k] = Arreglo[j + k - fact(p) + p * k] * p + j;
+        }
+
+    }
+
+    while( i >= 0){
+        write("Resultado");
+        write(Arreglo[i]);
+        write(fact(i +2) * valor);
+        i -= 1;
+    }
 }

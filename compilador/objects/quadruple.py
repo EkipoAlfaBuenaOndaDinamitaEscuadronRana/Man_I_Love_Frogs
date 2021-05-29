@@ -125,9 +125,6 @@ class Quadruple(object):
         return "BOOL" if stack_types[-1] == "BOOL" else "error"
 
     def __type_consideration(stack_types, stack_operators):
-        # print(stack_types)
-        # print(stack_operators)
-        # print("---------------")
         return SemanticTable.considerate(
             stack_types[-2], stack_operators[-1], stack_types[-1]
         )

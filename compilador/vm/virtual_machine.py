@@ -312,7 +312,7 @@ class VirtualMachine(object):
                 continue
 
             elif operation == "RETURN":
-                
+                pass
 
             elif type == "obj_method":
                 dir_frog = curr_quad.operand_1.global_direction
