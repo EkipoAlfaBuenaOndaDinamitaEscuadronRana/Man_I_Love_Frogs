@@ -116,7 +116,9 @@ class VirtualMachine(object):
             return segment.search_symbol(direction)
 
     def __not_allocated(self, symbol):
-        return symbol and not (symbol.segment_direction != None and symbol.global_direction != None)
+        return symbol and not (
+            symbol.segment_direction != None and symbol.global_direction != None
+        )
 
     def quadruple_direction_allocator(self, quad_dir):
         current_scope = ""
@@ -154,7 +156,7 @@ class VirtualMachine(object):
         elif operation == "MOD":
             self.get_direction_symbol(dir_result).value = val_opnd_1 % val_opnd_2
         elif operation == "BEQ":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 == val_opnd_2
+            self.get_direction_symbol(dir_r3esult).value = val_opnd_1 == val_opnd_2
         elif operation == "BNEQ":
             self.get_direction_symbol(dir_result).value = val_opnd_1 != val_opnd_2
         elif operation == "OR":
@@ -187,38 +189,33 @@ class VirtualMachine(object):
             self.get_direction_symbol(dir_result).value %= val_opnd
 
     def __resolve_write(self, dir_result):
-        # print("\n===============================")
-        # print("WRITE")
-        # print("dir_result:", dir_result)
-        # print("symbol:")
-        # self.get_direction_symbol(dir_result).print_symbol()
         print(self.get_direction_symbol(dir_result).value)
 
     # TODO: No lo he probado lo suficiente
     def __resolve_read(self, dir_result):
-        inpt = input()
+        user_input = input()
         symbol = self.get_direction_symbol(dir_result)
 
         if symbol.type == "INT":
-            symbol.value = int(inpt)
+            symbol.value = int(user_input)
 
         elif symbol.type == "FLT":
-            symbol.value = float(inpt)
+            symbol.value = float(user_input)
 
         elif symbol.type == "CHAR":
             # TODO: Ver como validar que sea un solo char
-            symbol.value = inpt[0]
+            symbol.value = user_input[0]
 
         elif symbol.type == "STR":
-            symbol.value = inpt
+            symbol.value = user_input
 
         elif symbol.type == "BOOL":
             booleans = {"true": True, "false": False, "1": True, "0": False}
-            symbol.value = booleans[inpt]
+            symbol.value = booleans[user_input]
 
         elif symbol.type == "NULL":
             # TODO: Ver como validar que sea siempre null
-            if inpt == "null":
+            if user_input == "null":
                 symbol.value = None
 
     def run(self, quad_dir):

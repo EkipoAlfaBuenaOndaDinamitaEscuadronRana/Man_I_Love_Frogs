@@ -21,17 +21,7 @@ else:
     print(data["str"])
 
     quads = data["q"]
-    #
-    # for q in quads:
-    #     print("--------------------------------------------")
-    #     quads[q].print_quad()
 
     vm = VirtualMachine(3000, 1000, 6000, data["ft"])
     vm.quadruple_direction_allocator(quads)
-
-    # print("-------------------------------")
-    # for symbol in vm.declared_symbols:
-    #     symbol.print_symbol()
-    #     print("-------------------------------")
-
     vm.run(quads)
