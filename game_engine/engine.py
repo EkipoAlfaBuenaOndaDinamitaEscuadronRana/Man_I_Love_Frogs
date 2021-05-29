@@ -35,16 +35,10 @@ class Engine:
     }
 
     instructions = [
-        Instruction("Rosita Fresita", "right"),
-        Instruction("Dino Adrian", "down"),
-    ]
-
-    instructions = [
         Instruction("Rosita Fresita", "JR", 1),
         Instruction("Dino Adrian", "JD", 1),
     ]
     """
-
     def start(characters, instructions):
         pygame.init()
 
