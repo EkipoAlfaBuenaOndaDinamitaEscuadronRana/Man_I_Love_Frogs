@@ -415,7 +415,7 @@ class QuadrupleStack(object):
         return a
 
     def read_quad(self, vars, scope):
-        if len(vars) > 2:
+        if len(vars) > 1:
             r = vars.pop(0)
             for v in vars:
                 self.push_quad(
@@ -459,6 +459,10 @@ class QuadrupleStack(object):
 
     # Para llenar el quadruplo de go to main
     def go_to_main(self, scope):
+        end = self.jumpStack.pop()
+        self.fill(end, scope)
+    
+    def ciclo_cero(self, scope):
         end = self.jumpStack.pop()
         self.fill(end, scope)
 

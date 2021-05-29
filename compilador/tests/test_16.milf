@@ -1,0 +1,7 @@
+program test;
+
+{
+    string a;
+    read(a);
+
+}

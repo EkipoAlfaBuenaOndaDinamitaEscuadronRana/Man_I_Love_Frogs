@@ -1,11 +1,8 @@
 program test;
-/* Este es un comentario
-int x = 1;
 
-*/
 {
     int a = 1 + 2;
-    //write(x);
     write(a);
-
+    a += a;
+    write(a);
 }
