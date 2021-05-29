@@ -1,14 +1,16 @@
 program parentesisReturn; 
 
-int b, a = 2;
-
-func int square(int a){
-    return (a * a);
-}
+int i,j,p,k;
+int Arreglo[10];
+float valor;
+int Matriz[3][8];
 
 {
-    
-    b = square(a);
-    write(a);
+    for(j = 0; j < 2; j += 1){
+        for(k = 0; k < 7; k += 1){
+            Matriz[j][k] = Arreglo[j + k - p * k] * p + j;
+        }
+            
+    }
 
 }

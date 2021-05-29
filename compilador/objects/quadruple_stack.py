@@ -52,21 +52,35 @@ class QuadrupleStack(object):
     # Manda a resolver los quadruplos
     def solve_expression(self, expresion, ft):
         i = 0
+        print(self.count)
+        print("---------------- 0")
+        print(get_symbol_formatted(expresion))
         while i < len(expresion):
+            count = 1
             if expresion[i].is_dimensioned():
                 stack = []
                 count = i
-                expresion[count] = self.array_stack.pop()
+                arr_name = expresion[count]
+                expresion[count] = self.array_stack.pop(0)
                 count += 1
-                stack.append(expresion[count])
-                while len(stack) > 0 and count < len(expresion):
-                    if expresion[count].name == "OSB":
-                        stack.append(expresion[count])
-                    elif expresion[count].name == "CSB":
-                        stack.pop()
+                for x in range(arr_name.get_dimension_size()):
+                    stack.append(expresion[count])
                     expresion.pop(count)
-            i += 1
-
+                    print("---------------- 1")
+                    print(get_symbol_formatted(expresion))
+                    print(get_symbol_formatted(stack))
+                    while count < len(expresion) and len(stack) > 0 :
+                        if expresion[count].name == "OSB":
+                            stack.append(expresion[count])
+                        elif expresion[count].name == "CSB":
+                            stack.pop()
+                        expresion.pop(count)
+                        print("---------------- 2")
+                        print(get_symbol_formatted(expresion))
+                        print(get_symbol_formatted(stack))
+            print("---------------- 3")
+            print(get_symbol_formatted(expresion))
+            i += count
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
             print(sol)
@@ -94,7 +108,7 @@ class QuadrupleStack(object):
                     if result.start() == 0 and result.end() == (len(str(temp))):
                         if not ft.lookup_temporal(temp_obj):
                             ft.push_temporal(temp_obj)
-                        temp = int(temp[1:])
+                        temp = int(temp[2:-1])
                         self.temp_count = temp + 1
 
     def array_access(self, symbol, scope, ft):
