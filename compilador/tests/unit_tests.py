@@ -774,15 +774,15 @@ class TestVirtualMachine(unittest.TestCase):
         # Variables
         a = Symbol("A", "INT")
         b = Symbol("B", "INT")
-        t2 = Symbol("T4", "INT")
         boolA = Symbol("boolA", "BOOL")
         boolB = Symbol("boolB", "BOOL")
+        t2 = Symbol("T2", "INT")
         t1 = Symbol("T1", "BOOL")
         a.scope = "main"
         b.scope = "main"
-        t2.scope = "main"
         boolA.scope = "main"
         boolB.scope = "main"
+        t2.scope = "main"
         t1.scope = "main"
 
         # Variable Table
