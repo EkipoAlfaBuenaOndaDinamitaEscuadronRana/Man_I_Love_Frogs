@@ -15,8 +15,10 @@ if len(sys.argv) > 1:
         # vm.run(data['q'])
         i += 1
 else:
-    print("DEFAULT: compilador/tests/test_16.milf")
-    data = parser_file("compilador/tests/test_16.milf")
+
+    running_file = "compilador/tests/test_18.milf"
+    print("DEFAULT: {}".format(running_file))
+    data = parser_file(running_file)
     print(data["str"])
     vm = VirtualMachine(3000, 1000, 6000, data["ft"])
     vm.quadruple_direction_allocator(data["q"])
