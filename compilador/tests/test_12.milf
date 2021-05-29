@@ -1,11 +1,11 @@
-program objects; 
+program objects;
 
 {
     int a = 1;
     frog pepe;
     pepe.hat = "cowboy";
     pepe.jump_left();
-    pepe.jump_right(10);
+    pepe.jump_right(5);
     pepe.jump_up(a);
 
 }

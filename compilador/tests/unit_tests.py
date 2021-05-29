@@ -39,33 +39,26 @@ class TestYacc(unittest.TestCase):
             '01 | GOTO - - 11\n02 | EQ 0 - a\n03 | EQ "hola me llamo" - saludo\n04 | ADD saludo nombre T1\n05 | EQ T1 - saludo\n06 | ADD saludo "y mi edad es " T2\n07 | EQ T2 - saludo\n08 | ADD saludo edad T3\n09 | EQ T3 - saludo\n10 | ENDFUNC - - -\n11 | EQ "Rosita" - n\n12 | EQ "22" - e\n13 | ERA hola - -\n14 | PARAM n - param1\n15 | PARAM e - param2\n16 | ADD a 1 T1\n17 | PARAM T1 - param3\n18 | GOSUB hola - 3\n19 | ENDOF - - -\n',
             "01 | GOTO - - 20\n02 | EQ 0 - respuesta\n03 | MUL b c T1\n04 | ADD a T1 T2\n05 | EQ T2 - respuesta\n06 | GT a b T3\n07 | GOTOF T3 - 11\n08 | RETURN respuesta - -\n09 | GOTO - - 19\n10 | GOTO - - 15\n11 | ADD respuesta c T4\n12 | EQ T4 - respuesta\n13 | RETURN respuesta - -\n14 | GOTO - - 19\n15 | ADD a b T5\n16 | SUB T5 c T6\n17 | EQ T6 - a\n18 | RETURN a - -\n19 | ENDFUNC - - -\n20 | ERA random - -\n21 | PARAM 5 - param1\n22 | PARAM -10 - param2\n23 | PARAM 4 - param3\n24 | GOSUB random - 2\n25 | EQ random - T1\n26 | ADD 1 T1 T2\n27 | EQ T2 - a\n28 | ERA random - -\n29 | PARAM a - param1\n30 | PARAM 3 - param2\n31 | PARAM 100 - param3\n32 | GOSUB random - 2\n33 | EQ random - T3\n34 | EQ T3 - b\n35 | ERA random - -\n36 | ERA random - -\n37 | PARAM 5 - param1\n38 | PARAM 5 - param2\n39 | PARAM 5 - param3\n40 | GOSUB random - 2\n41 | EQ random - T4\n42 | PARAM T4 - param1\n43 | PARAM 5 - param2\n44 | PARAM 5 - param3\n45 | GOSUB random - 2\n46 | EQ random - T5\n47 | EQ T5 - c\n48 | ERA random - -\n49 | PARAM 1 - param1\n50 | PARAM 2 - param2\n51 | PARAM 3 - param3\n52 | GOSUB random - 2\n53 | EQ random - T6\n54 | ERA random - -\n55 | PARAM 4 - param1\n56 | PARAM 5 - param2\n57 | PARAM 6 - param3\n58 | GOSUB random - 2\n59 | EQ random - T7\n60 | ADD T7 T6 T8\n61 | EQ T8 - d\n62 | ENDOF - - -\n",
             "01 | GOTO - - 2\n02 | EQ READ - a\n03 | EQ READ - b\n04 | EQ READ - c\n05 | ENDOF - - -\n",
-            '01 | GOTO - - 2\n02 | EQ 1 - a\n03 | EQ "cowboy" - pepe.hat\n04 | JL pepe - 1\n05 | JR pepe - 10\n06 | JU pepe - a\n07 | ENDOF - - -\n',
+            '01 | GOTO - - 2\n02 | EQ 1 - a\n03 | EQ "cowboy" - pepe.hat\n04 | JL pepe - 1\n05 | JR pepe - 5\n06 | JU pepe - a\n07 | ENDOF - - -\n',
             "01 | GOTO - - 15\n02 | BEQ n 0 T1\n03 | GOTOF T1 - 7\n04 | RETURN 1 - -\n05 | GOTO - - 14\n06 | GOTO - - 15\n07 | ERA factorial - -\n08 | SUB n 1 T2\n09 | PARAM T2 - param1\n10 | GOSUB factorial - 2\n11 | EQ factorial - T3\n12 | MUL n T3 T4\n13 | RETURN T4 - -\n14 | ENDFUNC - - -\n15 | ERA factorial - -\n16 | PARAM 5 - param1\n17 | GOSUB factorial - 2\n18 | EQ factorial - T1\n19 | EQ T1 - respuesta\n20 | ENDOF - - -\n",
         ]
 
-        test_results = []
-        test_results.append(test_file("./compilador/tests/test_1.txt", test_answers[1]))
-        test_results.append(test_file("./compilador/tests/test_2.txt", test_answers[2]))
-        test_results.append(test_file("./compilador/tests/test_3.txt", test_answers[3]))
-        test_results.append(test_file("./compilador/tests/test_4.txt", test_answers[4]))
-        test_results.append(test_file("./compilador/tests/test_5.txt", test_answers[5]))
-        test_results.append(test_file("./compilador/tests/test_6.txt", test_answers[6]))
-        test_results.append(test_file("./compilador/tests/test_7.txt", test_answers[7]))
-        # Pendiente -> Simple For
-        # test_results.append(test_file("tests/test_8.txt", test_answers[8]))
-        test_results.append(test_file("./compilador/tests/test_9.txt", test_answers[9]))
-        test_results.append(
-            test_file("./compilador/tests/test_10.txt", test_answers[10])
-        )
-        test_results.append(
-            test_file("./compilador/tests/test_11.txt", test_answers[11])
-        )
-        test_results.append(
-            test_file("./compilador/tests/test_12.txt", test_answers[12])
-        )
-        test_results.append(
-            test_file("./compilador/tests/test_13.txt", test_answers[13])
-        )
+        test_results = [
+            test_file("./compilador/tests/test_1.milf", test_answers[1]),
+            test_file("./compilador/tests/test_2.milf", test_answers[2]),
+            test_file("./compilador/tests/test_3.milf", test_answers[3]),
+            test_file("./compilador/tests/test_4.milf", test_answers[4]),
+            test_file("./compilador/tests/test_5.milf", test_answers[5]),
+            test_file("./compilador/tests/test_6.milf", test_answers[6]),
+            test_file("./compilador/tests/test_7.milf", test_answers[7]),
+            # Pendiente -> Simple For
+            # test_file("./compilador/tests/test_8.milf", test_answers[8]),
+            test_file("./compilador/tests/test_9.milf", test_answers[9]),
+            test_file("./compilador/tests/test_10.milf", test_answers[10]),
+            test_file("./compilador/tests/test_11.milf", test_answers[11]),
+            test_file("./compilador/tests/test_12.milf", test_answers[12]),
+            test_file("./compilador/tests/test_13.milf", test_answers[13]),
+        ]
 
         if "F" in test_results:
             result = "Failed"
@@ -807,8 +800,8 @@ class TestVirtualMachine(unittest.TestCase):
             int a = 1;
             int b = 2;
 
-            write(boolA || boolB);
-            write(a + b);
+            boolA = boolA || boolB;
+            a = a + b;
         }
         """
         main_quads = {
@@ -818,11 +811,31 @@ class TestVirtualMachine(unittest.TestCase):
             4: Quadruple(eq, one, None, a),
             5: Quadruple(eq, two, None, b),
             6: Quadruple(OR, boolA, boolB, t1),
-            7: Quadruple(write, None, None, t1),
+            7: Quadruple(eq, t1, None, boolA),
             8: Quadruple(add, a, b, t2),
-            9: Quadruple(write, None, None, t2),
+            9: Quadruple(eq, t2, None, a),
             10: Quadruple(endof, None, None, None),
         }
 
         vm.quadruple_direction_allocator(main_quads)
         self.assertEqual(vm.run(main_quads), [])
+
+
+class TestExecuter(unittest.TestCase):
+    def test_run(self):
+
+        expected_instructions = [
+            Instruction("pepe", "JL", 1),
+            Instruction("pepe", "JR", 5),
+            Instruction("pepe", "JU", 1),
+        ]
+
+        exe = Executer("compilador/tests/test_12.milf")
+        run_instructions = exe.run(
+            print_running=False,
+            print_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+
+        self.assertEqual(expected_instructions, run_instructions)

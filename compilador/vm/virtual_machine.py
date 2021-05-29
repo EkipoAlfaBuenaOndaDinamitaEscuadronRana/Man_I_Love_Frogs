@@ -9,6 +9,8 @@ import compilador.objects.quadruple
 from compilador.objects.quadruple import *
 import compilador.objects.semantic_table
 from compilador.objects.semantic_table import *
+import game_engine.instruction
+from game_engine.instruction import *
 
 
 class VirtualMachine(object):
@@ -218,6 +220,12 @@ class VirtualMachine(object):
             if user_input == "null":
                 symbol.value = None
 
+    def __resolve_frog_method(self, operation, dir_frog, dir_result):
+        frog = self.get_direction_symbol(dir_frog).name
+        times = self.get_direction_symbol(dir_result).value
+
+        return Instruction(frog, operation, times)
+
     def run(self, quad_dir):
         running = True
         instruction = 1
@@ -226,12 +234,9 @@ class VirtualMachine(object):
         while running:
             curr_quad = quad_dir[instruction]
             operation = curr_quad.operator.name
+            type = curr_quad.operator.type
 
-            if operation in set.union(
-                SemanticTable.operations_op,
-                SemanticTable.comparison_op,
-                SemanticTable.matching_op,
-            ):
+            if type in ["operation", "comparison", "matching"]:
                 dir_opnd_1 = curr_quad.operand_1.global_direction
                 dir_opnd_2 = curr_quad.operand_2.global_direction
                 dir_result = curr_quad.result_id.global_direction
@@ -271,6 +276,13 @@ class VirtualMachine(object):
 
             elif operation == "ERA":
                 pass
+
+            elif type == "obj_method":
+                dir_frog = curr_quad.operand_1.global_direction
+                dir_result = curr_quad.result_id.global_direction
+                game_instructions.append(
+                    self.__resolve_frog_method(operation, dir_frog, dir_result)
+                )
 
             instruction += 1
             if instruction > len(quad_dir):

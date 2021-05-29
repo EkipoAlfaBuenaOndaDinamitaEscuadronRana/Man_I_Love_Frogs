@@ -9,18 +9,22 @@ class Character(object):
         self.height = height
         self.__speed = speed
 
-    def move_down(self, display_height):
-        if self.y + self.height + self.__speed <= display_height:
-            self.y += self.__speed
+    def move_down(self, display_height, times):
+        movement = self.__speed * int(times)
+        if self.y + self.height + movement <= display_height:
+            self.y += movement
 
-    def move_up(self):
-        if self.y - self.__speed >= 0:
-            self.y -= self.__speed
+    def move_up(self, times):
+        movement = self.__speed * int(times)
+        if self.y - movement >= 0:
+            self.y -= movement
 
-    def move_right(self, display_width):
-        if self.x + self.width + self.__speed <= display_width:
-            self.x += self.__speed
+    def move_right(self, display_width, times):
+        movement = self.__speed * int(times)
+        if self.x + self.width + movement <= display_width:
+            self.x += movement
 
-    def move_left(self):
+    def move_left(self, times):
+        movement = self.__speed * int(times)
         if self.x - self.__speed >= 0:
-            self.x -= self.__speed
+            self.x -= movement

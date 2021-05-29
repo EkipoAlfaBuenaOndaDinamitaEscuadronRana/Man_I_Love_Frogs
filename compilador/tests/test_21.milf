@@ -1,0 +1,6 @@
+program test;
+int a = 1 + 2;
+{
+    write(a);
+
+}
