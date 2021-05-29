@@ -108,6 +108,11 @@ t_MODEQ = r"\%\="
 t_ignore = r" "
 
 
+def t_ccode_comment(t):
+    r"(/\*(.|\n)*?\*/)|(//.*)"
+    pass
+
+
 def t_tab(t):
     r"\t+"
 

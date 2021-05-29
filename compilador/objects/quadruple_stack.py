@@ -51,22 +51,24 @@ class QuadrupleStack(object):
 
     # Manda a resolver los quadruplos
     def solve_expression(self, expresion, ft):
-        i = 0
-        while i < len(expresion):
+        i = len(expresion) - 1
+        while i >= 0:
             if expresion[i].is_dimensioned():
                 stack = []
                 count = i
+                arr_name = expresion[count]
                 expresion[count] = self.array_stack.pop()
                 count += 1
-                stack.append(expresion[count])
-                while len(stack) > 0 and count < len(expresion):
-                    if expresion[count].name == "OSB":
-                        stack.append(expresion[count])
-                    elif expresion[count].name == "CSB":
-                        stack.pop()
+                for x in range(arr_name.get_dimension_size()):
+                    stack.append(expresion[count])
                     expresion.pop(count)
-            i += 1
-
+                    while count >= 0 and count < len(expresion) and len(stack) > 0:
+                        if expresion[count].name == "OSB":
+                            stack.append(expresion[count])
+                        elif expresion[count].name == "CSB":
+                            stack.pop()
+                        expresion.pop(count)
+            i -= 1
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
             print(sol)
@@ -78,6 +80,8 @@ class QuadrupleStack(object):
     def get_last_temporal(self, list, ft):
         r = r"T(\d+)"
         r2 = r"\(T(\d+)\)"
+        flag = False
+
         for q in list:
             temp_obj = q.result_id
             temp = q.result_id.name
@@ -87,15 +91,25 @@ class QuadrupleStack(object):
                     if not ft.lookup_temporal(temp_obj):
                         ft.push_temporal(temp_obj)
                     temp = int(temp[1:])
-                    self.temp_count = temp + 1
+                    if temp >= self.temp_count:
+                        self.temp_count = temp + 1
+                    else:
+                        flag = True
             else:
                 result = re.match(r2, temp)
                 if result:
                     if result.start() == 0 and result.end() == (len(str(temp))):
                         if not ft.lookup_temporal(temp_obj):
                             ft.push_temporal(temp_obj)
-                        temp = int(temp[1:])
-                        self.temp_count = temp + 1
+                        temp = int(temp[2:-1])
+                        if type(q.operand_2) == BaseAddress:
+                            if temp >= self.temp_count:
+                                self.temp_count = temp + 1
+                            else:
+                                flag = True
+
+        if flag:
+            self.temp_count += 1
 
     def array_access(self, symbol, scope, ft):
         # for k,v in symbol.items():
@@ -415,7 +429,7 @@ class QuadrupleStack(object):
         return a
 
     def read_quad(self, vars, scope):
-        if len(vars) > 2:
+        if len(vars) > 1:
             r = vars.pop(0)
             for v in vars:
                 self.push_quad(
@@ -459,6 +473,10 @@ class QuadrupleStack(object):
 
     # Para llenar el quadruplo de go to main
     def go_to_main(self, scope):
+        end = self.jumpStack.pop()
+        self.fill(end, scope)
+
+    def ciclo_cero(self, scope):
         end = self.jumpStack.pop()
         self.fill(end, scope)
 

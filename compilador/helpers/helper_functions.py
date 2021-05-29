@@ -248,7 +248,7 @@ def expresion_to_symbols(exp, ft, s, d=None):
                     Symbol(e, ft.get_function_type(e), s.get_global_table())
                 )
             stack = []
-            count = exp.index("(")
+            count = exp[exp.index(e) :].index("(") + exp.index(e)
             stack.append(exp[count])
             del exp[count]
             while len(stack) > 0 and count < len(exp):
@@ -257,6 +257,7 @@ def expresion_to_symbols(exp, ft, s, d=None):
                 elif exp[count] == ")":
                     stack.pop()
                 exp.pop(count)
+
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e
         ):
