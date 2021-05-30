@@ -1,4 +1,6 @@
 from router_solver import *
+import game_engine.constants
+from game_engine.constants import *
 
 
 class Character(object):
@@ -8,10 +10,11 @@ class Character(object):
         self.width = width
         self.height = height
         self.__speed = speed
+        self.curr_frame = 0
 
-    def move_down(self, display_height, times):
+    def move_down(self, times):
         movement = self.__speed * int(times)
-        if self.y + self.height + movement <= display_height:
+        if self.y + self.height + movement <= Constants.DISPLAY_HEIGHT:
             self.y += movement
 
     def move_up(self, times):
@@ -19,12 +22,16 @@ class Character(object):
         if self.y - movement >= 0:
             self.y -= movement
 
-    def move_right(self, display_width, times):
+    def move_right(self, times):
         movement = self.__speed * int(times)
-        if self.x + self.width + movement <= display_width:
+        if self.x + self.width + movement <= Constants.DISPLAY_WIDTH:
             self.x += movement
 
     def move_left(self, times):
         movement = self.__speed * int(times)
         if self.x - self.__speed >= 0:
             self.x -= movement
+
+    # TODO: Return when hat quadruple is finished
+    def change_hat(self, sprite_name):
+        pass
