@@ -18,28 +18,23 @@ class Character(pygame.sprite.Sprite):
         self.__speed = speed
 
         self.hat = 0
-        self.curr_frame = 0
-        self.__move_count = 0
 
         self.walking_frames = {
-          0: {
-            "R": [],
-            "L": [],
-          },
-
-          1: {
-            "R": [],
-            "L": [],
-          }
+            0: {
+                "R": [],
+                "L": [],
+            },
+            1: {
+                "R": [],
+                "L": [],
+            },
         }
 
-        self.curr_state = "moving"
+        self.moving = False
         self.sprite_direction = "R"
-        self.curr_direction = None
         self.jump_image = 0
         self.image = None
         self.rect = None
-
 
     def construct_animation(self):
         x = 1
@@ -64,50 +59,64 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        if self.curr_state == "moving":
-            self.image = self.walking_frames[self.hat][self.sprite_direction][self.jump_image]
+        if self.moving:
+            self.image = self.walking_frames[self.hat][self.sprite_direction][
+                self.jump_image
+            ]
             if self.jump_image < 13:
                 self.jump_image += 1
             else:
                 self.jump_image = 0
-                self.curr_state = "not_moving"
+                self.moving = False
 
-    def move_down(self, times):
+    def available_position(self, board, x, y):
+        return True
+        # return board[x][y] == None
+
+    def move_down(self, times, board):
         times = int(times)
         movement = self.height * times
+        is_available = self.available_position(board, 0, 0)
         if self.y + self.height + movement <= Constants.DISPLAY_HEIGHT:
             self.y += movement
             self.rect.y = self.y
-            return True
-        return False
+            self.moving = True
 
-    def move_up(self, times):
+        return [self.x, self.y]
+
+    def move_up(self, times, board):
         times = int(times)
         movement = self.height * times
+        is_available = self.available_position(board, 0, 0)
         if self.y - movement >= 0:
             self.y -= movement
             self.rect.y = self.y
-            return True
-        return False
+            self.moving = True
 
-    def move_right(self, times):
+        return [self.x, self.y]
+
+    def move_right(self, times, board):
         times = int(times)
         movement = self.width * times
-        if self.x + self.width + movement <= Constants.DISPLAY_WIDTH:
+        is_available = self.available_position(board, 0, 0)
+        if self.x + self.width + movement <= Constants.DISPLAY_WIDTH and is_available:
             self.x += movement
             self.rect.x = self.x
-            return True
-        return False
+            self.moving = True
 
-    def move_left(self, times):
+        return [self.x, self.y]
+
+    def move_left(self, times, board):
         times = int(times)
         movement = self.width * times
-        if self.x - self.width - movement >= 0:
+        is_available = self.available_position(board, 0, 0)
+        if self.x - self.width - movement >= 0 and is_available:
             self.x -= movement
             self.rect.x = self.x
-            return True
-        return False
+            self.moving = True
 
-    # TODO: Return when hat quadruple is finished
+        return [self.x, self.y]
+
     def change_hat(self, hat_id):
         self.hat = int(hat_id)
+        return hat in [0, 1]
