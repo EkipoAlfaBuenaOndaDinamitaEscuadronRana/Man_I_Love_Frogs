@@ -1,3 +1,6 @@
+import os
+
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 from router_solver import *
 import pygame
 import game_engine.character

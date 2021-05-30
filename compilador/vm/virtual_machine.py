@@ -120,7 +120,7 @@ class VirtualMachine(object):
     def __not_allocated(self, symbol):
         return symbol and not (
             symbol.segment_direction != None and symbol.global_direction != None
-        )
+        ) and symbol.type != "address"
 
     def quadruple_direction_allocator(self, quad_dir):
         current_scope = ""
@@ -129,7 +129,7 @@ class VirtualMachine(object):
             curr_quad = quad_dir[quad]
             quad_operation = curr_quad.operator.name
 
-            if quad_operation not in ["GOTO", "GOTOF", "ENDFUNC", "GOSUB", "ENDOF"]:
+            if quad_operation not in ["GOTO", "GOTOF", "ENDFUNC", "ENDOF"]:
                 operand_1 = curr_quad.operand_1
                 operand_2 = curr_quad.operand_2
                 result_id = curr_quad.result_id
@@ -146,49 +146,63 @@ class VirtualMachine(object):
     def __resolve_op(self, operation, dir_opnd_1, dir_opnd_2, dir_result):
         val_opnd_1 = self.get_direction_symbol(dir_opnd_1).value
         val_opnd_2 = self.get_direction_symbol(dir_opnd_2).value
+        result = self.get_direction_symbol(dir_result)
+
+        # print("------------dir_opnd_1-------------:", dir_opnd_1)
+        # print("------------dir_opnd_2-------------:", dir_opnd_2)
+        # print("------------operation-------------:", operation)
 
         if operation == "ADD":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 + val_opnd_2
+            result.value = val_opnd_1 + val_opnd_2
         elif operation == "SUB":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 - val_opnd_2
+            result.value = val_opnd_1 - val_opnd_2
         elif operation == "MUL":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 * val_opnd_2
+            result.value = val_opnd_1 * val_opnd_2
         elif operation == "DIV":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 / val_opnd_2
+            result.value = val_opnd_1 / val_opnd_2
         elif operation == "MOD":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 % val_opnd_2
+            result.value = val_opnd_1 % val_opnd_2
         elif operation == "BEQ":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 == val_opnd_2
+            result.value = val_opnd_1 == val_opnd_2
         elif operation == "BNEQ":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 != val_opnd_2
+            result.value = val_opnd_1 != val_opnd_2
         elif operation == "OR":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 or val_opnd_2
+            result.value = val_opnd_1 or val_opnd_2
         elif operation == "AND":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 and val_opnd_2
+            result.value = val_opnd_1 and val_opnd_2
         elif operation == "LT":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 < val_opnd_2
+            result.value = val_opnd_1 < val_opnd_2
         elif operation == "GT":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 > val_opnd_2
+            result.value = val_opnd_1 > val_opnd_2
         elif operation == "LTE":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 <= val_opnd_2
+            result.value = val_opnd_1 <= val_opnd_2
         elif operation == "GTE":
-            self.get_direction_symbol(dir_result).value = val_opnd_1 >= val_opnd_2
+            result.value = val_opnd_1 >= val_opnd_2
+
+        # print("------------result.value-------------:", result.value)
 
     def __resolve_eq(self, assign_op, dir_opnd, dir_result):
-        val_opnd = self.get_direction_symbol(dir_opnd).value
+        val_operand = self.get_direction_symbol(dir_opnd).value
+        result = self.get_direction_symbol(dir_result)
 
         if assign_op == "EQ":
-            self.get_direction_symbol(dir_result).value = val_opnd
+            result.value = val_operand
         elif assign_op == "ADDEQ":
-            self.get_direction_symbol(dir_result).value += val_opnd
+            result.value += val_operand
         elif assign_op == "SUBEQ":
-            self.get_direction_symbol(dir_result).value -= val_opnd
+            result.value -= val_operand
         elif assign_op == "MULEQ":
-            self.get_direction_symbol(dir_result).value *= val_opnd
+            result.value *= val_operand
         elif assign_op == "DIVEQ":
-            self.get_direction_symbol(dir_result).value /= val_opnd
+            result.value /= val_operand
         elif assign_op == "MODEQ":
-            self.get_direction_symbol(dir_result).value %= val_opnd
+            result.value %= val_operand
+
+    def __resolve_param(self, dir_operand, dir_result, saved_params):
+        val_operand = self.get_direction_symbol(dir_operand).value
+        result = self.get_direction_symbol(dir_result)
+        result.value = val_operand
+        saved_params.append(result)
 
     def __resolve_write(self, dir_result):
         print(self.get_direction_symbol(dir_result).value)
@@ -226,9 +240,24 @@ class VirtualMachine(object):
 
         return Instruction(frog, operation, times)
 
+    def __add_params(self, saved_params, func_name):
+        for param in self.func_table.functions[func_name]["p"]:
+            param.value = saved_params.pop(0).value
+
+    def __resolve_return(self, saved_functions, dir_operand):
+        function = saved_functions.pop()
+        val_operand = self.get_direction_symbol(dir_operand).value
+        function.value = val_operand
+        # print("------------------__resolve_return------------------")
+        # function.print_symbol()
+
     def run(self, quad_dir):
+        era = False
         running = True
         instruction = 1
+        saved_params = []
+        saved_positions = []
+        saved_functions = []
         game_instructions = []
 
         while running:
@@ -249,16 +278,27 @@ class VirtualMachine(object):
                     self.__resolve_read(dir_result)
 
                 else:
-                    dir_opnd = curr_quad.operand_1.global_direction
+                    dir_operand = curr_quad.operand_1.global_direction
                     dir_result = curr_quad.result_id.global_direction
 
-                    self.__resolve_eq(operation, dir_opnd, dir_result)
+                    if curr_quad.operand_1.name == "square":
+                        # print("------------------EQ------------------")
+                        # print("operand_1:")
+                        # curr_quad.operand_1.print_symbol()
+                        pass
+
+
+                    self.__resolve_eq(operation, dir_operand, dir_result)
 
             elif operation == "GOTO":
                 instruction = curr_quad.result_id.name
                 continue
 
             elif operation == "GOSUB":
+                function = curr_quad.operand_1
+                self.__add_params(saved_params, function.name)
+                saved_functions.append(function)
+                saved_positions.append(instruction + 1)
                 instruction = curr_quad.result_id.name
                 continue
 
@@ -275,7 +315,20 @@ class VirtualMachine(object):
                 self.__resolve_write(dir_result)
 
             elif operation == "ERA":
-                pass
+                era = True
+
+            elif operation == "PARAM":
+                dir_operand = curr_quad.operand_1.global_direction
+                dir_result = curr_quad.result_id.global_direction
+                self.__resolve_param(dir_operand, dir_result, saved_params)
+
+            elif operation == "ENDFUNC":
+                instruction = saved_positions.pop()
+                continue
+
+            elif operation == "RETURN":
+                dir_operand = curr_quad.operand_1.global_direction
+                self.__resolve_return(saved_functions, dir_operand)
 
             elif type == "obj_method":
                 dir_frog = curr_quad.operand_1.global_direction
