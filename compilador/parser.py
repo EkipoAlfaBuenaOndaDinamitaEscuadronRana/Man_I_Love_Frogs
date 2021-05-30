@@ -62,8 +62,13 @@ def p_global_vartable_distruct(p):
 
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
-    global_func_table.set_function_size_at(current_state.get_curr_state_table())
-    global_func_table.set_function_size_at("Constant Segment")
+    global_func_table.set_function_size_at(
+        "Constant Segment", 
+        global_func_table.generate_function_size_at(
+            "Constant Segment",
+            quad_stack.temp_count 
+        )
+    )
     quad_stack.push_quad(
         Quadruple(
             Symbol("ENDOF", "instruction", current_state.get_curr_state_table()),
@@ -84,7 +89,7 @@ def p_global_vartable_distruct(p):
     #     print("----------------")
 
     # quad_stack.print_quads()
-    # global_func_table.print_FuncTable()
+    global_func_table.print_FuncTable()
 
 
 # TERMINAL Y NO TERMINAL
@@ -138,6 +143,7 @@ def p_gotomain(p):
     gotomain : empty
     """
     p[0] = p[1]
+
     quad_stack.push_quad(
         Quadruple(
             Symbol("GOTO", "instruction", current_state.get_curr_state_table()),
@@ -155,18 +161,33 @@ def p_gotomain(p):
 # Deja que se declaren funciones y variables globales pero no obliga
 def p_bloque_g(p):
     """
-    bloque_g : var_global gotomain func_global
+    bloque_g : var_global global_size gotomain func_global
     """
 
-    p[0] = [p[1], p[2]]
+    p[0] = [p[1], p[2], p[3], p[4]]
 
     # print("p_bloque_g: " + str(p[0]))
 
+def p_global_size(p):
+    """
+    global_size : empty
+    """
 
+    p[0] = p[1]
+    global_func_table.set_function_size_at(
+        current_state.get_global_table(), 
+        global_func_table.generate_function_size_at(
+            current_state.get_global_table(),
+            quad_stack.temp_count 
+        )
+    )
+    quad_stack.reset_temp_count()
 ############################################ DECLARAICÓN DE VARIABLES ############################################
+
+
 def p_var_global(p):
     """
-    var_global : var_dec var var_global
+    var_global : var_dec var var_global 
                | empty
 
     """
@@ -338,7 +359,7 @@ def p_func_init(p):
         else:
             # Inserta a functable global
             # manda tipo, ID y lista de parametros
-            quad_stack.reset_temp_count()
+
             global_func_table.set_function(
                 p[2], p[1], get_parameters(p[4]), None, current_state.get_global_table()
             )
@@ -353,6 +374,9 @@ def p_func_init(p):
                         current_state.get_global_table(),
                     )
                 )
+                global_func_table.set_function_size_at(
+                    current_state.get_global_table(), 
+                    (global_func_table.get_function_size(current_state.get_global_table()) +1))
 
             # crea tabla de variables actual
             global_func_table.set_function_variable_table_at(p[2])
@@ -361,6 +385,7 @@ def p_func_init(p):
             current_state.pop_curr_state()
             # ESTADO: push functable id
             current_state.push_state(State(p[2]))
+            
 
 
 def p_func_distruct(p):
@@ -373,7 +398,6 @@ def p_func_distruct(p):
     # print("p_func_distruct: " + str(p[0]))
 
     # Guarda el tamaño de la funcion
-    global_func_table.set_function_size_at(current_state.get_curr_state_table())
     # Elimina la tabla de var de la funcion actual
 
     # pop del estado actual (la tabla de la funcion que se llamo)
@@ -389,7 +413,18 @@ def p_func_distruct(p):
         ),
         current_state.get_curr_state_table(),
     )
+
+    global_func_table.set_function_size_at(
+        current_state.get_curr_state_table(), 
+        global_func_table.generate_function_size_at(
+            current_state.get_curr_state_table(),
+            quad_stack.temp_count 
+        )
+    )
+    quad_stack.reset_temp_count()
     current_state.pop_curr_state()
+
+
 
 
 # NO TERMINAL
@@ -473,7 +508,6 @@ def p_main_vartable_init(p):
     )
     current_state.push_state(State("main"))
     quad_stack.go_to_main(current_state.get_curr_state_table())
-    quad_stack.reset_temp_count()
     # Estado: MAIN # no se popea hasta que se acabe el programa
 
 
@@ -490,7 +524,14 @@ def p_main_vartable_distruct(p):
     # BORRA MAIN VAR TABLE
     # ESTADO: MAIN
     # ESTADO: pop main
-    global_func_table.set_function_size_at(current_state.get_curr_state_table())
+    global_func_table.set_function_size_at(
+        current_state.get_curr_state_table(), 
+        global_func_table.generate_function_size_at(
+            current_state.get_curr_state_table(),
+            quad_stack.temp_count 
+        )
+    )
+    quad_stack.reset_temp_count()
     current_state.pop_curr_state()
 
 

@@ -1,6 +1,6 @@
 from execute import *
 
-Executer("compilador/tests/test_23.milf").run(
+Executer("compilador/tests/test_22.milf").run(
     print_running=False,
     print_pre_quads=True,
     print_post_quads=False,

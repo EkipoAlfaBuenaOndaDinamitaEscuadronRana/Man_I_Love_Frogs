@@ -32,7 +32,13 @@ class VariableTable(object):
         self.variables[name].set_return_location(loc)
 
     def get_size(self):
-        return len(self.variables)
+        size = 0
+        for k,v in self.variables.items():
+            if v.is_dimensioned():
+                size += v.get_dimension_sizes()
+            else:
+                size += 1
+        return size
 
     def lookup_variable(self, name):
         if name in self.variables:

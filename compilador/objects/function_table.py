@@ -48,8 +48,13 @@ class FunctionTable(object):
             symbol.set_scope(name)
             self.functions[name]["vt"].set_variable(symbol)
 
-    def set_function_size_at(self, name):
-        self.functions[name]["s"] = self.functions[name]["vt"].get_size()
+    def generate_function_size_at(self, name, temps):
+        if temps > 0:
+            temps -= 1
+        return self.functions[name]["vt"].get_size() + temps
+    
+    def set_function_size_at(self, name, size):
+        self.functions[name]["s"] = size
 
     def insert_to_constant_table(self, constant):
         for c in constant:

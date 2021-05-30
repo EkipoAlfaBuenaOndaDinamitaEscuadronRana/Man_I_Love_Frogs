@@ -11,3 +11,5 @@ class BaseAddress(object):
         self.type = type  # INT
         self.scope = scope  # GLOBAL
         self.offset = offset  # 17
+
+
