@@ -5,5 +5,5 @@ Executer("compilador/tests/test_22.milf").run(
     print_pre_quads=True,
     print_post_quads=False,
     print_instructions=False,
-    run_game=False,
+    run_game=True,
 )

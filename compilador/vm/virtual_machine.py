@@ -23,6 +23,8 @@ class VirtualMachine(object):
         )
         self.declared_symbols = []
 
+        # func_table.print_FuncTable()
+
         if func_table:
             local_size_memory = global_size + constant_size
 
@@ -30,10 +32,13 @@ class VirtualMachine(object):
                 local_size, global_size + constant_size
             )
             self.local_functions = len(self.local_segment)
+            self.__func_table_assign_memory()
 
         else:
             self.local_segment = None
             self.local_functions = 0
+
+
 
     def __build_local_segment(
         self,
@@ -56,6 +61,19 @@ class VirtualMachine(object):
             start_direction += local_memory_size
 
         return segments
+
+    def __func_table_assign_memory(self):
+        functions = self.func_table.functions
+        for ft in functions:
+
+            var_tab = functions[ft]["vt"]
+            vars = var_tab.variables
+            var_tab.print_VariableTable()
+
+            for var in vars:
+                vars[var].print_symbol()
+                print("------------------------")
+
 
     def __find_function_segment(self, func_name):
         for func_segment in self.local_segment:
