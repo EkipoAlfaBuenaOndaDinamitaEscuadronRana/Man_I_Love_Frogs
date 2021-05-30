@@ -132,18 +132,3 @@ class Engine:
                 counter = 0
 
             pygame.display.update()
-
-characters = {
-    "Rosita Fresita": Character(
-        1400, 550, Constants.FROG_WIDTH, Constants.FROG_HEIGHT, 50
-    ),
-}
-
-instructions = [
-    Instruction("Rosita Fresita", "JL", 1),
-    Instruction("Rosita Fresita", "JL", 1),
-    Instruction("Rosita Fresita", "JL", 1),
-    Instruction("Rosita Fresita", "JL", 1),
-]
-
-Engine.start(characters, instructions)

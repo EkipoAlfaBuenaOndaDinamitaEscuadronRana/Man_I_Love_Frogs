@@ -1,8 +1,5 @@
-"""
-This module is used to pull individual sprites from sprite sheets.
-"""
+from router_solver import *
 import pygame
-
 import game_engine.constants
 from game_engine.constants import *
 

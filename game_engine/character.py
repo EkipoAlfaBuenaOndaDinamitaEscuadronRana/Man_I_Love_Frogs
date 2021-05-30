@@ -1,7 +1,7 @@
 from router_solver import *
 import game_engine.constants
 from game_engine.constants import *
-from spritesheet import *
+from game_engine.spritesheet import *
 
 
 class Character(pygame.sprite.Sprite):
