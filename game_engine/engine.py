@@ -17,24 +17,29 @@ class Engine:
     __speed = Constants.SPEED
 
     def instruction_movement(instruction, characters):
-        character = characters[instruction.character_name]
-        movement = instruction.movement
-        times = instruction.times
+           character = characters[instruction.character_name]
+           movement = instruction.movement
+           times = instruction.times
 
-        if movement == "JD":
-            character.move_down(times)
+           if movement == "JD":
+               response = character.move_down(times)
 
-        elif movement == "JU":
-            character.move_up(times)
+           elif movement == "JU":
+               response = character.move_up(times)
 
-        elif movement == "JR":
-            character.move_right(times)
+           elif movement == "JR":
+               response = character.move_right(times)
 
-        elif movement == "JL":
-            character.move_left(times)
+           elif movement == "JL":
+               response = character.move_left(times)
 
-        elif movement == "HAT":
-            character.change_hat(times)
+           elif movement == "HAT":
+               response = character.change_hat(times)
+
+           if response and movement != "HAT":
+               return character
+
+           return None
 
     def print_board(board):
         for row in board:
@@ -111,31 +116,31 @@ class Engine:
             display.fill(Constants.BLUE)
             active_sprite_list.draw(display)
 
-            # for character in characters.values():
-            #     pygame.draw.rect(
-            #         display,
-            #         Constants.WHITE,
-            #         (character.x, character.y, character.width, character.height),
-            #     )
-
             if len(instructions):
                 Engine.instruction_movement(instructions.pop(0), characters)
 
             pygame.display.update()
 
 characters = {
-    "Rosita Fresita": Character(0, 0, Constants.FROG_WIDTH, Constants.FROG_HEIGHT, 50),
-    "Dino Adrian": Character(0, 100, Constants.FROG_WIDTH, Constants.FROG_HEIGHT, 50),
+    "Rosita Fresita": Character(1400, 550, Constants.FROG_WIDTH, Constants.FROG_HEIGHT, 50),
+    # "Dino Adrian": Character(0, 100, Constants.FROG_WIDTH, Constants.FROG_HEIGHT, 50),
 }
 
 instructions = [
-    Instruction("Rosita Fresita", "JR", 29),
-    Instruction("Rosita Fresita", "JD", 17),
-    # Instruction("Rosita Fresita", "JR", 1),
+    # Instruction("Rosita Fresita", "JR", 29),
+    # Instruction("Rosita Fresita", "JD", 17),
+    Instruction("Rosita Fresita", "JL", 1),
+    Instruction("Rosita Fresita", "JL", 1),
+    Instruction("Rosita Fresita", "JL", 1),
+    Instruction("Rosita Fresita", "JL", 1),
     # Instruction("Rosita Fresita", "JR", 2),
     # Instruction("Rosita Fresita", "JR", 3),
-    Instruction("Dino Adrian", "JD", 1),
+    # Instruction("Dino Adrian", "JD", 1),
     # Instruction("Dino Adrian", "JD", 2),
+    # Instruction("Dino Adrian", "JD", 1),
+    # Instruction("Dino Adrian", "JD", 1),
+    # Instruction("Dino Adrian", "JD", 1),
+    # Instruction("Dino Adrian", "JD", 1),
     # Instruction("Dino Adrian", "JD", 1),
 ]
 
