@@ -118,10 +118,18 @@ def p_global_vartable(p):
     # GLOBAL VAR TABLE INIT
     # ESTADO: global var table
     current_state.push_state(State("Global Segment"))
-    global_func_table.set_function("Constant Segment", "void", [], VariableTable())
+    global_func_table.set_function(
+        "Constant Segment",
+        "void",
+        [],
+        VariableTable(),
+        current_state.get_global_table(),
+    )
+    global_func_table.set_function(
+        "Global Segment", "void", [], VariableTable(), current_state.get_global_table()
+    )
     # LLAMAR FUNCION PARA METER TABLA GLOBAL A FUNCTION TABLE
     # CREA VAR TABLE
-    global_func_table.set_function("Global Segment", "void", [], VariableTable())
     # Limpea la quad_stack
 
 
@@ -194,7 +202,6 @@ def p_var(p):
     var : tipo_var var1
     """
     p[0] = [p[1], p[2]]
-
     # print("p_var: " + str(p[0]))
     # INSERTA VARIABLES
     # ESTADO: current variable table -> no sabemos cual porque no sabemos
@@ -207,7 +214,6 @@ def p_var(p):
     # print("VARS START")
     # print(str(symbol.get_name()) + " " + str(symbol.get_type()) + " " + str(curr_vars[symbol]))
     # print("VARS END")
-
     if current_state.get_curr_state_opt() == "noVar":
         print("ERROR: Can't declare variable(s) in this scope")
         sys.exit()
@@ -333,7 +339,9 @@ def p_func_init(p):
             # Inserta a functable global
             # manda tipo, ID y lista de parametros
             quad_stack.reset_temp_count()
-            global_func_table.set_function(p[2], p[1], get_parameters(p[4]), None)
+            global_func_table.set_function(
+                p[2], p[1], get_parameters(p[4]), None, current_state.get_global_table()
+            )
             # Inserta a tabla global variable de funcion
             if global_func_table.get_function_type(p[2]) != "VOID":
                 global_func_table.get_function_variable_table(
@@ -460,7 +468,9 @@ def p_main_vartable_init(p):
     # CREA MAIN VAR TABLE
     # ESTADO: MAIN
     # LLAMAR FUNCION PARA METER TABLA de main A  GLOBAL FUNCTION TABLE y crea su VAR TABLE
-    global_func_table.set_function("main", "void", [], VariableTable())
+    global_func_table.set_function(
+        "main", "void", [], VariableTable(), current_state.get_global_table()
+    )
     current_state.push_state(State("main"))
     quad_stack.go_to_main(current_state.get_curr_state_table())
     quad_stack.reset_temp_count()
@@ -978,11 +988,7 @@ def p_llamada(p):
         quad_stack.push_quad(
             Quadruple(
                 Symbol("GOSUB", "instruction", current_state.get_curr_state_table()),
-                Symbol(
-                    p[1],
-                    global_func_table.get_function_type(p[1]),
-                    current_state.get_curr_state_table(),
-                ),
+                global_func_table.get_function_symbol(p[1]),
                 None,
                 quad_stack.get_function_location(current_state.get_curr_state_opt()),
             ),
@@ -1303,11 +1309,7 @@ def p_id_func(p):
             quad_stack.push_quad(
                 Quadruple(
                     Symbol("ERA", "instruction", current_state.get_curr_state_table()),
-                    Symbol(
-                        p[1],
-                        global_func_table.get_function_type(p[1]),
-                        current_state.get_curr_state_table(),
-                    ),
+                    global_func_table.get_function_symbol(p[1]),
                     None,
                     None,
                 ),
