@@ -18,3 +18,11 @@ class Constants:
     FROG_WIDTH = 50
     FROG_HEIGHT = 50
     FROG_SPEED = 50
+
+    # Frog Sprite dimensions
+    FROG_SPRITE_WIDTH = 700
+    FROG_SPRITE_HEIGHT = 100
+
+    # Original size
+    # FROG_SPRITE_WIDTH = 5460
+    # FROG_SPRITE_HEIGHT = 780
