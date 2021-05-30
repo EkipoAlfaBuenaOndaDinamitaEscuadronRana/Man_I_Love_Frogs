@@ -23,6 +23,7 @@ class QuadrupleStack(object):
         self.param_count = 0
         self.temp_count = 1
         self.array_stack = []
+        self.wait_to_call = []
 
     # para borrar el contendio cuando se empieza a leer un programa
     def reset_quad(self):
@@ -232,7 +233,7 @@ class QuadrupleStack(object):
                 temp = Symbol(str("T" + str(self.temp_count)), "INT", array_id.scope)
                 ft.push_temporal(temp)
                 self.push_quad(
-                    Quadruple(Symbol("+", "operation", scope), aux_1, aux_2, temp),
+                    Quadruple(Symbol("ADD", "operation", scope), aux_1, aux_2, temp),
                     scope,
                 )
                 self.temp_count += 1
@@ -251,7 +252,7 @@ class QuadrupleStack(object):
 
         self.push_quad(
             Quadruple(
-                Symbol("+", "operation", scope),
+                Symbol("ADD", "operation", scope),
                 aux_1,
                 Symbol(
                     int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),
@@ -271,7 +272,7 @@ class QuadrupleStack(object):
         ft.push_temporal(temp)
         self.push_quad(
             Quadruple(
-                Symbol("+", "operation", scope),
+                Symbol("ADD", "operation", scope),
                 aux_1,
                 BaseAddress(
                     str(str(array_id.name) + "-BA"),
@@ -478,9 +479,16 @@ class QuadrupleStack(object):
         end = self.jumpStack.pop()
         self.fill(end, scope)
 
-    def ciclo_cero(self, scope):
-        end = self.jumpStack.pop()
-        self.fill(end, scope)
+    def ciclo_cero(self, scope, ft):
+        if len(self.wait_to_call) > 0:
+            self.push_list(
+                self.solve_expression(
+                    self.wait_to_call.pop(),
+                    ft,
+                ),
+                scope,
+                ft,
+            )
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while
@@ -507,6 +515,7 @@ class QuadrupleStack(object):
 
     def ciclo_3(self, scope):
         # Le avisa al inicio a donde ir si se acaba y al final a donde ir si sigue
+
         end = self.jumpStack.pop()
         ret = self.jumpStack.pop()
         self.push_quad(
