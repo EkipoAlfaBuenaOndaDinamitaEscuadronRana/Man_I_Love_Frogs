@@ -70,17 +70,9 @@ class Executer(object):
             self.__print_instructions(instructions)
 
         if kwargs.get("run_game") and len(instructions):
-<<<<<<< HEAD
-            characters = {
-                "pepe": Character(0, 0, 30, 30, 50),
-            }
-
-            Engine.start(characters, instructions)
-=======
             if kwargs.get("run_game") == 1:
                 self.__load_level_one(instructions)
             elif kwargs.get("run_game") == 2:
                 self.__load_level_two(instructions)
->>>>>>> game/levels
 
         return instructions
