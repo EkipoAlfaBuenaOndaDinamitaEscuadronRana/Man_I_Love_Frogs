@@ -121,8 +121,8 @@ class Engine:
 
     """
     characters = {
-        "Rosita Fresita": Character(0, 0, 30, 30, 50),
-        "Dino Adrian": Character(0, 50, 30, 30, 50),
+        "Rosita Fresita": Character(0, 0, 50, 50, 50),
+        "Dino Adrian": Character(0, 50, 50, 50, 50),
     }
 
     instructions = [
@@ -160,19 +160,22 @@ class Engine:
 
             pygame.display.update()
 
+
 characters = {
-    "Rosita Fresita": Character(0, 0, 30, 30, 50),
-    # "Dino Adrian": Character(0, 50, 30, 30, 50),
+    "Rosita Fresita": Character(0, 0, 50, 50, 50),
+    "Dino Adrian": Character(0, 50, 50, 50, 50),
 }
 
 instructions = [
+    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 1),
     Instruction("Rosita Fresita", "JR", 2),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 3),
+    # Instruction("Rosita Fresita", "JR", 2),
+    # Instruction("Rosita Fresita", "JR", 2),
+    # Instruction("Rosita Fresita", "JR", 1),
+    # Instruction("Rosita Fresita", "JR", 1),
+    # Instruction("Rosita Fresita", "JR", 3),
     # Instruction("Rosita Fresita", "JD", 21),
     # Instruction("Rosita Fresita", "JD", 1),
     # Instruction("Rosita Fresita", "JD", 1),

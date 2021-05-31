@@ -14,7 +14,6 @@ class Constants:
     ROCK_IMAGE = "game_engine/sprites/rock_resized.png"
     FLY_IMAGE = "game_engine/sprites/fly_resized.png"
 
-
     # Objects dimensions
     FROG_WIDTH = 50
     FROG_HEIGHT = 50

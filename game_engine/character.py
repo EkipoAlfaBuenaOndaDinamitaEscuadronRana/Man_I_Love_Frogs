@@ -94,7 +94,6 @@ class Character(pygame.sprite.Sprite):
         y = self.y // Constants.FROG_HEIGHT
         return [x, y]
 
-
     def move_down(self, times, board):
         times = int(times)
         movement = self.height * times

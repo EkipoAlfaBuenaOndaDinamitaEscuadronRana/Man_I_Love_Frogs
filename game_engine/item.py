@@ -3,6 +3,7 @@ import game_engine.constants
 from game_engine.constants import *
 from game_engine.spritesheet import *
 
+
 class Item(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, type):
         super().__init__()
@@ -22,7 +23,9 @@ class Item(pygame.sprite.Sprite):
         elif type == "Fly":
             sprite_sheet = SpriteSheet(Constants.FLY_IMAGE)
 
-        self.image = sprite_sheet.get_image(1, 1, Constants.ITEM_WIDTH, Constants.ITEM_HEIGHT)
+        self.image = sprite_sheet.get_image(
+            1, 1, Constants.ITEM_WIDTH, Constants.ITEM_HEIGHT
+        )
         self.rect = self.image.get_rect()
 
         def update(self):
