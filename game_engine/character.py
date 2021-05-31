@@ -121,9 +121,11 @@ class Character(pygame.sprite.Sprite):
         new_x = self.x + movement
         is_available = self.available_position(board, new_x, self.y)
         if self.x + self.width + movement <= Constants.DISPLAY_WIDTH and is_available:
+            self.sprite_direction = "R"
             self.x += movement
             self.rect.x = self.x
             self.moving = True
+
 
         return self.fix_return_board_position()
 
@@ -133,6 +135,7 @@ class Character(pygame.sprite.Sprite):
         new_x = self.x - movement
         is_available = self.available_position(board, new_x, self.y)
         if self.x - self.width - movement >= 0 and is_available:
+            self.sprite_direction = "L"
             self.x -= movement
             self.rect.x = self.x
             self.moving = True
