@@ -29,6 +29,21 @@ class Executer(object):
         print("Running: {}".format(self.running_file))
         print("-------------------------------------")
 
+    def __load_level_one(self, instructions):
+        characters = {
+            "pepe": Character(0, 0, 50, 50, 50),
+        }
+
+        Engine.start(characters, instructions, "one")
+
+    def __load_level_two(self, instructions):
+        characters = {
+            "dinoAdrian": Character(0, 400, 50, 50, 50),
+            "rositaFresita": Character(0, 300, 50, 50, 50),
+        }
+
+        Engine.start(characters, instructions, "two")
+
     def run(self, **kwargs):
         if kwargs.get("print_quads"):
             self.__print_quads()
@@ -45,10 +60,9 @@ class Executer(object):
             self.__print_instructions(instructions)
 
         if kwargs.get("run_game") and len(instructions):
-            characters = {
-                "pepe": Character(0, 0, 50, 50, 50),
-            }
-
-            Engine.start(characters, instructions, "one")
+            if kwargs.get("run_game") == 1:
+                self.__load_level_one(instructions)
+            elif kwargs.get("run_game") == 2:
+                self.__load_level_two(instructions)
 
         return instructions

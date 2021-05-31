@@ -86,6 +86,9 @@ class Engine:
         if played_level == "one":
             return Levels.LEVEL_ONE
 
+        elif played_level == "two":
+            return Levels.LEVEL_TWO
+
     def build_characters_and_items(characters, items):
         active_sprite_list = pygame.sprite.Group()
         for item in items:
@@ -202,3 +205,15 @@ class Engine:
                 display.blit(ponganos_cien, ponganos_cien_rect)
 
             pygame.display.update()
+
+# characters = {
+#     "Rosita Fresita": Character(0, 300, 50, 50, 50),
+#     "Dino Adrian": Character(0, 400, 50, 50, 50),
+# }
+
+instructions = [
+    # Instruction("Rosita Fresita", "JR", 1),
+    # Instruction("Dino Adrian", "JD", 1),
+]
+
+# Engine.start(characters, instructions, "two")
