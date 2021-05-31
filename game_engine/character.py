@@ -84,10 +84,15 @@ class Character(pygame.sprite.Sprite):
             return False
 
         elif position.type == "Fly":
-            position.eated = True
+            position.eaten = True
             return True
 
         return False
+
+    def fix_return_board_position(self):
+        x = self.x // Constants.FROG_WIDTH
+        y = self.y // Constants.FROG_HEIGHT
+        return [x, y]
 
 
     def move_down(self, times, board):
@@ -101,7 +106,7 @@ class Character(pygame.sprite.Sprite):
             self.rect.y = self.y
             self.moving = True
 
-        return [self.x, self.y]
+        return self.fix_return_board_position()
 
     def move_up(self, times, board):
         times = int(times)
@@ -113,7 +118,7 @@ class Character(pygame.sprite.Sprite):
             self.rect.y = self.y
             self.moving = True
 
-        return [self.x, self.y]
+        return self.fix_return_board_position()
 
     def move_right(self, times, board):
         times = int(times)
@@ -126,7 +131,7 @@ class Character(pygame.sprite.Sprite):
             self.rect.x = self.x
             self.moving = True
 
-        return [self.x, self.y]
+        return self.fix_return_board_position()
 
     def move_left(self, times, board):
         times = int(times)
@@ -138,7 +143,7 @@ class Character(pygame.sprite.Sprite):
             self.rect.x = self.x
             self.moving = True
 
-        return [self.x, self.y]
+        return self.fix_return_board_position()
 
     def change_hat(self, hat_id):
         self.hat = int(hat_id)

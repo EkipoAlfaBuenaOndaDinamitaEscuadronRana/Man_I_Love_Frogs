@@ -41,15 +41,18 @@ class Engine:
         else:
             return
 
-        # update_board(board, character, x, y)
+        Engine.update_board(board, character, x, y)
 
     def update_board(board, character, x, y):
         for row in board:
             for space in row:
                 if space == character:
                     space = None
+                elif type(space) == Item:
+                    if space.eaten:
+                        space = None
 
-        board[x][y] = character
+        board[y][x] = character
 
     def print_board(board):
         for row in board:
