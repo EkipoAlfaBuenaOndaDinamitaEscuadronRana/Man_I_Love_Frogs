@@ -84,6 +84,7 @@ class Symbol(object):
         return_location=[],
         dimension_sizes=[],
         address=[],
+        address_flag = False
     ):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None
@@ -96,6 +97,7 @@ class Symbol(object):
         self.segment_direction = None
         self.global_direction = None
         self.value = None
+        self.address_flag = address_flag
 
     def __eq__(self, other):
         if type(self) is Symbol and type(other) is Symbol:
@@ -220,7 +222,10 @@ class Symbol(object):
         if self.name in ["arr", "mat"]:
             print("dimension_sizes", self.dimension_sizes)
 
-        if len(self.dimension_sizes):
+        if type(self.dimension_sizes) == int:
+            print("DIMENSIONS:", self.dimensions)
+            print("DIMENSION_SIZES:", self.dimension_sizes)
+        elif len(self.dimension_sizes):
             print("DIMENSIONS:", self.dimensions)
             print("DIMENSION_SIZES:", self.dimension_sizes)
 

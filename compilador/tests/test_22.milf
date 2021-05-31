@@ -1,7 +1,7 @@
 program ejemplo;
 int i,j,p,k;
 int Arreglo[10];
-float valor;
+int valor = 2;
 int Matriz[3][8];
 
 func int fact(int j){
@@ -27,12 +27,33 @@ func void inicia(int y){
     read(p);
     j = p * 2;
     inicia(p * j - 5);
+
     for(i = 0; i < 9; i += 1){
-        Arreglo[p] = Arreglo[i] * fact(Arreglo[i] - p);
+        Arreglo[i] = i;
+    }
+    
+    for(j = 0; j < 2; j += 1){
+        for(k = 0; k < 7; k += 1){
+            Matriz[j][k] = k + j;
+        }
+    }
+    write("A");
+    for(i = 0; i < 9; i += 1){
+        write(Arreglo[i]);
+    }
+    write("B");
+    for(j = 0; j < 2; j += 1){
+        for(k = 0; k < 7; k += 1){
+            write(Matriz[j][k]);
+        }
+    }
+
+    for(i = 0; i < 9; i += 1){
+        Arreglo[i] = Arreglo[i] * fact(Arreglo[i] - p);
     }
     for(j = 0; j < 2; j += 1){
         for(k = 0; k < 7; k += 1){
-            Matriz[j][k] = Arreglo[j + k - fact(p) + p * k] * p + j;
+            Matriz[j][k] = Arreglo[p + k - fact(p) + p * k] * p + j;
         }
 
     }
@@ -40,7 +61,10 @@ func void inicia(int y){
     while( i >= 0){
         write("Resultado");
         write(Arreglo[i]);
-        write(fact(i +2) * valor);
+        write(valor);
+        write(fact(i + 2));
+
+        write(fact(i + 2) * 3);
         i -= 1;
     }
 }

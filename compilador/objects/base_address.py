@@ -5,8 +5,9 @@ import numpy as np
 
 
 class BaseAddress(object):
-    def __init__(self, name=None, parent=None, type=None, scope=None, offset=None):
+    def __init__(self, name=None, symbol=None, parent=None, type=None, scope=None, offset=None):
         self.name = name  # A-BA
+        self.symbol = symbol
         self.parent = parent  # A
         self.type = type  # INT
         self.scope = scope  # GLOBAL

@@ -147,6 +147,14 @@ def get_symbol_formatted(s):
                 row.append("-")
                 row.append(v.scope)
                 row.append(v.offset)
+            elif type(v) == str or type(v) == int:
+                row.append(v)
+                row.append("-")
+                row.append("-")
+                row.append("-")
+                row.append("-")
+                row.append("-")
+                row.append("-")
             else:
                 row.append(v.name)
                 row.append(v.type)

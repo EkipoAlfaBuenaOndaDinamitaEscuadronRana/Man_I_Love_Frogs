@@ -89,8 +89,8 @@ def p_global_vartable_distruct(p):
     #     print("----------------")
 
     # quad_stack.print_quads()
-    global_func_table.print_FuncTable()
-
+    # global_func_table.print_FuncTable()
+####### PRINT TODO #############
 
 # TERMINAL Y NO TERMINAL
 # Titutla el programa y permite pero no obliga a continuarlo
@@ -706,6 +706,7 @@ def p_return(p):
                     current_state.get_curr_state_table()
                 ),
                 current_state.get_curr_state_table(),
+                
             )
 
     else:
@@ -724,6 +725,7 @@ def p_return(p):
                 ),
                 current_state.get_curr_state_table(),
                 expresion_to_symbols(p[2], global_func_table, current_state),
+                global_func_table
             )
 
     # if current_state.get_curr_state_table().
@@ -742,12 +744,11 @@ def p_escritura(p):
     p[0] = [p[1], p[2], p[3], p[4]]
 
     quad_stack.push_quad(
-        quad_stack.write_quad(
-            expresion_to_symbols(p[3], global_func_table, current_state),
-            current_state.get_curr_state_table(),
-        ),
-        current_state.get_curr_state_table(),
-    )
+            modify_quad_object(
+                quad_stack.write_quad(
+                    expresion_to_symbols(p[3], global_func_table, current_state),
+                    current_state.get_curr_state_table()), global_func_table),
+            current_state.get_curr_state_table())
 
 
 # TERMINAL
@@ -1100,16 +1101,16 @@ def p_parametro(p):
                 current_state.get_curr_state_table(),
                 global_func_table,
             )
-            quad_stack.push_quad(
+            quad_stack.push_quad(modify_quad_object(
                 quad_stack.validate_parameters(
                     global_func_table.get_function_parameters(
                         current_state.get_curr_state_opt()
                     ),
                     parameter_expresion,
                     current_state.get_curr_state_table(),
-                ),
-                current_state.get_curr_state_table(),
-            )
+                ), global_func_table),
+                current_state.get_curr_state_table())
+
     else:
         print("ERROR: Error trying to validate parameters")
         sys.exit()
@@ -1473,7 +1474,10 @@ def p_dimension(p):
 
     if current_state.get_curr_state_opt() == "dim" and len(p) > 2:
         current_state.pop_curr_state()
-
+    elif len(p) == 2:
+        global_func_table.insert_to_constant_table(
+        expresion_to_symbols(p[1], global_func_table, current_state)
+    )
 
 def p_dim_val(p):
     """
@@ -1550,7 +1554,7 @@ def p_llamada_obj(p):
 
         quad_stack.object_method_quad(
             expresion_to_symbols([p[1], p[3], p[5]], global_func_table, current_state),
-            current_state.get_curr_state_table(),
+            current_state.get_curr_state_table(), global_func_table
         )
 
 

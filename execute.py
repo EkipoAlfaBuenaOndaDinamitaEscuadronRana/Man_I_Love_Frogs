@@ -42,7 +42,7 @@ class Executer(object):
             self.__print_quads(True)
 
         vm = VirtualMachine(3000, 1000, 6000, self.function_table)
-        vm.quadruple_direction_allocator(self.quads)
+        #vm.quadruple_direction_allocator(self.quads)
 
         if kwargs.get("print_post_quads"):
             self.__print_quads(False)

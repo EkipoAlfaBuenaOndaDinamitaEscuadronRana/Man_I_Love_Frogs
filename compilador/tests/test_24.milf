@@ -1,9 +1,21 @@
 program test;
+int A[10];
+int B[5][5];
 
-func int square(int a, int b){
-    return a * a;
+func int patito(int a, int b){
+    int c = a + b;
+    if (a > b){
+        return c + 1;
+    } else{
+        return b;
+    }
 }
 
 {
-    int b = square(2, 3);
+    int a = 0;
+    int b =  3;
+    int c = 20;
+    int d = patito(c , b);
+
+    write(d);
 }
