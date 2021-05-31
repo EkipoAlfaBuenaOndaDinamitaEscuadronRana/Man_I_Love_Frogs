@@ -1,4 +1,3 @@
-from typing import Type
 from router_solver import *
 import compilador.vm.memory_segment
 from compilador.vm.memory_segment import *
