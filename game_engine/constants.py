@@ -7,7 +7,7 @@ class Constants:
     # Screen dimensions
     DISPLAY_WIDTH = 1500
     DISPLAY_HEIGHT = 900
-    SPEED = 14
+    SPEED = 40
 
     # Images
     FROG_IMAGE = "game_engine/sprites/ranita_resized.png"

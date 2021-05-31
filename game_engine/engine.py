@@ -108,8 +108,8 @@ class Engine:
         return active_sprite_list
 
     def init_game(characters, items):
-        cols = Constants.DISPLAY_WIDTH // Constants.FROG_WIDTH - 1
-        rows = Constants.DISPLAY_HEIGHT // Constants.FROG_HEIGHT - 1
+        cols = Constants.DISPLAY_WIDTH // Constants.FROG_WIDTH
+        rows = Constants.DISPLAY_HEIGHT // Constants.FROG_HEIGHT
 
         board = [[None for x in range(cols)] for i in range(rows)]
 
@@ -210,7 +210,9 @@ instructions = [
     Instruction("Rosita Fresita", "JR", 2),
     Instruction("Rosita Fresita", "JR", 1),
     Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 2),
+    Instruction("Rosita Fresita", "JD", 8),
+    Instruction("Rosita Fresita", "JD", 2),
 ]
 
 Engine.start(characters, instructions, "one")
