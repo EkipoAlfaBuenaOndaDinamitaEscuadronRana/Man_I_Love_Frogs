@@ -17,6 +17,7 @@ class Engine:
     __display_width = Constants.DISPLAY_WIDTH
     __display_height = Constants.DISPLAY_HEIGHT
     __speed = Constants.SPEED
+    __flys = 0
 
     def instruction_movement(instruction, characters, board):
         character = characters[instruction.character_name]
@@ -51,7 +52,8 @@ class Engine:
                     board[i][j] = None
                 elif type(space) == Item:
                     if space.eaten:
-                        space = None
+                        board[i][j] = None
+                        Engine.__flys -= 1
 
         board[y][x] = character
         Engine.print_board(board)
@@ -74,6 +76,7 @@ class Engine:
     def build_items():
         return [
             Item(150, 0, 50, 50, "Rock"),
+            Item(150, 500, 50, 50, "Fly"),
         ]
 
     def build_characters_and_items(characters, items):
@@ -82,6 +85,9 @@ class Engine:
             item.rect.x = item.x
             item.rect.y = item.y
             active_sprite_list.add(item)
+
+            if item.type == "Fly":
+                Engine.__flys += 1
 
         for c in characters:
             character = characters[c]
@@ -160,6 +166,9 @@ class Engine:
                 Engine.instruction_movement(instructions.pop(0), characters, board)
                 counter = 0
 
+            if Engine.__flys == 0:
+                print("GANAMOS")
+
             pygame.display.update()
 
 
@@ -170,10 +179,16 @@ characters = {
 
 instructions = [
     Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 3),
+    Instruction("Rosita Fresita", "JD", 10),
     Instruction("Rosita Fresita", "JL", 1),
-    Instruction("Rosita Fresita", "JL", 1),
-    Instruction("Rosita Fresita", "JL", 1),
+    # Instruction("Rosita Fresita", "JU", 1),
+    # Instruction("Rosita Fresita", "JU", 1),
+    # Instruction("Rosita Fresita", "JU", 1),
+    # Instruction("Rosita Fresita", "JL", 1),
+    # Instruction("Rosita Fresita", "JL", 1),
+    # Instruction("Rosita Fresita", "JL", 1),
+    # Instruction("Rosita Fresita", "JL", 1),
     # Instruction("Rosita Fresita", "JR", 2),
     # Instruction("Rosita Fresita", "JR", 2),
     # Instruction("Rosita Fresita", "JR", 1),
