@@ -10,12 +10,12 @@ class Character(pygame.sprite.Sprite):
         self.x = x
         self.y = y
 
-        self.board_x = None
-        self.board_y = None
-
         self.width = width
         self.height = height
         self.__speed = speed
+
+        self.board_x = None
+        self.board_y = None
 
         self.hat = 0
 

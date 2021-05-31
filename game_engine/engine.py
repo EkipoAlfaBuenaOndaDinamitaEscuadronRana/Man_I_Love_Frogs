@@ -9,6 +9,8 @@ import game_engine.instruction
 from game_engine.instruction import *
 import game_engine.constants
 from game_engine.constants import *
+import game_engine.item
+from game_engine.item import *
 
 
 class Engine:
@@ -52,14 +54,25 @@ class Engine:
     def print_board(board):
         for row in board:
             for space in row:
-                if space == None:
-                    print(space, end=" ")
+                if type(space) == Character:
+                    print("F", end=" ")
+                elif type(space) == Item:
+                    if space.type == "Rock":
+                        print("R", end=" ")
+                    else:
+                        print("B", end=" ")
                 else:
-                    print("Frog", end=" ")
+                    print("-", end=" ")
             print()
         print()
 
-    def build_characters(characters):
+    def build_items():
+        return [
+            Item(400, 500, 50, 50, "Rock"),
+            Item(500, 400, 50, 50, "Rock"),
+        ]
+
+    def build_characters_and_items(characters, items):
         active_sprite_list = pygame.sprite.Group()
         for c in characters:
             character = characters[c]
@@ -68,9 +81,14 @@ class Engine:
             character.rect.y = character.y
             active_sprite_list.add(character)
 
+        for item in items:
+            item.rect.x = item.x
+            item.rect.y = item.y
+            active_sprite_list.add(item)
+
         return active_sprite_list
 
-    def init_game(characters):
+    def init_game(characters, items):
         cols = Constants.DISPLAY_WIDTH // Constants.FROG_WIDTH - 1
         rows = Constants.DISPLAY_HEIGHT // Constants.FROG_HEIGHT - 1
 
@@ -86,6 +104,11 @@ class Engine:
             character.board_y = char_y
 
             board[char_y][char_x] = character
+
+        for item in items:
+            item_x = item.board_x
+            item_y = item.board_y
+            board[item_x][item_y] = item
 
         return board
 
@@ -115,8 +138,10 @@ class Engine:
         )
         pygame.display.set_caption("Man I Love Frogs")
 
-        active_sprite_list = Engine.build_characters(characters)
-        board = Engine.init_game(characters)
+        items = Engine.build_items()
+        active_sprite_list = Engine.build_characters_and_items(characters, items)
+        board = Engine.init_game(characters, items)
+        Engine.print_board(board)
         counter = 0
 
         while True:
@@ -132,3 +157,18 @@ class Engine:
                 counter = 0
 
             pygame.display.update()
+
+characters = {
+    "Rosita Fresita": Character(0, 0, 30, 30, 50),
+    # "Dino Adrian": Character(0, 50, 30, 30, 50),
+}
+
+instructions = [
+    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 1),
+    # Instruction("Dino Adrian", "JD", 1),
+]
+
+
+Engine.start(characters, instructions)
