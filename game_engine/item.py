@@ -12,6 +12,7 @@ class Item(pygame.sprite.Sprite):
         self.type = type
         self.width = width
         self.height = height
+        self.eated = False
 
         self.board_x = self.x // Constants.ITEM_WIDTH
         self.board_y = self.y // Constants.ITEM_HEIGHT

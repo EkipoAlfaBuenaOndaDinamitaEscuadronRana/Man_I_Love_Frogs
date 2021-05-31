@@ -70,13 +70,32 @@ class Character(pygame.sprite.Sprite):
                 self.moving = False
 
     def available_position(self, board, x, y):
-        return True
-        # return board[x][y] == None
+        fixed_x = x // Constants.FROG_WIDTH
+        fixed_y = y // Constants.FROG_HEIGHT
+        position = board[fixed_y][fixed_x]
+
+        print(fixed_x, ",", fixed_y)
+        print(position)
+
+        if position == None:
+            return True
+
+        elif type(position) == Character:
+            return False
+
+        elif position.type == "Fly":
+            position.eated = True
+            return True
+
+        return False
+
 
     def move_down(self, times, board):
         times = int(times)
         movement = self.height * times
-        is_available = self.available_position(board, 0, 0)
+        new_y = self.y + movement
+        is_available = self.available_position(board, self.x, new_y)
+        print(is_available)
         if self.y + self.height + movement <= Constants.DISPLAY_HEIGHT:
             self.y += movement
             self.rect.y = self.y
@@ -87,8 +106,9 @@ class Character(pygame.sprite.Sprite):
     def move_up(self, times, board):
         times = int(times)
         movement = self.height * times
-        is_available = self.available_position(board, 0, 0)
-        if self.y - movement >= 0:
+        new_y = self.y - movement
+        is_available = self.available_position(board, self.x, new_y)
+        if self.y - movement >= 0 and is_available:
             self.y -= movement
             self.rect.y = self.y
             self.moving = True
@@ -98,7 +118,9 @@ class Character(pygame.sprite.Sprite):
     def move_right(self, times, board):
         times = int(times)
         movement = self.width * times
-        is_available = self.available_position(board, 0, 0)
+        new_x = self.x + movement
+        is_available = self.available_position(board, new_x, self.y)
+        print(is_available)
         if self.x + self.width + movement <= Constants.DISPLAY_WIDTH and is_available:
             self.x += movement
             self.rect.x = self.x
@@ -109,7 +131,8 @@ class Character(pygame.sprite.Sprite):
     def move_left(self, times, board):
         times = int(times)
         movement = self.width * times
-        is_available = self.available_position(board, 0, 0)
+        new_x = self.x - movement
+        is_available = self.available_position(board, new_x, self.y)
         if self.x - self.width - movement >= 0 and is_available:
             self.x -= movement
             self.rect.x = self.x

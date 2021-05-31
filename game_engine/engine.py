@@ -68,23 +68,22 @@ class Engine:
 
     def build_items():
         return [
-            Item(400, 500, 50, 50, "Rock"),
-            Item(500, 400, 50, 50, "Rock"),
+            Item(150, 0, 50, 50, "Rock"),
         ]
 
     def build_characters_and_items(characters, items):
         active_sprite_list = pygame.sprite.Group()
+        for item in items:
+            item.rect.x = item.x
+            item.rect.y = item.y
+            active_sprite_list.add(item)
+
         for c in characters:
             character = characters[c]
             character.construct_animation()
             character.rect.x = character.x
             character.rect.y = character.y
             active_sprite_list.add(character)
-
-        for item in items:
-            item.rect.x = item.x
-            item.rect.y = item.y
-            active_sprite_list.add(item)
 
         return active_sprite_list
 
@@ -108,7 +107,7 @@ class Engine:
         for item in items:
             item_x = item.board_x
             item_y = item.board_y
-            board[item_x][item_y] = item
+            board[item_y][item_x] = item
 
         return board
 
@@ -164,9 +163,19 @@ characters = {
 }
 
 instructions = [
+    Instruction("Rosita Fresita", "JR", 2),
     Instruction("Rosita Fresita", "JR", 1),
     Instruction("Rosita Fresita", "JR", 1),
     Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 3),
+    # Instruction("Rosita Fresita", "JD", 21),
+    # Instruction("Rosita Fresita", "JD", 1),
+    # Instruction("Rosita Fresita", "JD", 1),
+    # Instruction("Rosita Fresita", "JD", 1),
+    # Instruction("Rosita Fresita", "JD", 1),
+    # Instruction("Rosita Fresita", "JD", 1),
     # Instruction("Dino Adrian", "JD", 1),
 ]
 
