@@ -28,6 +28,7 @@ operators = {
     "==": Symbol("BEQ", "matching"),
     "!=": Symbol("BNEQ", "matching"),
     "||": Symbol("OR", "matching"),
+    "&&": Symbol("AND", "matching"),
     "+=": Symbol("ADDEQ", "assignment_operation"),
     "-=": Symbol("SUBEQ", "assignment_operation"),
     "*=": Symbol("MULEQ", "assignment_operation"),

@@ -7,7 +7,9 @@ from game_engine.constants import *
 class SpriteSheet(object):
     def __init__(self, file_name):
         # Load the sprite sheet.
+        BLACK = (0, 0, 0)
         self.sprite_sheet = pygame.image.load(file_name).convert()
+        self.sprite_sheet.set_colorkey(BLACK)
 
     def get_image(self, x, y, width, height):
         """Grab a single image out of a larger spritesheet

@@ -570,7 +570,7 @@ class QuadrupleStack(object):
             else:
                 self.push_list(
                     self.solve_expression(
-                        self.wait_to_call.pop(),
+                        call,
                         ft,
                     ),
                     scope,

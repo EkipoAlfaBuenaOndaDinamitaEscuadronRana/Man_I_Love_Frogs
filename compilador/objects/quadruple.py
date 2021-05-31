@@ -122,7 +122,7 @@ class Quadruple(object):
         )
 
     def __not_consideration(stack_types):
-        return "BOOL" if stack_types[-1] == "BOOL" else "error"
+        return "BOOL"  # if stack_types[-1] == "BOOL" else "ERROR"
 
     def __type_consideration(stack_types, stack_operators):
         return SemanticTable.considerate(
@@ -237,8 +237,8 @@ class Quadruple(object):
                     resulting_quads,
                 )
 
-                if resulting_quads[-1].result_id.type == "error":
-                    return "error: non-compatible types"
+                if resulting_quads[-1].result_id.type == "ERROR":
+                    return "ERROR: non-compatible types"
 
                 result_quadruple_id += 1
 
@@ -259,8 +259,8 @@ class Quadruple(object):
                         resulting_quads,
                     )
 
-                    if stack_types[-1] == "error":
-                        return "error: non-compatible types"
+                    if stack_types[-1] == "ERROR":
+                        return "ERROR: non-compatible types"
 
                     result_quadruple_id += 1
 
@@ -278,8 +278,8 @@ class Quadruple(object):
                         resulting_quads,
                     )
 
-                    if stack_types[-1] == "error":
-                        return "error: non-compatible types"
+                    if stack_types[-1] == "ERROR":
+                        return "ERROR: non-compatible types"
 
                     result_quadruple_id += 1
 
@@ -294,8 +294,8 @@ class Quadruple(object):
                             resulting_quads,
                         )
 
-                        if stack_types[-1] == "error":
-                            return "error: non-compatible types"
+                        if stack_types[-1] == "ERROR":
+                            return "ERROR: non-compatible types"
 
                         result_quadruple_id += 1
 
@@ -313,8 +313,8 @@ class Quadruple(object):
                         resulting_quads,
                     )
 
-                    if stack_types[-1] == "error":
-                        return "error: non-compatible types"
+                    if stack_types[-1] == "ERROR":
+                        return "ERROR: non-compatible types"
 
                     result_quadruple_id += 1
 
@@ -329,8 +329,8 @@ class Quadruple(object):
                             resulting_quads,
                         )
 
-                        if stack_types[-1] == "error":
-                            return "error: non-compatible types"
+                        if stack_types[-1] == "ERROR":
+                            return "ERROR: non-compatible types"
 
                         result_quadruple_id += 1
 
@@ -345,8 +345,8 @@ class Quadruple(object):
                                 resulting_quads,
                             )
 
-                            if stack_types[-1] == "error":
-                                return "error: non-compatible types"
+                            if stack_types[-1] == "ERROR":
+                                return "ERROR: non-compatible types"
 
                             result_quadruple_id += 1
 
@@ -364,8 +364,8 @@ class Quadruple(object):
                         resulting_quads,
                     )
 
-                    if stack_types[-1] == "error":
-                        return "error: non-compatible types"
+                    if stack_types[-1] == "ERROR":
+                        return "ERROR: non-compatible types"
 
                     result_quadruple_id += 1
 
@@ -380,8 +380,8 @@ class Quadruple(object):
                             resulting_quads,
                         )
 
-                        if stack_types[-1] == "error":
-                            return "error: non-compatible types"
+                        if stack_types[-1] == "ERROR":
+                            return "ERROR: non-compatible types"
 
                         result_quadruple_id += 1
 
@@ -396,8 +396,8 @@ class Quadruple(object):
                                 resulting_quads,
                             )
 
-                            if stack_types[-1] == "error":
-                                return "error: non-compatible types"
+                            if stack_types[-1] == "ERROR":
+                                return "ERROR: non-compatible types"
 
                             result_quadruple_id += 1
 
@@ -412,8 +412,8 @@ class Quadruple(object):
                                     resulting_quads,
                                 )
 
-                                if stack_types[-1] == "error":
-                                    return "error: non-compatible types"
+                                if stack_types[-1] == "ERROR":
+                                    return "ERROR: non-compatible types"
 
                                 result_quadruple_id += 1
 
@@ -445,8 +445,8 @@ class Quadruple(object):
                             resulting_quads,
                         )
 
-                        if stack_types[-1] == "error":
-                            return "error: non-compatible types"
+                        if stack_types[-1] == "ERROR":
+                            return "ERROR: non-compatible types"
 
                         result_quadruple_id += 1
 
@@ -455,7 +455,7 @@ class Quadruple(object):
 
         # is an unknown character
         else:
-            return "error: type {} not found".format(s_type)
+            return "ERROR: type {} not found".format(s_type)
 
         return result_quadruple_id
 
@@ -491,8 +491,8 @@ class Quadruple(object):
                     resulting_quads,
                 )
 
-                if stack_types[-1] == "error":
-                    return "error: non-compatible types"
+                if stack_types[-1] == "ERROR":
+                    return "ERROR: non-compatible types"
 
             else:
                 Quadruple.__generate_quadruple(
@@ -504,8 +504,8 @@ class Quadruple(object):
                     resulting_quads,
                 )
 
-                if stack_types[-1] == "error":
-                    return "error: non-compatible types"
+                if stack_types[-1] == "ERROR":
+                    return "ERROR: non-compatible types"
 
             result_quadruple_id += 1
 

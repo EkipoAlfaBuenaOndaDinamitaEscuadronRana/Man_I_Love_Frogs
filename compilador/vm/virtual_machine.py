@@ -162,7 +162,7 @@ class VirtualMachine(object):
 
         # Direction is bigger than memory
         elif direction > self.__total_size:
-            print("ERROR: Address greater than memory // out of bounds")
+            print("ERROR: Address greater than memory")
             sys.exit()
 
         # Direction is in Local Segment
@@ -183,7 +183,7 @@ class VirtualMachine(object):
 
         # Direction is bigger than memory
         elif direction > self.__total_size:
-            print("ERROR: Address greater than memory // out of bounds")
+            print("ERROR: Address greater than memory")
             sys.exit()
 
         # Direction is in Local Segment
@@ -204,21 +204,53 @@ class VirtualMachine(object):
 
         # Direction is bigger than memory
         elif direction > self.__total_size:
-            print("ERROR: Address greater than memory // out of bounds")
+            print("ERROR: Address greater than memory")
             sys.exit()
         # Direction is in Local Segment
         else:
             segment = self.__get_local_segment(direction)
             segment.modify_value(direction, value)
 
-    def __not_allocated(self, symbol):
-        return (
-            symbol
-            and not (
-                symbol.segment_direction != None and symbol.global_direction != None
-            )
-            and symbol.type != "address"
-        )
+    ################## FUNCTION CALL PREPARATION ##################
+
+    def __save_local_scope(self, scope):
+        f_name = scope[1]
+        f_unique = scope[0]
+        segment = self.__find_function_segment(f_unique)
+        return segment.save_local_memory()
+
+    def __unfreeze_local_scope(self, scope, frozen_memory):
+        f_name = scope[1]
+        f_unique = scope[0]
+        segment = self.__find_function_segment(f_unique)
+        segment.backtrack_memory(frozen_memory)
+
+    def __erase_local_instance(self):
+        local_segment = self.local_segment.pop()
+        new_next = self.next_function_segment.pop()
+        new_next = new_next - local_segment.size
+        local_segment.erase_local_memory()
+        self.next_function_segment.append(new_next)
+
+    ########################### RESOLVE ###########################
+    def __resolve_ver(self, dir_opnd_1, dir_opnd_2, dir_result):
+        val_opnd_1 = self.get_direction_value(dir_opnd_1)
+        val_opnd_2 = self.get_direction_value(dir_opnd_2)
+        result = self.get_direction_value(dir_result)
+
+        if val_opnd_1 == None or val_opnd_1 == "null":
+            sym_opnd_1 = self.get_direction_symbol(dir_opnd_1).name
+            print("ERROR: variable " + str(sym_opnd_1) + " has no assigned value")
+            sys.exit()
+
+        if val_opnd_2 == None or val_opnd_2 == "null":
+            sym_opnd_2 = self.get_direction_symbol(dir_opnd_2).name
+            print("ERROR: variable " + str(sym_opnd_2) + " has no assigned value")
+            sys.exit()
+
+        if not (val_opnd_1 >= val_opnd_2) and (val_opnd_1 <= result):
+            print("ERROR: Trying to acces an index that is out of bounds")
+            sys.exit()
 
     def __resolve_address_op(
         self, operation, dir_opnd_1, dir_opnd_2, dir_result, index
@@ -227,26 +259,24 @@ class VirtualMachine(object):
         parent = self.get_direction_symbol(dir_opnd_2)
         result = self.get_direction_symbol(dir_result)
 
+        if val_opnd_1 == None or val_opnd_1 == "null":
+            sym_opnd_1 = self.get_direction_symbol(dir_opnd_1).name
+            print("ERROR: variable " + str(sym_opnd_1) + " has no assigned value")
+            sys.exit()
+
+        if dir_opnd_2 == None:
+            print("ERROR: Variable " + str(parent.name) + " has not been declared")
+            sys.exit()
+
         if operation == "ADD":
             result_value = val_opnd_1 + int(dir_opnd_2)
             result.value = result_value
             self.modify_direction_value(dir_result, result_value)
 
             array_acces = Symbol(
-                str(parent.name) + "-" + str(index), parent.type, parent.scope
+                str(parent.name) + "[ " + str(index) + " ]", parent.type, parent.scope
             )
             self.modify_address_symbol(array_acces, result_value)
-
-        # result = self.get_direction_symbol(dir_result)
-
-    def __resolve_ver(self, dir_opnd_1, dir_opnd_2, dir_result):
-        val_opnd_1 = self.get_direction_value(dir_opnd_1)
-        val_opnd_2 = self.get_direction_value(dir_opnd_2)
-        result = self.get_direction_value(dir_result)
-
-        if not (val_opnd_1 >= val_opnd_2) and (val_opnd_1 <= result):
-            print("ERROR: Trying to acces an index that is out of bounds")
-            sys.exit()
 
     def __resolve_op(self, operation, dir_opnd_1, dir_opnd_2, dir_result):
         sym_opnd_1 = self.get_direction_symbol(dir_opnd_1)
@@ -257,66 +287,87 @@ class VirtualMachine(object):
         type_op_2 = sym_opnd_2.type
         val_opnd_1 = self.get_direction_value(dir_opnd_1)
         val_opnd_2 = self.get_direction_value(dir_opnd_2)
-        # print("------------operation-------------:", operation)
-        # print("------------dir_opnd_1-------------:", val_opnd_1)
-        # print("------------dir_opnd_2-------------:", val_opnd_2)
-        # print("------------dir_result-------------:", result)
-        # print()
-        if operation == "ADD":
-            if type_op_1 == "STR" and type_op_2 == "STR":
-                result_value = val_opnd_1[:-1] + val_opnd_2[1:]
-                sym_result.value = val_opnd_1[:-1] + val_opnd_2[1:]
-            else:
-                result_value = val_opnd_1 + val_opnd_2
-                sym_result.value = val_opnd_1 + val_opnd_2
-        elif operation == "SUB":
-            result_value = val_opnd_1 - val_opnd_2
-            sym_result.value = val_opnd_1 - val_opnd_2
-        elif operation == "MUL":
-            result_value = val_opnd_1 * val_opnd_2
-            sym_result.value = val_opnd_1 * val_opnd_2
-        elif operation == "DIV":
-            result_value = val_opnd_1 / val_opnd_2
-            sym_result.value = val_opnd_1 / val_opnd_2
-        elif operation == "MOD":
-            result_value = val_opnd_1 % val_opnd_2
-            sym_result.value = val_opnd_1 % val_opnd_2
-        elif operation == "BEQ":
+
+        if operation == "BEQ":
             result_value = val_opnd_1 == val_opnd_2
             sym_result.value = val_opnd_1 == val_opnd_2
         elif operation == "BNEQ":
             result_value = val_opnd_1 != val_opnd_2
             sym_result.value = val_opnd_1 != val_opnd_2
         elif operation == "OR":
+            if val_opnd_1 == "null":
+                val_opnd_1 = None
+            if val_opnd_2 == "null":
+                val_opnd_2 = None
             result_value = val_opnd_1 or val_opnd_2
             sym_result.value = val_opnd_1 or val_opnd_2
         elif operation == "AND":
+            if val_opnd_1 == "null":
+                val_opnd_1 = None
+            if val_opnd_2 == "null":
+                val_opnd_2 = None
             result_value = val_opnd_1 and val_opnd_2
             sym_result.value = val_opnd_1 and val_opnd_2
-        elif operation == "LT":
-            result_value = val_opnd_1 < val_opnd_2
-            sym_result.value = val_opnd_1 < val_opnd_2
-        elif operation == "GT":
-            result_value = val_opnd_1 > val_opnd_2
-            sym_result.value = val_opnd_1 > val_opnd_2
-        elif operation == "LTE":
-            result_value = val_opnd_1 <= val_opnd_2
-            sym_result.value = val_opnd_1 <= val_opnd_2
-        elif operation == "GTE":
-            result_value = val_opnd_1 >= val_opnd_2
-            sym_result.value = val_opnd_1 >= val_opnd_2
+        else:
+            if val_opnd_1 == None or val_opnd_1 == "null":
+                sym_opnd_1 = sym_opnd_1.name
+                print("ERROR: variable " + str(sym_opnd_1) + " has no assigned value")
+                sys.exit()
+
+            if val_opnd_2 == None or val_opnd_2 == "null":
+                sym_opnd_2 = sym_opnd_2.name
+                print("ERROR: variable " + str(sym_opnd_2) + " has no assigned value")
+                sys.exit()
+
+            if operation == "ADD":
+                if type_op_1 == "STR" and type_op_2 == "STR":
+                    result_value = val_opnd_1[:-1] + val_opnd_2[1:]
+                    sym_result.value = val_opnd_1[:-1] + val_opnd_2[1:]
+                else:
+                    result_value = val_opnd_1 + val_opnd_2
+                    sym_result.value = val_opnd_1 + val_opnd_2
+
+            elif operation == "SUB":
+                result_value = val_opnd_1 - val_opnd_2
+                sym_result.value = val_opnd_1 - val_opnd_2
+            elif operation == "MUL":
+                result_value = val_opnd_1 * val_opnd_2
+                sym_result.value = val_opnd_1 * val_opnd_2
+            elif operation == "DIV":
+                result_value = val_opnd_1 / val_opnd_2
+                sym_result.value = val_opnd_1 / val_opnd_2
+            elif operation == "MOD":
+                result_value = val_opnd_1 % val_opnd_2
+                sym_result.value = val_opnd_1 % val_opnd_2
+            elif operation == "LT":
+                result_value = val_opnd_1 < val_opnd_2
+                sym_result.value = val_opnd_1 < val_opnd_2
+            elif operation == "GT":
+                result_value = val_opnd_1 > val_opnd_2
+                sym_result.value = val_opnd_1 > val_opnd_2
+            elif operation == "LTE":
+                result_value = val_opnd_1 <= val_opnd_2
+                sym_result.value = val_opnd_1 <= val_opnd_2
+            elif operation == "GTE":
+                result_value = val_opnd_1 >= val_opnd_2
+                sym_result.value = val_opnd_1 >= val_opnd_2
 
         self.modify_direction_value(dir_result, result_value)
-        # print("------------result.value-------------:", result.value)
 
     def __resolve_eq(self, assign_op, dir_opnd, dir_result):
-        # print("------------assign_op-------------:", assign_op)
-        # print("------------dir_opnd-------------:", dir_opnd)
-        # print("------------dir_result-------------:", dir_result)
-        # print()
         val_operand = self.get_direction_value(dir_opnd)
         result = self.get_direction_symbol(dir_result)
         result_value = self.get_direction_value(dir_result)
+
+        if assign_op != "EQ" and (val_operand == None or val_operand == "null"):
+            sym_opnd = self.get_direction_symbol(dir_opnd).name
+            print("ERROR: variable " + str(sym_opnd) + " has no assigned value")
+            sys.exit()
+
+        if assign_op != "EQ" and (result_value == None or result_value == "null"):
+            result = result.name
+            print("ERROR: variable " + str(result) + " has no assigned value")
+            sys.exit()
 
         if assign_op == "EQ":
             result_value = val_operand
@@ -339,38 +390,52 @@ class VirtualMachine(object):
 
         self.modify_direction_value(dir_result, result_value)
 
-    def __save_local_scope(self, scope):
-        f_name = scope[1]
-        f_unique = scope[0]
-        segment = self.__find_function_segment(f_unique)
-        return segment.save_local_memory()
+    def __resolve_not(self, dir_operand, dir_result):
+        sym_operand = self.get_direction_symbol(dir_operand)
+        val_operand = self.get_direction_value(dir_operand)
+        result = self.get_direction_symbol(dir_result)
+        if val_operand != None and val_operand != "null" and sym_operand.type != "BOOL":
+            result_value = False
+            result.value = False
+        elif val_operand == None or val_operand == "null":
+            result_value = True
+            result.value = True
+        else:
+            result_value = not val_operand
+            result.value = not val_operand
 
-    def __unfreeze_local_scope(self, scope, frozen_memory):
-        f_name = scope[1]
-        f_unique = scope[0]
-        segment = self.__find_function_segment(f_unique)
-        segment.backtrack_memory(frozen_memory)
-
-    def __erase_local_instance(self):
-        local_segment = self.local_segment.pop()
-        new_next = self.next_function_segment.pop()
-        new_next = new_next - local_segment.size
-        local_segment.erase_local_memory()
-        self.next_function_segment.append(new_next)
+        self.modify_direction_value(dir_result, result_value)
 
     def __resolve_param(self, dir_operand, index_result, func_name):
         val_operand = self.get_direction_value(dir_operand)
-        result = index_result
+        result = int(index_result) - 1
         real_func_name = func_name[1]
         memory_func_name = func_name[0]
-        param_searching = self.func_table.functions[real_func_name]["p"][
-            int(result) - 1
-        ].name
+
+        param_searching = self.func_table.functions[real_func_name]["p"]
+
+        if result < 0 or result > len(param_searching):
+            print(
+                "ERROR: "
+                + str(index_result)
+                + " is not a valid parameter index for function "
+                + str(real_func_name)
+            )
+            sys.exit()
+
+        param_searching = param_searching[result].name
         param_in_vartable = self.func_table.functions[real_func_name]["vt"]
         param_in_vartable = param_in_vartable.variables[param_searching]
 
         self.modify_direction_value(param_in_vartable.global_direction, val_operand)
         param_in_vartable.value = val_operand
+
+    def __resolve_return(self, dir_operand, dir_result):
+        val_operand = self.get_direction_value(dir_operand)
+        val_result = self.get_direction_symbol(dir_result)
+
+        self.modify_direction_value(dir_result, val_operand)
+        val_result.value = val_operand
 
     def __resolve_write(self, dir_result):
         if dir_result == "empty":
@@ -418,22 +483,19 @@ class VirtualMachine(object):
         # print("########", symbol.type)
 
     def __resolve_frog_method(self, operation, dir_frog, dir_result):
+        valid_hats = {'"cowboy"': 1, '"cool"': 2, '"shoes"': 3, '"makeup"': 4}
         if operation == "hat":
             frog = self.get_direction_symbol(dir_frog).name
             hat = self.get_direction_value(dir_result)
+            if hat not in valid_hats:
+                hat = 0
+            else:
+                hat = valid_hats[hat]
             return Instruction(frog, operation, hat)
         else:
             frog = self.get_direction_symbol(dir_frog).name
             times = self.get_direction_value(dir_result)
             return Instruction(frog, operation, times)
-
-    def __resolve_return(self, dir_operand, dir_result):
-        val_operand = self.get_direction_value(dir_operand)
-        val_result = self.get_direction_symbol(dir_result)
-        self.modify_direction_value(dir_result, val_operand)
-        val_result.value = val_operand
-        # print("------------------__resolve_return------------------")
-        # function.print_symbol()
 
     def __print_all_memory(self):
         self.global_segment.print_memory_segment()
@@ -582,6 +644,37 @@ class VirtualMachine(object):
                                 dir_result,
                             )
                         )
+
+            elif operation == "NOT":
+                operand_1 = curr_quad.operand_1
+                result_id = curr_quad.result_id
+
+                if result_id.global_direction == None:
+                    if len(saved_functions) > 0:
+                        f = saved_functions[-1]
+                        f_name = f[1]
+                        f_address = f[0]
+                    else:
+                        f_name = ""
+                        f_address = ""
+                    if result_id.scope == f_name:
+                        self.insert_symbol_in_segment(f_address, result_id)
+                    else:
+                        self.insert_symbol_in_segment(result_id.scope, result_id)
+
+                if result_id.address_flag:
+                    dir_result = self.get_direction_symbol(result_id.value)
+                    dir_result = dir_result.global_direction
+                else:
+                    dir_result = result_id.global_direction
+
+                if operand_1.address_flag:
+                    dir_operand = self.get_direction_symbol(operand_1.value)
+                    dir_operand = dir_operand.global_direction
+                else:
+                    dir_operand = operand_1.global_direction
+
+                self.__resolve_not(dir_operand, dir_result)
 
             elif operation == "VER":
                 if curr_quad.operand_1.address_flag:

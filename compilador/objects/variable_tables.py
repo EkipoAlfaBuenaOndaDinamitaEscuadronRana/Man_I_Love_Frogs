@@ -7,11 +7,27 @@ import collections
 class VariableTable(object):
     def __init__(self):
         self.variables = {}
-        self.offsets = {"INT": 0, "FLT": 0, "CHAR": 0, "BOOL": 0, "STR": 0, "FROG": 0}
+        self.offsets = {
+            "INT": 0,
+            "FLT": 0,
+            "CHAR": 0,
+            "BOOL": 0,
+            "STR": 0,
+            "FROG": 0,
+            "NULL": 0,
+        }
 
     def reset_functionTable(self):
         self.variables = {}
-        self.offsets = {"INT": 0, "FLT": 0, "CHAR": 0, "BOOL": 0, "STR": 0, "FROG": 0}
+        self.offsets = {
+            "INT": 0,
+            "FLT": 0,
+            "CHAR": 0,
+            "BOOL": 0,
+            "STR": 0,
+            "FROG": 0,
+            "NULL": 0,
+        }
 
     def set_variable(self, symbol):
         self.variables[symbol.name] = symbol

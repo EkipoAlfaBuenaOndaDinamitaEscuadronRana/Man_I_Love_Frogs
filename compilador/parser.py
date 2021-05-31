@@ -351,7 +351,7 @@ def p_func_declar_init(p):
 def p_func_init(p):
 
     """
-    func_init : tipo_func id_func OP func_parameters CP
+    func_init : tipo_func id_func OP func_param_validation CP
     """
     p[0] = [p[1], p[2], p[3], p[4], p[5]]
 
@@ -367,10 +367,18 @@ def p_func_init(p):
         else:
             # Inserta a functable global
             # manda tipo, ID y lista de parametros
-
-            global_func_table.set_function(
-                p[2], p[1], get_parameters(p[4]), None, current_state.get_global_table()
-            )
+            if p[4] == None:
+                global_func_table.set_function(
+                    p[2], p[1], [], None, current_state.get_global_table()
+                )
+            else:
+                global_func_table.set_function(
+                    p[2],
+                    p[1],
+                    get_parameters(p[4]),
+                    None,
+                    current_state.get_global_table(),
+                )
             # Inserta a tabla global variable de funcion
             if global_func_table.get_function_type(p[2]) != "VOID":
                 global_func_table.get_function_variable_table(
@@ -435,6 +443,15 @@ def p_func_distruct(p):
     )
     quad_stack.reset_temp_count()
     current_state.pop_curr_state()
+
+
+def p_func_param_validation(p):
+    """
+    func_param_validation : func_parameters
+                          | empty
+    """
+
+    p[0] = p[1]
 
 
 # NO TERMINAL
@@ -1530,14 +1547,9 @@ def p_dim_val(p):
 # Regresa atributos de objetos
 def p_cte_atr_obj(p):
     """
-    cte_atr_obj : COLOR
-                | HAT
-                | ITEMS index
+    cte_atr_obj : HAT
     """
-    if len(p) == 2:
-        p[0] = p[1]
-    else:
-        p[0] = [p[1], p[2]]
+    p[0] = p[1]
 
 
 # NO TERMINAL
@@ -1615,8 +1627,7 @@ def p_empty(p):
 
 
 def p_error(p):
-    print("Syntax error found")
-    print(p)
+    print("ERROR: Syntax error found in line", p.lineno)
     sys.exit()
 
 

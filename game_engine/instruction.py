@@ -7,8 +7,6 @@ class Instruction(object):
         self.movement = movement
         if type(times) == int:
             self.times = int(times)  # TODO: Change this name attribute
-        elif type(times) == str:
-            self.times = str(times)
 
     def __eq__(self, other):
         if type(self) is Instruction and type(other) is Instruction:
@@ -32,10 +30,19 @@ class Instruction(object):
     def print_instructions(instructions):
         for instruction in instructions:
             print("CHARACTER_NAME:", instruction.character_name)
-            if type(instruction.times) == int:
+
+            if instruction.movement == "hat":
+                valid_hats = {1: '"cowboy"', 2: '"cool"', 3: '"shoes"', 4: '"makeup"'}
+                name = ""
+                if instruction.times not in valid_hats:
+                    name = "None"
+                else:
+                    name = valid_hats[instruction.times]
+
+                print("ATRIBUTE:", instruction.movement)
+                print("NAME:", name)
+            else:
                 print("MOVEMENT:", instruction.movement)
                 print("TIMES:", instruction.times)
-            elif type(instruction.times) == str:
-                print("ATRIBUTE:", instruction.movement)
-                print("NAME:", instruction.times)
+
             print()
