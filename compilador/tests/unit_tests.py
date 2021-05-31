@@ -834,7 +834,7 @@ class TestVirtualMachine(unittest.TestCase):
             10: Quadruple(endof, None, None, None),
         }
 
-        #vm.quadruple_direction_allocator(main_quads)
+        # vm.quadruple_direction_allocator(main_quads)
         self.assertEqual(vm.run(main_quads), [])
 
 

@@ -526,16 +526,56 @@ class QuadrupleStack(object):
         end = self.jumpStack.pop()
         self.fill(end, scope)
 
+    def for_simple(self, exp, scope, ft):
+        if self.expresion_or_id(exp, "INT", "Times"):
+            exp = exp[0]
+        else:
+            exp = self.qstack[self.count_prev].result_id
+
+        s = Symbol(0, "INT", "Constant Segment")
+        ft.insert_to_constant_table([s])
+        temp_reuse = Symbol(str("T" + str(self.temp_count)), "INT", scope)
+        ft.push_temporal(temp_reuse)
+        self.push_quad(
+            modify_quad_object(
+                Quadruple(Symbol("EQ", "assignment", scope), s, None, temp_reuse), ft
+            ),
+            scope,
+        )
+        self.temp_count += 1
+        self.ciclo_1()
+        temp = Symbol(str("T" + str(self.temp_count)), "BOOL", scope)
+        ft.push_temporal(temp)
+        self.push_quad(
+            modify_quad_object(
+                Quadruple(Symbol("LT", "comparison", scope), temp_reuse, exp, temp), ft
+            ),
+            scope,
+        )
+        self.temp_count += 1
+        self.ciclo_2(scope)
+        s = Symbol(1, "INT", "Constant Segment")
+        ft.insert_to_constant_table([s])
+        self.wait_to_call.append(
+            modify_quad_object(
+                Quadruple(Symbol("ADDEQ", "assignment", scope), s, None, temp_reuse), ft
+            )
+        )
+
     def ciclo_cero(self, scope, ft):
         if len(self.wait_to_call) > 0:
-            self.push_list(
-                self.solve_expression(
-                    self.wait_to_call.pop(),
+            call = self.wait_to_call.pop()
+            if type(call) == Quadruple:
+                self.push_quad(call, scope)
+            else:
+                self.push_list(
+                    self.solve_expression(
+                        self.wait_to_call.pop(),
+                        ft,
+                    ),
+                    scope,
                     ft,
-                ),
-                scope,
-                ft,
-            )
+                )
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while

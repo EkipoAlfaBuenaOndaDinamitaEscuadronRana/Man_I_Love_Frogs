@@ -275,7 +275,12 @@ def p_var(p):
                 ).set_variable(symbol)
 
                 if symbol.type == "FROG":
-                    atr_frog = Symbol(str(symbol.name) + ".hat", "STR", symbol.scope, object_atr_flag=symbol)
+                    atr_frog = Symbol(
+                        str(symbol.name) + ".hat",
+                        "STR",
+                        symbol.scope,
+                        object_atr_flag=symbol,
+                    )
                     global_func_table.get_function_variable_table(
                         current_state.get_curr_state_table()
                     ).set_variable(atr_frog)
@@ -750,13 +755,11 @@ def p_escritura(p):
     else:
         p[0] = [p[1], p[2], p[3], p[4]]
 
-
     if len(p) == 4:
         quad_stack.push_quad(
-            quad_stack.write_quad(
-                current_state.get_curr_state_table()), 
-            current_state.get_curr_state_table()
-            )
+            quad_stack.write_quad(current_state.get_curr_state_table()),
+            current_state.get_curr_state_table(),
+        )
     else:
         quad_stack.push_quad(
             modify_quad_object(
@@ -959,7 +962,11 @@ def p_for_simple(p):
     """
 
     p[0] = [p[1], p[2]]
-    # quad_stack.push_list(quad_stack.solve_expression(expresion_to_symbols(p[0], global_func_table, current_state)))
+    quad_stack.for_simple(
+        expresion_to_symbols(p[1], global_func_table, current_state),
+        current_state.get_curr_state_table(),
+        global_func_table,
+    )
 
 
 # NO TERMINAL

@@ -85,7 +85,7 @@ class Symbol(object):
         dimension_sizes=[],
         address=[],
         address_flag=False,
-        object_atr_flag=None
+        object_atr_flag=None,
     ):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None
@@ -100,7 +100,6 @@ class Symbol(object):
         self.value = None
         self.address_flag = address_flag
         self.object_atr_flag = object_atr_flag
-
 
     def __eq__(self, other):
         if type(self) is Symbol and type(other) is Symbol:

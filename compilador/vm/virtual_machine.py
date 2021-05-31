@@ -363,7 +363,9 @@ class VirtualMachine(object):
         result = index_result
         real_func_name = func_name[1]
         memory_func_name = func_name[0]
-        param_searching = self.func_table.functions[real_func_name]["p"][int(result) - 1].name
+        param_searching = self.func_table.functions[real_func_name]["p"][
+            int(result) - 1
+        ].name
         param_in_vartable = self.func_table.functions[real_func_name]["vt"]
         param_in_vartable = param_in_vartable.variables[param_searching]
 
@@ -453,8 +455,8 @@ class VirtualMachine(object):
             curr_quad = quad_dir[instruction]
             operation = curr_quad.operator.name
             curr_type = curr_quad.operator.type
-            #print("--index--: ",instruction)
-            #self.__print_all_memory()
+            # print("--index--: ",instruction)
+            # self.__print_all_memory()
             # print("---------------")
             # print("---------------")
             # print()
@@ -535,7 +537,11 @@ class VirtualMachine(object):
                     self.__resolve_read(dir_result)
                     if curr_quad.result_id.object_atr_flag:
                         game_instructions.append(
-                            self.__resolve_frog_method("hat",curr_quad.result_id.object_atr_flag.global_direction, dir_result)
+                            self.__resolve_frog_method(
+                                "hat",
+                                curr_quad.result_id.object_atr_flag.global_direction,
+                                dir_result,
+                            )
                         )
                 else:
                     operand_1 = curr_quad.operand_1
@@ -553,13 +559,13 @@ class VirtualMachine(object):
                             self.insert_symbol_in_segment(f_address, result_id)
                         else:
                             self.insert_symbol_in_segment(result_id.scope, result_id)
-                    
+
                     if result_id.address_flag:
                         dir_result = self.get_direction_symbol(result_id.value)
                         dir_result = dir_result.global_direction
                     else:
                         dir_result = result_id.global_direction
-                    
+
                     if operand_1.address_flag:
                         dir_operand = self.get_direction_symbol(operand_1.value)
                         dir_operand = dir_operand.global_direction
@@ -567,10 +573,14 @@ class VirtualMachine(object):
                         dir_operand = operand_1.global_direction
 
                     self.__resolve_eq(operation, dir_operand, dir_result)
-                    
+
                     if result_id.object_atr_flag:
                         game_instructions.append(
-                            self.__resolve_frog_method("hat", result_id.object_atr_flag.global_direction, dir_result)
+                            self.__resolve_frog_method(
+                                "hat",
+                                result_id.object_atr_flag.global_direction,
+                                dir_result,
+                            )
                         )
 
             elif operation == "VER":
@@ -579,7 +589,7 @@ class VirtualMachine(object):
                     dir_opnd_1 = dir_opnd_1.global_direction
                 else:
                     dir_opnd_1 = curr_quad.operand_1.global_direction
-                
+
                 dir_opnd_2 = curr_quad.operand_2.global_direction
                 result_id = curr_quad.result_id.global_direction
                 self.__resolve_ver(dir_opnd_1, dir_opnd_2, result_id)
@@ -603,14 +613,15 @@ class VirtualMachine(object):
             elif operation == "WRITE":
                 if curr_quad.result_id:
                     if curr_quad.result_id.address_flag:
-                        dir_result = self.get_direction_symbol(curr_quad.result_id.value)
+                        dir_result = self.get_direction_symbol(
+                            curr_quad.result_id.value
+                        )
                         dir_result = dir_result.global_direction
                     else:
                         dir_result = curr_quad.result_id.global_direction
                     self.__resolve_write(dir_result)
                 else:
                     self.__resolve_write("empty")
-
 
             elif operation == "ERA":
                 if curr_quad.operator.scope == "main" and not era:
