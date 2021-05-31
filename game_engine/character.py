@@ -5,10 +5,12 @@ from game_engine.spritesheet import *
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, speed):
+    def __init__(self, name, x, y, width, height, speed):
         super().__init__()
         self.x = x
         self.y = y
+
+        self.name = name
 
         self.width = width
         self.height = height
@@ -74,9 +76,6 @@ class Character(pygame.sprite.Sprite):
         fixed_y = y // Constants.FROG_HEIGHT
         position = board[fixed_y][fixed_x]
 
-        print(fixed_x, ",", fixed_y)
-        print(position)
-
         if position == None:
             return True
 
@@ -99,8 +98,7 @@ class Character(pygame.sprite.Sprite):
         movement = self.height * times
         new_y = self.y + movement
         is_available = self.available_position(board, self.x, new_y)
-        print(is_available)
-        if self.y + self.height + movement <= Constants.DISPLAY_HEIGHT:
+        if self.y + self.height + movement <= Constants.DISPLAY_HEIGHT and is_available:
             self.y += movement
             self.rect.y = self.y
             self.moving = True
@@ -124,7 +122,6 @@ class Character(pygame.sprite.Sprite):
         movement = self.width * times
         new_x = self.x + movement
         is_available = self.available_position(board, new_x, self.y)
-        print(is_available)
         if self.x + self.width + movement <= Constants.DISPLAY_WIDTH and is_available:
             self.x += movement
             self.rect.x = self.x

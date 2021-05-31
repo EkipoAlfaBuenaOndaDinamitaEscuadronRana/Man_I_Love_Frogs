@@ -44,15 +44,17 @@ class Engine:
         Engine.update_board(board, character, x, y)
 
     def update_board(board, character, x, y):
-        for row in board:
-            for space in row:
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                space = board[i][j]
                 if space == character:
-                    space = None
+                    board[i][j] = None
                 elif type(space) == Item:
                     if space.eaten:
                         space = None
 
         board[y][x] = character
+        Engine.print_board(board)
 
     def print_board(board):
         for row in board:
@@ -162,24 +164,26 @@ class Engine:
 
 
 characters = {
-    "Rosita Fresita": Character(0, 0, 50, 50, 50),
-    "Dino Adrian": Character(0, 50, 50, 50, 50),
+    "Rosita Fresita": Character("Rosita Fresita", 0, 0, 50, 50, 50),
+    "Dino Adrian": Character("Dino Adrian", 0, 50, 50, 50, 50),
 }
 
 instructions = [
     Instruction("Rosita Fresita", "JR", 1),
     Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 2),
+    Instruction("Rosita Fresita", "JL", 1),
+    Instruction("Rosita Fresita", "JL", 1),
+    Instruction("Rosita Fresita", "JL", 1),
     # Instruction("Rosita Fresita", "JR", 2),
     # Instruction("Rosita Fresita", "JR", 2),
     # Instruction("Rosita Fresita", "JR", 1),
     # Instruction("Rosita Fresita", "JR", 1),
     # Instruction("Rosita Fresita", "JR", 3),
+    # Instruction("Rosita Fresita", "JD", 1),
+    # Instruction("Rosita Fresita", "JD", 1),
+    # Instruction("Rosita Fresita", "JD", 2),
+    # Instruction("Rosita Fresita", "JD", 1),
     # Instruction("Rosita Fresita", "JD", 21),
-    # Instruction("Rosita Fresita", "JD", 1),
-    # Instruction("Rosita Fresita", "JD", 1),
-    # Instruction("Rosita Fresita", "JD", 1),
     # Instruction("Rosita Fresita", "JD", 1),
     # Instruction("Rosita Fresita", "JD", 1),
     # Instruction("Dino Adrian", "JD", 1),
