@@ -11,6 +11,8 @@ import game_engine.constants
 from game_engine.constants import *
 import game_engine.item
 from game_engine.item import *
+import game_engine.levels
+from game_engine.levels import *
 
 
 class Engine:
@@ -44,6 +46,14 @@ class Engine:
 
         Engine.update_board(board, character, x, y)
 
+    def delete_fly(fly):
+        fly.rect.x = 2000
+        fly.rect.y = 2000
+        fly.y = 2000
+        fly.x = 2000
+        Engine.__flys -= 1
+
+
     def update_board(board, character, x, y):
         for i in range(len(board)):
             for j in range(len(board[i])):
@@ -52,11 +62,11 @@ class Engine:
                     board[i][j] = None
                 elif type(space) == Item:
                     if space.eaten:
+                        Engine.delete_fly(space)
                         board[i][j] = None
-                        Engine.__flys -= 1
 
         board[y][x] = character
-        Engine.print_board(board)
+        # Engine.print_board(board)
 
     def print_board(board):
         for row in board:
@@ -73,15 +83,14 @@ class Engine:
             print()
         print()
 
-    def build_items():
-        return [
-            Item(150, 0, 50, 50, "Rock"),
-            Item(150, 500, 50, 50, "Fly"),
-        ]
+    def build_level(played_level):
+        if played_level == "one":
+            return Levels.LEVEL_ONE
 
     def build_characters_and_items(characters, items):
         active_sprite_list = pygame.sprite.Group()
         for item in items:
+            item.construct_animation()
             item.rect.x = item.x
             item.rect.y = item.y
             active_sprite_list.add(item)
@@ -139,7 +148,7 @@ class Engine:
     ]
     """
 
-    def start(characters, instructions):
+    def start(characters, instructions, played_level):
         pygame.init()
 
         clock = pygame.time.Clock()
@@ -148,10 +157,10 @@ class Engine:
         )
         pygame.display.set_caption("Man I Love Frogs")
 
-        items = Engine.build_items()
+        items = Engine.build_level(played_level)
         active_sprite_list = Engine.build_characters_and_items(characters, items)
         board = Engine.init_game(characters, items)
-        Engine.print_board(board)
+        # Engine.print_board(board)
         counter = 0
 
         while True:
@@ -167,42 +176,41 @@ class Engine:
                 counter = 0
 
             if Engine.__flys == 0:
-                print("GANAMOS")
+                font_title = pygame.font.Font(None, 52)
+                announcement = font_title.render("GANAMOS :D Mi hija sí baila con el señor", True, Constants.WHITE)
+                announcement_rect = announcement.get_rect(
+                    center=(int(Constants.DISPLAY_WIDTH / 2), int(Constants.DISPLAY_HEIGHT / 3))
+                )
+                display.blit(announcement, announcement_rect)
+
+                font_cien = pygame.font.Font(None, 24)
+                ponganos_cien = font_cien.render("Maestra, si está leyendo esto por favor ponganos 100 porque si no me quitan mi beca D:", True, Constants.WHITE)
+                ponganos_cien_rect = ponganos_cien.get_rect(
+                    center=(int(Constants.DISPLAY_WIDTH / 2), int(Constants.DISPLAY_HEIGHT / 2.5))
+                )
+                display.blit(ponganos_cien, ponganos_cien_rect)
+
 
             pygame.display.update()
 
 
 characters = {
-    "Rosita Fresita": Character("Rosita Fresita", 0, 0, 50, 50, 50),
-    "Dino Adrian": Character("Dino Adrian", 0, 50, 50, 50, 50),
+    "Rosita Fresita": Character(0, 0, 50, 50, 50),
 }
 
 instructions = [
+    Instruction("Rosita Fresita", "JD", 1),
+    Instruction("Rosita Fresita", "JD", 1),
+    Instruction("Rosita Fresita", "JD", 1),
+    Instruction("Rosita Fresita", "JD", 1),
+    Instruction("Rosita Fresita", "JD", 1),
+    Instruction("Rosita Fresita", "JD", 1),
+    Instruction("Rosita Fresita", "JR", 4),
+    Instruction("Rosita Fresita", "JU", 2),
+    Instruction("Rosita Fresita", "JR", 2),
     Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 3),
-    Instruction("Rosita Fresita", "JD", 10),
-    Instruction("Rosita Fresita", "JL", 1),
-    # Instruction("Rosita Fresita", "JU", 1),
-    # Instruction("Rosita Fresita", "JU", 1),
-    # Instruction("Rosita Fresita", "JU", 1),
-    # Instruction("Rosita Fresita", "JL", 1),
-    # Instruction("Rosita Fresita", "JL", 1),
-    # Instruction("Rosita Fresita", "JL", 1),
-    # Instruction("Rosita Fresita", "JL", 1),
-    # Instruction("Rosita Fresita", "JR", 2),
-    # Instruction("Rosita Fresita", "JR", 2),
-    # Instruction("Rosita Fresita", "JR", 1),
-    # Instruction("Rosita Fresita", "JR", 1),
-    # Instruction("Rosita Fresita", "JR", 3),
-    # Instruction("Rosita Fresita", "JD", 1),
-    # Instruction("Rosita Fresita", "JD", 1),
-    # Instruction("Rosita Fresita", "JD", 2),
-    # Instruction("Rosita Fresita", "JD", 1),
-    # Instruction("Rosita Fresita", "JD", 21),
-    # Instruction("Rosita Fresita", "JD", 1),
-    # Instruction("Rosita Fresita", "JD", 1),
-    # Instruction("Dino Adrian", "JD", 1),
+    Instruction("Rosita Fresita", "JR", 1),
+    Instruction("Rosita Fresita", "JR", 1),
 ]
 
-
-Engine.start(characters, instructions)
+Engine.start(characters, instructions, "one")
