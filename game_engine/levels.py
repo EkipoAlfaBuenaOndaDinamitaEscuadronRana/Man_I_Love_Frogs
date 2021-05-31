@@ -1,6 +1,7 @@
 import game_engine.item
 from game_engine.item import *
 
+
 class Levels:
     LEVEL_ONE = [
         # Rocks
@@ -8,7 +9,6 @@ class Levels:
         Item(100, 50, 50, 50, "Rock"),
         Item(100, 100, 50, 50, "Rock"),
         Item(100, 150, 50, 50, "Rock"),
-
         Item(100, 250, 50, 50, "Rock"),
         Item(100, 350, 50, 50, "Rock"),
         Item(100, 400, 50, 50, "Rock"),
@@ -20,7 +20,6 @@ class Levels:
         Item(350, 450, 50, 50, "Rock"),
         Item(400, 450, 50, 50, "Rock"),
         Item(450, 450, 50, 50, "Rock"),
-
         Item(450, 500, 50, 50, "Rock"),
         Item(450, 550, 50, 50, "Rock"),
         Item(450, 600, 50, 50, "Rock"),
@@ -29,9 +28,7 @@ class Levels:
         Item(450, 750, 50, 50, "Rock"),
         Item(450, 800, 50, 50, "Rock"),
         Item(450, 850, 50, 50, "Rock"),
-
         Item(500, 650, 50, 50, "Rock"),
-
         Item(550, 450, 50, 50, "Rock"),
         Item(550, 500, 50, 50, "Rock"),
         Item(550, 550, 50, 50, "Rock"),
@@ -41,7 +38,6 @@ class Levels:
         Item(550, 750, 50, 50, "Rock"),
         Item(550, 800, 50, 50, "Rock"),
         Item(550, 850, 50, 50, "Rock"),
-
         Item(150, 150, 50, 50, "Rock"),
         Item(200, 150, 50, 50, "Rock"),
         Item(250, 150, 50, 50, "Rock"),
@@ -69,7 +65,6 @@ class Levels:
         Item(1350, 150, 50, 50, "Rock"),
         Item(1400, 150, 50, 50, "Rock"),
         Item(1450, 150, 50, 50, "Rock"),
-
         Item(600, 450, 50, 50, "Rock"),
         Item(650, 450, 50, 50, "Rock"),
         Item(700, 450, 50, 50, "Rock"),
@@ -88,7 +83,6 @@ class Levels:
         Item(1350, 450, 50, 50, "Rock"),
         Item(1400, 450, 50, 50, "Rock"),
         Item(1450, 450, 50, 50, "Rock"),
-
         # Flies
         Item(0, 300, 50, 50, "Fly"),
         Item(200, 300, 50, 50, "Fly"),

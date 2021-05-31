@@ -46,9 +46,9 @@ class Executer(object):
 
         if kwargs.get("run_game") and len(instructions):
             characters = {
-                "pepe": Character(100, 100, 30, 30, 50),
+                "pepe": Character(0, 0, 50, 50, 50),
             }
 
-            Engine.start(characters, instructions)
+            Engine.start(characters, instructions, "one")
 
         return instructions

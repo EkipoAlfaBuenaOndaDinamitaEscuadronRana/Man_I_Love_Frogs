@@ -53,7 +53,6 @@ class Engine:
         fly.x = 2000
         Engine.__flys -= 1
 
-
     def update_board(board, character, x, y):
         for i in range(len(board)):
             for j in range(len(board[i])):
@@ -177,42 +176,29 @@ class Engine:
 
             if Engine.__flys == 0:
                 font_title = pygame.font.Font(None, 52)
-                announcement = font_title.render("GANAMOS :D Mi hija sí baila con el señor", True, Constants.WHITE)
+                announcement = font_title.render(
+                    "GANAMOS :D Mi hija sí baila con el señor", True, Constants.WHITE
+                )
                 announcement_rect = announcement.get_rect(
-                    center=(int(Constants.DISPLAY_WIDTH / 2), int(Constants.DISPLAY_HEIGHT / 3))
+                    center=(
+                        int(Constants.DISPLAY_WIDTH / 2),
+                        int(Constants.DISPLAY_HEIGHT / 3),
+                    )
                 )
                 display.blit(announcement, announcement_rect)
 
                 font_cien = pygame.font.Font(None, 24)
-                ponganos_cien = font_cien.render("Maestra, si está leyendo esto por favor ponganos 100 porque si no me quitan mi beca D:", True, Constants.WHITE)
+                ponganos_cien = font_cien.render(
+                    "Maestra, si está leyendo esto por favor ponganos 100 porque si no me quitan mi beca D:",
+                    True,
+                    Constants.WHITE,
+                )
                 ponganos_cien_rect = ponganos_cien.get_rect(
-                    center=(int(Constants.DISPLAY_WIDTH / 2), int(Constants.DISPLAY_HEIGHT / 2.5))
+                    center=(
+                        int(Constants.DISPLAY_WIDTH / 2),
+                        int(Constants.DISPLAY_HEIGHT / 2.5),
+                    )
                 )
                 display.blit(ponganos_cien, ponganos_cien_rect)
 
-
             pygame.display.update()
-
-
-characters = {
-    "Rosita Fresita": Character(0, 0, 50, 50, 50),
-}
-
-instructions = [
-    Instruction("Rosita Fresita", "JD", 1),
-    Instruction("Rosita Fresita", "JD", 1),
-    Instruction("Rosita Fresita", "JD", 1),
-    Instruction("Rosita Fresita", "JD", 1),
-    Instruction("Rosita Fresita", "JD", 1),
-    Instruction("Rosita Fresita", "JD", 1),
-    Instruction("Rosita Fresita", "JR", 4),
-    Instruction("Rosita Fresita", "JU", 2),
-    Instruction("Rosita Fresita", "JR", 2),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 1),
-    Instruction("Rosita Fresita", "JR", 2),
-    Instruction("Rosita Fresita", "JD", 8),
-    Instruction("Rosita Fresita", "JD", 2),
-]
-
-Engine.start(characters, instructions, "one")

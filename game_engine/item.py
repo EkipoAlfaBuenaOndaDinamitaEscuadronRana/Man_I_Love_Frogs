@@ -31,5 +31,7 @@ class Item(pygame.sprite.Sprite):
         elif self.type == "Fly":
             sprite_sheet = SpriteSheet(Constants.FLY_IMAGE)
 
-        self.image = sprite_sheet.get_image(1, 1, Constants.ITEM_WIDTH, Constants.ITEM_HEIGHT)
+        self.image = sprite_sheet.get_image(
+            1, 1, Constants.ITEM_WIDTH, Constants.ITEM_HEIGHT
+        )
         self.rect = self.image.get_rect()
