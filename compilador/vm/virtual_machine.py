@@ -19,24 +19,26 @@ class VirtualMachine(object):
         self.__total_size = global_size + constant_size + local_size
         self.func_table = func_table
         self.global_segment = MemorySegment("Global Segment", global_size, 0)
-        self.constant_segment = MemorySegment("Constant Segment", constant_size, global_size)
+        self.constant_segment = MemorySegment(
+            "Constant Segment", constant_size, global_size
+        )
         self.declared_symbols = []
         self.next_function_segment = []
-        
+
         # func_table.print_FuncTable()
 
         if func_table:
             local_size_memory = global_size + constant_size
 
-            self.local_segment = self.__build_local_segment(local_size, global_size + constant_size)
+            self.local_segment = self.__build_local_segment(
+                local_size, global_size + constant_size
+            )
             self.local_functions = len(self.local_segment)
             self.__func_table_assign_memory()
 
         else:
             self.local_segment = None
             self.local_functions = 0
-
-
 
     def __build_local_segment(
         self,
@@ -59,16 +61,16 @@ class VirtualMachine(object):
 
     def __func_table_assign_memory(self):
         functions = self.func_table.functions
-        tables_init = ["Global Segment","Constant Segment", "main"]
+        tables_init = ["Global Segment", "Constant Segment", "main"]
         for ft in functions:
             if ft in tables_init:
                 var_tab = functions[ft]["vt"]
                 vars = var_tab.variables
-                #var_tab.print_VariableTable()
+                # var_tab.print_VariableTable()
                 for k, v in vars.items():
                     self.insert_symbol_in_segment(ft, v)
-                    #vars[k].print_symbol()
-                    #print("------------------------")
+                    # vars[k].print_symbol()
+                    # print("------------------------")
 
     def __function_instance(self, func_name):
         function_object = self.func_table.functions
@@ -78,15 +80,15 @@ class VirtualMachine(object):
         self.local_segment.append(MemorySegment(name, function_size, start_direction))
         start_direction += function_size
         self.next_function_segment.append(start_direction)
-        
+
         var_tab = function_object[func_name]["vt"]
         vars = var_tab.variables
-        #var_tab.print_VariableTable()
+        # var_tab.print_VariableTable()
 
-        for k,v in vars.items():
+        for k, v in vars.items():
             self.insert_symbol_in_segment(name, v)
-            #vars[k].print_symbol()
-            #print("------------------------")
+            # vars[k].print_symbol()
+            # print("------------------------")
 
         return name
 
@@ -123,7 +125,7 @@ class VirtualMachine(object):
         segment_name = array_acces.scope
         if segment_name == "Global Segment":
             return self.global_segment.modify_address(array_acces, result_value)
-            
+
         # A symbol in constant segment arrive
         elif segment_name == "Constant Segment":
             return self.constant_segment.modify_address(array_acces, result_value)
@@ -135,9 +137,8 @@ class VirtualMachine(object):
             # The function was not found
             if function_segment == None:
                 return False
-            
-            return function_segment.modify_address(array_acces, result_value)
 
+            return function_segment.modify_address(array_acces, result_value)
 
     def __get_local_segment(self, direction):
         current_segment_direction = (
@@ -212,12 +213,17 @@ class VirtualMachine(object):
             segment.modify_value(direction, value)
 
     def __not_allocated(self, symbol):
-        return symbol and not (
-            symbol.segment_direction != None and symbol.global_direction != None
-        ) and symbol.type != "address"
+        return (
+            symbol
+            and not (
+                symbol.segment_direction != None and symbol.global_direction != None
+            )
+            and symbol.type != "address"
+        )
 
-
-    def __resolve_address_op(self, operation, dir_opnd_1, dir_opnd_2, dir_result, index):
+    def __resolve_address_op(
+        self, operation, dir_opnd_1, dir_opnd_2, dir_result, index
+    ):
         val_opnd_1 = self.get_direction_value(dir_opnd_1)
         parent = self.get_direction_symbol(dir_opnd_2)
         result = self.get_direction_symbol(dir_result)
@@ -226,11 +232,13 @@ class VirtualMachine(object):
             result_value = val_opnd_1 + int(dir_opnd_2)
             result.value = result_value
             self.modify_direction_value(dir_result, result_value)
-            
-            array_acces = Symbol(str(parent.name) + "-" + str(index), parent.type, parent.scope)
+
+            array_acces = Symbol(
+                str(parent.name) + "-" + str(index), parent.type, parent.scope
+            )
             self.modify_address_symbol(array_acces, result_value)
 
-        #result = self.get_direction_symbol(dir_result)
+        # result = self.get_direction_symbol(dir_result)
 
     def __resolve_ver(self, dir_opnd_1, dir_opnd_2, dir_result):
         val_opnd_1 = self.get_direction_value(dir_opnd_1)
@@ -245,7 +253,7 @@ class VirtualMachine(object):
         sym_opnd_1 = self.get_direction_symbol(dir_opnd_1)
         sym_opnd_2 = self.get_direction_symbol(dir_opnd_2)
         sym_result = self.get_direction_symbol(dir_result)
-        
+
         type_op_1 = sym_opnd_1.type
         type_op_2 = sym_opnd_2.type
         val_opnd_1 = self.get_direction_value(dir_opnd_1)
@@ -278,7 +286,7 @@ class VirtualMachine(object):
             result_value = val_opnd_1 == val_opnd_2
             sym_result.value = val_opnd_1 == val_opnd_2
         elif operation == "BNEQ":
-            result_value = val_opnd_1 != val_opnd_2            
+            result_value = val_opnd_1 != val_opnd_2
             sym_result.value = val_opnd_1 != val_opnd_2
         elif operation == "OR":
             result_value = val_opnd_1 or val_opnd_2
@@ -298,7 +306,7 @@ class VirtualMachine(object):
         elif operation == "GTE":
             result_value = val_opnd_1 >= val_opnd_2
             sym_result.value = val_opnd_1 >= val_opnd_2
-        
+
         self.modify_direction_value(dir_result, result_value)
         # print("------------result.value-------------:", result.value)
 
@@ -332,9 +340,6 @@ class VirtualMachine(object):
 
         self.modify_direction_value(dir_result, result_value)
 
-
-
-
     def __save_local_scope(self, scope):
         f_name = scope[1]
         f_unique = scope[0]
@@ -346,7 +351,7 @@ class VirtualMachine(object):
         f_unique = scope[0]
         segment = self.__find_function_segment(f_unique)
         segment.backtrack_memory(frozen_memory)
-    
+
     def __erase_local_instance(self):
         local_segment = self.local_segment.pop()
         new_next = self.next_function_segment.pop()
@@ -354,14 +359,15 @@ class VirtualMachine(object):
         local_segment.erase_local_memory()
         self.next_function_segment.append(new_next)
 
-
     def __resolve_param(self, dir_operand, index_result, func_name):
         val_operand = self.get_direction_value(dir_operand)
         result = index_result
         real_func_name = func_name[1]
         memory_func_name = func_name[0]
 
-        param_searching = self.func_table.functions[real_func_name]["p"][int(result) - 1].name
+        param_searching = self.func_table.functions[real_func_name]["p"][
+            int(result) - 1
+        ].name
         param_in_vartable = self.func_table.functions[real_func_name]["vt"]
         param_in_vartable = param_in_vartable.variables[param_searching]
 
@@ -407,8 +413,8 @@ class VirtualMachine(object):
             if user_input == "null":
                 self.modify_direction_value(dir_result, None)
                 symbol.value = None
-        #print("########", symbol.value)
-        #print("########", symbol.type)
+        # print("########", symbol.value)
+        # print("########", symbol.type)
 
     def __resolve_frog_method(self, operation, dir_frog, dir_result):
         frog = self.get_direction_symbol(dir_frog).name
@@ -426,7 +432,7 @@ class VirtualMachine(object):
 
     def __print_all_memory(self):
         self.global_segment.print_memory_segment()
-        #self.constant_segment.print_memory_segment()
+        # self.constant_segment.print_memory_segment()
         for segment in self.local_segment:
             segment.print_memory_segment()
 
@@ -447,26 +453,30 @@ class VirtualMachine(object):
             # print("--index--: ",instruction)
             # self.__print_all_memory()
             # print("---------------")
-            #print(frozen_memory)
-            #print("---------------")
-            #print()
+            # print(frozen_memory)
+            # print("---------------")
+            # print()
             if curr_type in ["operation", "comparison", "matching"]:
                 if type(curr_quad.operand_2) == Symbol:
-                    
+
                     if curr_quad.operand_1.address_flag:
-                        dir_opnd_1 = self.get_direction_symbol(curr_quad.operand_1.value)
+                        dir_opnd_1 = self.get_direction_symbol(
+                            curr_quad.operand_1.value
+                        )
                         dir_opnd_1 = dir_opnd_1.global_direction
                     else:
                         dir_opnd_1 = curr_quad.operand_1.global_direction
-                    
+
                     if curr_quad.operand_2.address_flag:
-                        dir_opnd_2 = self.get_direction_symbol(curr_quad.operand_2.value)
+                        dir_opnd_2 = self.get_direction_symbol(
+                            curr_quad.operand_2.value
+                        )
                         dir_opnd_2 = dir_opnd_2.global_direction
                     else:
                         dir_opnd_2 = curr_quad.operand_2.global_direction
 
                     result_id = curr_quad.result_id
-                    
+
                     if len(saved_functions) > 0:
                         f = saved_functions[-1]
                         f_name = f[1]
@@ -475,11 +485,10 @@ class VirtualMachine(object):
                         f_name = ""
                         f_address = ""
 
-
-                    if result_id.global_direction == None: 
+                    if result_id.global_direction == None:
                         if result_id.scope == f_name:
                             self.insert_symbol_in_segment(f_address, result_id)
-                        else: 
+                        else:
                             self.insert_symbol_in_segment(result_id.scope, result_id)
                     # print("--------")
                     # print(operation)
@@ -504,15 +513,19 @@ class VirtualMachine(object):
                     else:
                         f_name = ""
                         f_address = ""
-                    if result_id.global_direction == None: 
+                    if result_id.global_direction == None:
                         if result_id.scope == f_name:
                             self.insert_symbol_in_segment(f_address, result_id)
-                        else: 
+                        else:
                             self.insert_symbol_in_segment(result_id.scope, result_id)
                     dir_result = result_id.global_direction
-                    self.__resolve_address_op(operation, dir_opnd_1, dir_opnd_2, dir_result, index_accessed.pop())
-
-
+                    self.__resolve_address_op(
+                        operation,
+                        dir_opnd_1,
+                        dir_opnd_2,
+                        dir_result,
+                        index_accessed.pop(),
+                    )
 
             elif operation in set.union(SemanticTable.assignment_operations_op, {"EQ"}):
                 if operation == "EQ" and curr_quad.operand_1.name == "READ":
@@ -534,21 +547,20 @@ class VirtualMachine(object):
 
                         if operand_1.name == f_name:
                             self.insert_symbol_in_segment(f_address, result_id)
-                        else: 
+                        else:
                             self.insert_symbol_in_segment(result_id.scope, result_id)
                     elif result_id.address_flag:
                         dir_result = self.get_direction_symbol(result_id.value)
                         dir_result = dir_result.global_direction
                     else:
                         dir_result = curr_quad.result_id.global_direction
-                    
+
                     if operand_1.address_flag:
                         dir_operand = self.get_direction_symbol(operand_1.value)
                         dir_operand = dir_operand.global_direction
                     else:
                         dir_operand = operand_1.global_direction
-                    
-                    
+
                     self.__resolve_eq(operation, dir_operand, dir_result)
 
             elif operation == "VER":
@@ -566,7 +578,7 @@ class VirtualMachine(object):
                 instruction = curr_quad.result_id.name - 1
 
             elif operation == "GOTOF":
-                if self.get_direction_value(curr_quad.operand_1.global_direction): 
+                if self.get_direction_value(curr_quad.operand_1.global_direction):
                     instruction += 1
                     continue
                 else:
@@ -581,7 +593,7 @@ class VirtualMachine(object):
             elif operation == "WRITE":
                 if curr_quad.result_id.address_flag:
                     dir_result = self.get_direction_symbol(curr_quad.result_id.value)
-                    dir_result = dir_result.global_direction    
+                    dir_result = dir_result.global_direction
                 else:
                     dir_result = curr_quad.result_id.global_direction
                 self.__resolve_write(dir_result)
@@ -589,7 +601,7 @@ class VirtualMachine(object):
             elif operation == "ERA":
                 if curr_quad.operator.scope == "main":
                     saved_functions.append(["main", "main"])
-                
+
                 frozen_memory.append(self.__save_local_scope(saved_functions[-1]))
                 function_name = curr_quad.operand_1.name
                 name = self.__function_instance(function_name)
@@ -606,17 +618,18 @@ class VirtualMachine(object):
                 func_name = saved_functions[-1]
                 self.__resolve_param(dir_operand, dir_result, func_name)
 
-            
             elif operation == "GOSUB":
                 function = curr_quad.operand_1.name
                 saved_positions.append(instruction + 1)
                 instruction = curr_quad.result_id.name
                 continue
-            
+
             elif operation == "RETURN":
                 if curr_quad.operand_1 and curr_quad.result_id:
                     if curr_quad.operand_1.address_flag:
-                        dir_operand = self.get_direction_symbol(curr_quad.operand_1.value)
+                        dir_operand = self.get_direction_symbol(
+                            curr_quad.operand_1.value
+                        )
                         dir_operand = dir_opnd_1.global_direction
                     else:
                         dir_operand = curr_quad.operand_1.global_direction
@@ -633,7 +646,6 @@ class VirtualMachine(object):
                 self.__unfreeze_local_scope(saved_functions[-1], frozen_memory.pop())
                 era = False
                 continue
-
 
             elif curr_type == "obj_method":
                 dir_frog = curr_quad.operand_1.global_direction

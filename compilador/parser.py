@@ -63,11 +63,10 @@ def p_global_vartable_distruct(p):
     # BORRA GLOBAL VAR TABLE
     # ESTADO: GLOBAL
     global_func_table.set_function_size_at(
-        "Constant Segment", 
+        "Constant Segment",
         global_func_table.generate_function_size_at(
-            "Constant Segment",
-            quad_stack.temp_count 
-        )
+            "Constant Segment", quad_stack.temp_count
+        ),
     )
     quad_stack.push_quad(
         Quadruple(
@@ -90,6 +89,8 @@ def p_global_vartable_distruct(p):
 
     # quad_stack.print_quads()
     # global_func_table.print_FuncTable()
+
+
 ####### PRINT TODO #############
 
 # TERMINAL Y NO TERMINAL
@@ -168,6 +169,7 @@ def p_bloque_g(p):
 
     # print("p_bloque_g: " + str(p[0]))
 
+
 def p_global_size(p):
     """
     global_size : empty
@@ -175,19 +177,20 @@ def p_global_size(p):
 
     p[0] = p[1]
     global_func_table.set_function_size_at(
-        current_state.get_global_table(), 
+        current_state.get_global_table(),
         global_func_table.generate_function_size_at(
-            current_state.get_global_table(),
-            quad_stack.temp_count 
-        )
+            current_state.get_global_table(), quad_stack.temp_count
+        ),
     )
     quad_stack.reset_temp_count()
+
+
 ############################################ DECLARAICÓN DE VARIABLES ############################################
 
 
 def p_var_global(p):
     """
-    var_global : var_dec var var_global 
+    var_global : var_dec var var_global
                | empty
 
     """
@@ -375,8 +378,14 @@ def p_func_init(p):
                     )
                 )
                 global_func_table.set_function_size_at(
-                    current_state.get_global_table(), 
-                    (global_func_table.get_function_size(current_state.get_global_table()) +1))
+                    current_state.get_global_table(),
+                    (
+                        global_func_table.get_function_size(
+                            current_state.get_global_table()
+                        )
+                        + 1
+                    ),
+                )
 
             # crea tabla de variables actual
             global_func_table.set_function_variable_table_at(p[2])
@@ -385,7 +394,6 @@ def p_func_init(p):
             current_state.pop_curr_state()
             # ESTADO: push functable id
             current_state.push_state(State(p[2]))
-            
 
 
 def p_func_distruct(p):
@@ -415,16 +423,13 @@ def p_func_distruct(p):
     )
 
     global_func_table.set_function_size_at(
-        current_state.get_curr_state_table(), 
+        current_state.get_curr_state_table(),
         global_func_table.generate_function_size_at(
-            current_state.get_curr_state_table(),
-            quad_stack.temp_count 
-        )
+            current_state.get_curr_state_table(), quad_stack.temp_count
+        ),
     )
     quad_stack.reset_temp_count()
     current_state.pop_curr_state()
-
-
 
 
 # NO TERMINAL
@@ -525,11 +530,10 @@ def p_main_vartable_distruct(p):
     # ESTADO: MAIN
     # ESTADO: pop main
     global_func_table.set_function_size_at(
-        current_state.get_curr_state_table(), 
+        current_state.get_curr_state_table(),
         global_func_table.generate_function_size_at(
-            current_state.get_curr_state_table(),
-            quad_stack.temp_count 
-        )
+            current_state.get_curr_state_table(), quad_stack.temp_count
+        ),
     )
     quad_stack.reset_temp_count()
     current_state.pop_curr_state()
@@ -706,7 +710,6 @@ def p_return(p):
                     current_state.get_curr_state_table()
                 ),
                 current_state.get_curr_state_table(),
-                
             )
 
     else:
@@ -725,7 +728,7 @@ def p_return(p):
                 ),
                 current_state.get_curr_state_table(),
                 expresion_to_symbols(p[2], global_func_table, current_state),
-                global_func_table
+                global_func_table,
             )
 
     # if current_state.get_curr_state_table().
@@ -744,11 +747,15 @@ def p_escritura(p):
     p[0] = [p[1], p[2], p[3], p[4]]
 
     quad_stack.push_quad(
-            modify_quad_object(
-                quad_stack.write_quad(
-                    expresion_to_symbols(p[3], global_func_table, current_state),
-                    current_state.get_curr_state_table()), global_func_table),
-            current_state.get_curr_state_table())
+        modify_quad_object(
+            quad_stack.write_quad(
+                expresion_to_symbols(p[3], global_func_table, current_state),
+                current_state.get_curr_state_table(),
+            ),
+            global_func_table,
+        ),
+        current_state.get_curr_state_table(),
+    )
 
 
 # TERMINAL
@@ -1101,15 +1108,19 @@ def p_parametro(p):
                 current_state.get_curr_state_table(),
                 global_func_table,
             )
-            quad_stack.push_quad(modify_quad_object(
-                quad_stack.validate_parameters(
-                    global_func_table.get_function_parameters(
-                        current_state.get_curr_state_opt()
+            quad_stack.push_quad(
+                modify_quad_object(
+                    quad_stack.validate_parameters(
+                        global_func_table.get_function_parameters(
+                            current_state.get_curr_state_opt()
+                        ),
+                        parameter_expresion,
+                        current_state.get_curr_state_table(),
                     ),
-                    parameter_expresion,
-                    current_state.get_curr_state_table(),
-                ), global_func_table),
-                current_state.get_curr_state_table())
+                    global_func_table,
+                ),
+                current_state.get_curr_state_table(),
+            )
 
     else:
         print("ERROR: Error trying to validate parameters")
@@ -1476,8 +1487,9 @@ def p_dimension(p):
         current_state.pop_curr_state()
     elif len(p) == 2:
         global_func_table.insert_to_constant_table(
-        expresion_to_symbols(p[1], global_func_table, current_state)
-    )
+            expresion_to_symbols(p[1], global_func_table, current_state)
+        )
+
 
 def p_dim_val(p):
     """
@@ -1554,7 +1566,8 @@ def p_llamada_obj(p):
 
         quad_stack.object_method_quad(
             expresion_to_symbols([p[1], p[3], p[5]], global_func_table, current_state),
-            current_state.get_curr_state_table(), global_func_table
+            current_state.get_curr_state_table(),
+            global_func_table,
         )
 
 

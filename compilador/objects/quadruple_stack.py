@@ -73,7 +73,7 @@ class QuadrupleStack(object):
             i -= 1
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
-            
+
             print(sol)
             sys.exit()
         else:
@@ -194,16 +194,23 @@ class QuadrupleStack(object):
                 ):
                     print("ERROR: using a non-int value to try to access an array")
                     sys.exit()
-            limI = Symbol(array_id.dimension_nodes[DIM_COUNT]["LI"], "INT", "Constant Segment")
-            limS = Symbol(array_id.dimension_nodes[DIM_COUNT]["LS"], "INT", "Constant Segment")
-            ft.insert_to_constant_table([limI,limS])
-            self.push_quad(modify_quad_object(
-                Quadruple(
-                    Symbol("VER", "instructions", scope),
-                    exp_sent,
-                    limI,
-                    limS,
-                    ), ft),
+            limI = Symbol(
+                array_id.dimension_nodes[DIM_COUNT]["LI"], "INT", "Constant Segment"
+            )
+            limS = Symbol(
+                array_id.dimension_nodes[DIM_COUNT]["LS"], "INT", "Constant Segment"
+            )
+            ft.insert_to_constant_table([limI, limS])
+            self.push_quad(
+                modify_quad_object(
+                    Quadruple(
+                        Symbol("VER", "instructions", scope),
+                        exp_sent,
+                        limI,
+                        limS,
+                    ),
+                    ft,
+                ),
                 scope,
             )
 
@@ -211,18 +218,25 @@ class QuadrupleStack(object):
             if DIM_COUNT < len(DIM):
                 temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
                 ft.push_temporal(temp)
-                
-                m = Symbol(int(array_id.dimension_nodes[DIM_COUNT]["M"]), "INT", "Constant Segment")            
+
+                m = Symbol(
+                    int(array_id.dimension_nodes[DIM_COUNT]["M"]),
+                    "INT",
+                    "Constant Segment",
+                )
                 ft.insert_to_constant_table([m])
 
-                self.push_quad(modify_quad_object(
-                    Quadruple(
-                        Symbol("MUL", "operation", scope),
-                        self.array_stack.pop(),
-                        m,
-                        temp,
-                    ), ft),
-                    scope
+                self.push_quad(
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol("MUL", "operation", scope),
+                            self.array_stack.pop(),
+                            m,
+                            temp,
+                        ),
+                        ft,
+                    ),
+                    scope,
                 )
                 self.temp_count += 1
                 self.array_stack.append(self.qstack[self.count_prev].result_id)
@@ -231,8 +245,13 @@ class QuadrupleStack(object):
                 aux_1 = self.array_stack.pop()
                 temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
                 ft.push_temporal(temp)
-                self.push_quad(modify_quad_object(
-                    Quadruple(Symbol("ADD", "operation", scope), aux_1, aux_2, temp),ft),
+                self.push_quad(
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol("ADD", "operation", scope), aux_1, aux_2, temp
+                        ),
+                        ft,
+                    ),
                     scope,
                 )
                 self.temp_count += 1
@@ -248,35 +267,43 @@ class QuadrupleStack(object):
         aux_1 = self.array_stack.pop()
         temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
         ft.push_temporal(temp)
-        m = Symbol(int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),"INT","Constant Segment",)            
+        m = Symbol(
+            int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),
+            "INT",
+            "Constant Segment",
+        )
         ft.insert_to_constant_table([m])
-        self.push_quad(modify_quad_object(
-                    Quadruple(
-                        Symbol("ADD", "operation", scope),
-                            aux_1,
-                            m,
-                            temp), ft), scope)
-        
+        self.push_quad(
+            modify_quad_object(
+                Quadruple(Symbol("ADD", "operation", scope), aux_1, m, temp), ft
+            ),
+            scope,
+        )
+
         self.temp_count += 1
         self.array_stack.append(self.qstack[self.count_prev].result_id)
         aux_1 = self.array_stack.pop()
         temp = Symbol(
-            "(" + str("T" + str(self.temp_count)) + ")", "INT", scope, address_flag=True)
+            "(" + str("T" + str(self.temp_count)) + ")", "INT", scope, address_flag=True
+        )
         ft.push_temporal(temp)
-        self.push_quad(modify_quad_object(
-            Quadruple(
-                Symbol("ADD", "operation", scope),
-                aux_1,
-                BaseAddress(
-                    str(str(array_id.name) + "-BA"),
-                    array_id,
-                    array_id.name,
-                    array_id.type,
-                    array_id.scope,
-                    array_id.address[0],
+        self.push_quad(
+            modify_quad_object(
+                Quadruple(
+                    Symbol("ADD", "operation", scope),
+                    aux_1,
+                    BaseAddress(
+                        str(str(array_id.name) + "-BA"),
+                        array_id,
+                        array_id.name,
+                        array_id.type,
+                        array_id.scope,
+                        array_id.address[0],
+                    ),
+                    temp,
                 ),
-                temp,
-            ), ft),
+                ft,
+            ),
             scope,
         )
         self.temp_count += 1
@@ -379,18 +406,33 @@ class QuadrupleStack(object):
             find_return_symbol = find_return_symbol.get_var_symbol(scope)
             if self.expresion_or_id(exp, type, "Return"):
                 exp = exp[0]
-                self.push_quad(modify_quad_object(
-                    Quadruple(Symbol("RETURN", exp.type, scope), exp, None, find_return_symbol), ft), scope
+                self.push_quad(
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol("RETURN", exp.type, scope),
+                            exp,
+                            None,
+                            find_return_symbol,
+                        ),
+                        ft,
+                    ),
+                    scope,
                 )
             else:
-                self.push_quad(modify_quad_object(
-                    Quadruple(
-                        Symbol(
-                            "RETURN", self.qstack[self.count_prev].result_id.type, scope
+                self.push_quad(
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol(
+                                "RETURN",
+                                self.qstack[self.count_prev].result_id.type,
+                                scope,
+                            ),
+                            self.qstack[self.count_prev].result_id,
+                            None,
+                            find_return_symbol,
                         ),
-                        self.qstack[self.count_prev].result_id,
-                        None,
-                        find_return_symbol), ft),
+                        ft,
+                    ),
                     scope,
                 )
         else:
@@ -412,8 +454,11 @@ class QuadrupleStack(object):
             temp = Symbol(str("T" + str(self.temp_count)), func_var.type, scope)
             ft.push_temporal(temp)
 
-            self.push_quad(modify_quad_object(
-                Quadruple(Symbol("EQ", "assignment", scope), func_var, None, temp), ft),
+            self.push_quad(
+                modify_quad_object(
+                    Quadruple(Symbol("EQ", "assignment", scope), func_var, None, temp),
+                    ft,
+                ),
                 scope,
             )
             self.temp_count += 1
@@ -442,16 +487,18 @@ class QuadrupleStack(object):
             if data[2].type == "parentheses":
                 s = Symbol(1, "INT", "Constant Segment")
                 ft.insert_to_constant_table([s])
-                self.push_quad(modify_quad_object(
-                    Quadruple(
-                        data[1], data[0], None, s
-                    ),ft),
+                self.push_quad(
+                    modify_quad_object(Quadruple(data[1], data[0], None, s), ft),
                     scope,
                 )
             else:
                 if Symbol.check_type_compatibility("INT", data[2].type):
-                    self.push_quad(modify_quad_object(
-                        Quadruple(data[1], data[0], None, data[2]),ft), scope)
+                    self.push_quad(
+                        modify_quad_object(
+                            Quadruple(data[1], data[0], None, data[2]), ft
+                        ),
+                        scope,
+                    )
                 else:
                     print("ERROR: Error parameter in object method not INT type")
                     sys.exit()

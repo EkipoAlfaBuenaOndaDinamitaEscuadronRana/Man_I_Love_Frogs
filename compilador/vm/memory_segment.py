@@ -113,19 +113,17 @@ class MemorySegment(object):
             self.__assign_memory(symbol, symbol_position)
             self.__substract_memory(symbol)
 
-
             return True
 
         return False
 
-    def modify_address(self, symbol, address):            
+    def modify_address(self, symbol, address):
         if address not in self.__memory.keys():
             self.__assign_memory(symbol, address)
 
     def search_symbol(self, direction):
         direction = direction - self.initial_position
         return self.__memory.get(direction, None)
-    
 
     def search_value(self, direction):
         direction = direction - self.initial_position
@@ -135,20 +133,19 @@ class MemorySegment(object):
         direction = direction - self.initial_position
         self.__memory_values[direction] = value
 
-
     def print_memory_segment(self):
         print("##### MEMORY ", self.name, " ##########")
         for space in self.__memory:
             self.__memory[space].print_symbol()
             print("SAVED_VALUE:", self.__memory_values[space])
             print("................")
-        #print(self.__memory_values)
+        # print(self.__memory_values)
 
     def save_local_memory(self):
         local_data = {}
         for space in self.__memory:
             local_data[space] = self.__memory[space].value
-        
+
         return local_data
 
     def erase_local_memory(self):
@@ -158,7 +155,7 @@ class MemorySegment(object):
             self.__memory_values[space] = None
 
     def backtrack_memory(self, frozen_memory):
-        for k,v in frozen_memory.items():
+        for k, v in frozen_memory.items():
             self.__memory[k].value = v
             self.__memory[k].segment_direction = k
             self.__memory[k].global_direction = k + self.initial_position

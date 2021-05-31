@@ -33,7 +33,7 @@ class VariableTable(object):
 
     def get_size(self):
         size = 0
-        for k,v in self.variables.items():
+        for k, v in self.variables.items():
             if v.is_dimensioned():
                 size += v.get_dimension_sizes()
             else:

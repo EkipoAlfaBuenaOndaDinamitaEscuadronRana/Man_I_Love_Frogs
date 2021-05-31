@@ -84,7 +84,7 @@ class Symbol(object):
         return_location=[],
         dimension_sizes=[],
         address=[],
-        address_flag = False
+        address_flag=False,
     ):
         self.name = name
         self.type = type_dictionary[type] if type in type_dictionary else None

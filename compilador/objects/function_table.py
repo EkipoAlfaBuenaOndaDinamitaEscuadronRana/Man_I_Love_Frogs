@@ -52,7 +52,7 @@ class FunctionTable(object):
         if temps > 0:
             temps -= 1
         return self.functions[name]["vt"].get_size() + temps
-    
+
     def set_function_size_at(self, name, size):
         self.functions[name]["s"] = size
 
@@ -60,8 +60,7 @@ class FunctionTable(object):
         for c in constant:
             if not self.functions["Constant Segment"]["vt"].lookup_variable(c.name):
                 self.functions["Constant Segment"]["vt"].set_variable(c)
-        
-        
+
     def get_function(self, name):
         return self.functions[name]
 
