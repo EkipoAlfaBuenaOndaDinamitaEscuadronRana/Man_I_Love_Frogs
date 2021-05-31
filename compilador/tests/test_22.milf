@@ -2,7 +2,7 @@ program ejemplo;
 int i,j,p,k;
 int Arreglo[10];
 int valor = 2;
-int Matriz[3][8];
+int Matriz[10][10];
 
 func int fact(int j){
     int i;
@@ -13,6 +13,7 @@ func int fact(int j){
         return (j * fact(j - 1));
     }
 }
+
 
 func void inicia(int y){
     int x;
@@ -29,22 +30,12 @@ func void inicia(int y){
     inicia(p * j - 5);
 
     for(i = 0; i < 9; i += 1){
-        Arreglo[i] = i;
+        Arreglo[i] = i + 5;
     }
     
     for(j = 0; j < 2; j += 1){
         for(k = 0; k < 7; k += 1){
             Matriz[j][k] = k + j;
-        }
-    }
-    write("A");
-    for(i = 0; i < 9; i += 1){
-        write(Arreglo[i]);
-    }
-    write("B");
-    for(j = 0; j < 2; j += 1){
-        for(k = 0; k < 7; k += 1){
-            write(Matriz[j][k]);
         }
     }
 
@@ -64,7 +55,7 @@ func void inicia(int y){
         write(valor);
         write(fact(i + 2));
 
-        write(fact(i + 2) * 3);
+        write(fact(i + 2) * valor);
         i -= 1;
     }
 }

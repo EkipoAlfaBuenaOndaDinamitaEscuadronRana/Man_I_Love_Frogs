@@ -463,11 +463,13 @@ class QuadrupleStack(object):
             )
             self.temp_count += 1
 
-    def write_quad(self, exp, scope):
-        if len(exp) == 1:
-            exp = exp[0]
-        else:
-            exp = self.qstack[self.count_prev].result_id
+    def write_quad(self, scope, exp=None):
+        if exp:
+            if len(exp) == 1:
+                exp = exp[0]
+            else:
+                exp = self.qstack[self.count_prev].result_id
+
         a = Quadruple(Symbol("WRITE", "instruction", scope), None, None, exp)
         return a
 
