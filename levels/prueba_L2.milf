@@ -1,0 +1,28 @@
+program level2;
+
+
+
+func void salta (frog f, int n){
+    int m = n + n;
+    f.jump_right(m);
+    f.jump_up(n);
+    
+
+}
+
+
+{
+    frog amigos[2];
+    frog rositaFresita;
+    frog dinoAdrian;
+
+    amigos[0] = rositaFresita;
+    amigos[1] = dinoAdrian;
+
+    int i;
+    for(i = 0; i < 2; i+=1){
+        salta(amigos[i], i + 1);
+        write();
+    }
+}
+

@@ -1,5 +1,6 @@
 import sys
 
+######## TOKENS DE PALABRAS RESERVADAS ########
 reserved = {
     # DECLARACIONES
     "program": "PROGRAM",  # program
@@ -15,13 +16,12 @@ reserved = {
     "int": "INT",  # int
     "float": "FLT",  # float
     "string": "STR",  # string
+    "char": "CHAR",  # char
     "bool": "BOOL",  # bool
     "frog": "FROG",  # player
     "void": "VOID",  # void
     # OBJ ATRs & MTDs
-    "color": "COLOR",  # color
     "hat": "HAT",  # hat
-    "items": "ITEMS",  # items
     "jump_left": "JL",  # jump_left
     "jump_right": "JR",  # jump_right
     "jump_up": "JU",  # jump_up
@@ -43,8 +43,8 @@ tokens = [
     "CCB",  # }
     "OP",  # (
     "CP",  # )
-    "OSB",  # {
-    "CSB",  # }
+    "OSB",  # [
+    "CSB",  # ]
     "GT",  # >
     "GTE",  # >=
     "LT",  # <
@@ -65,14 +65,17 @@ tokens = [
     "MULEQ",  # *=
     "DIVEQ",  # /=
     "MODEQ",  # %=
-    "ID",  # [A-Za-z]* | ([A-Za-z]* && [0-9]*)
-    "CINT",  # [0-9]*
-    "CFLT",  # [0-9]* | ([0-9]* . [0-9]*)
-    "CSTRING",  # "([ ^ " | ^' ])*"
-    "CCHAR",  # "([ ^ " | ^' ])"
-    "CBOOL",  # (true | false | [0-9]*) TODO: ¿Tambien es un int?
+    "ID",  # id : [a-z]([A-Za-z]|[0-9]|[_])*
+    "CINT",  # constant int : d+
+    "CFLT",  # constant float : d+ . d+
+    "CSTRING",  # constant string : ("|')([^"|^'])*("|')
+    "CCHAR",  # constant char : ("|')([^"|^'])("|')
 ] + list(reserved.values())
 
+
+######## EXPRESIONES REGULARES ########
+
+# Tokens
 t_SCOL = r"\;"
 t_COMMA = r"\,"
 t_DOT = r"\."
@@ -106,50 +109,62 @@ t_MODEQ = r"\%\="
 
 t_ignore = r" "
 
+# Comentarios tipo C : // or /* */
+def t_ccode_comment(t):
+    r"(/\*(.|\n)*?\*/)|(//.*)"
+    pass
 
+
+# Tab para accesar la linea actual
 def t_tab(t):
     r"\t+"
 
     t.lexer.lineno += len(t.value)
 
 
+# New Line  para accesar la linea actual
 def t_NL(t):
     r"\n+"
     t.lexer.lineno += len(t.value)
 
 
+# Float Constante
+def t_CFLT(t):
+    r"\d+\.\d+"
+    t.value = float(t.value)
+    print(t)
+    return t
+
+
+# Int Constante
 def t_CINT(t):
     r"\d+"
     t.value = int(t.value)
     return t
 
 
-def t_CFLT(t):
-    r"\d+\.\d+"
-    t.value = float(t.value)
-    return t
-
-
+# Char constante
 def t_CCHAR(t):
     r'("|\')([^\"|^\'])("|\')'
     t.value = str(t.value)
     return t
 
 
+# String constante
 def t_CSTRING(t):
     r'("|\')([^\"|^\'])*("|\')'
     t.value = str(t.value)
     return t
 
 
+# ID de variables
 def t_ID(t):
-    r"[A-za-z]([A-za-z]|[0-9])*"
+    r"[a-z]([A-Za-z]|[0-9]|[_])*"
     t.type = reserved.get(t.value, "ID")
     return t
 
 
+# ERROR HANDLING : iprime linea token invalido
 def t_error(t):
-    print("Token Error!")
-    print(t)
-    print("\n")
-    t.lexer.skip(1)
+    print("ERROR: Invalid token in line", t.lineno)
+    sys.exit()

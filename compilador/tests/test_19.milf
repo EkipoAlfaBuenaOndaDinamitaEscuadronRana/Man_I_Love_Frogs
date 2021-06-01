@@ -1,0 +1,10 @@
+program simpleInput;
+
+{
+    int a, b;
+
+    write("ingresa dos numeros para a y b:");
+    read(a, b);
+
+    write(a + b);
+}

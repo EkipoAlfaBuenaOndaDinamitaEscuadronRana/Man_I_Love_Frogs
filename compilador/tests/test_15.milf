@@ -1,0 +1,10 @@
+program supersimple;
+{
+    bool boolA = true;
+    bool boolB = false;
+    int a = 1;
+    int b = 2;
+
+    write(boolA || boolB);
+    write(a + b);
+}

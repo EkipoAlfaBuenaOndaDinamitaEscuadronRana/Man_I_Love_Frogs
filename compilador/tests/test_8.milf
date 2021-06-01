@@ -1,0 +1,12 @@
+program forsimplequad;
+int a = 0;
+int b = 10;
+
+{
+    
+    for(b times){
+        a += 1;
+    } 
+    
+    write(a);
+}

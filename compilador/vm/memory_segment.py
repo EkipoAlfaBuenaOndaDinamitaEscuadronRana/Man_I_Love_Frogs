@@ -8,6 +8,7 @@ class MemorySegment(object):
         self.name = name
         self.size = size
         self.__memory = dict()
+        self.__memory_values = dict()
         self.__symbol_directions = dict()
         self.__subsegment_size = size // 7
         self.initial_position = initial_position
@@ -88,12 +89,15 @@ class MemorySegment(object):
 
     # TODO: Does not assign arrays
     def __assign_memory(self, symbol, symbol_position):
-        # Scalar or array size 1
-        if symbol.memory_size() == 1:
+        # Scalar
+        if type(symbol) == Symbol:
             symbol.segment_direction = symbol_position
             symbol.global_direction = self.initial_position + symbol_position
             self.__memory[symbol_position] = symbol
-
+            self.__memory_values[symbol_position] = symbol.value
+            if self.name == "Constant Segment" or symbol.type == "FROG":
+                symbol.value = symbol.name
+                self.__memory_values[symbol_position] = symbol.name
         # Two- or three-dimensional array
         else:
             pass
@@ -113,6 +117,45 @@ class MemorySegment(object):
 
         return False
 
+    def modify_address(self, symbol, address):
+        if address not in self.__memory.keys():
+            self.__assign_memory(symbol, address)
+
     def search_symbol(self, direction):
         direction = direction - self.initial_position
         return self.__memory.get(direction, None)
+
+    def search_value(self, direction):
+        direction = direction - self.initial_position
+        return self.__memory_values.get(direction, None)
+
+    def modify_value(self, direction, value):
+        direction = direction - self.initial_position
+        self.__memory_values[direction] = value
+
+    def print_memory_segment(self):
+        print("##### MEMORY ", self.name, " ##########")
+        for space in self.__memory:
+            self.__memory[space].print_symbol()
+            print("SAVED_VALUE:", self.__memory_values[space])
+            print("................")
+        # print(self.__memory_values)
+
+    def save_local_memory(self):
+        local_data = {}
+        for space in self.__memory:
+            local_data[space] = self.__memory[space].value
+
+        return local_data
+
+    def erase_local_memory(self):
+        for space in self.__memory:
+            self.__memory[space].segment_direction = None
+            self.__memory[space].global_direction = None
+            self.__memory_values[space] = None
+
+    def backtrack_memory(self, frozen_memory):
+        for k, v in frozen_memory.items():
+            self.__memory[k].value = v
+            self.__memory[k].segment_direction = k
+            self.__memory[k].global_direction = k + self.initial_position

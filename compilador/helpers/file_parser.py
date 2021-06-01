@@ -7,10 +7,11 @@ from compilador.lexer import *
 
 import sys
 
+# Genera parser y lexer
 lexer_loc = lex.lex()
 parser_loc = yacc.yacc()
 
-
+# Función que envia contendio de un archivo a parser
 def parser_file(file_name, test=None):
 
     file = open(file_name, "r")
@@ -20,6 +21,9 @@ def parser_file(file_name, test=None):
 
     if line:
         if test:
+
             line = ":" + line
+
         quads = parser_loc.parse(line)
+
     return quads

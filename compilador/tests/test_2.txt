@@ -1,4 +1,0 @@
-program test; 
-{
-    int a = 1;
-}

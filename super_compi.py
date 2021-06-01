@@ -1,13 +1,11 @@
-import sys
-import compilador.helpers.file_parser
-from compilador.helpers.file_parser import *
+from pygame.constants import AUDIO_ALLOW_FORMAT_CHANGE
+from execute import *
 
-if len(sys.argv) > 1:
-    i = 1
-    while i < len(sys.argv):
-        print(sys.argv[i])
-        print(parser_file(sys.argv[i]))
-        i += 1
-else:
-    print("DEFAULT: compilador/tests/test_12.txt")
-    print(parser_file("compilador/tests/test_12.txt"))
+
+Executer("compilador/tests/test_28.milf").run(
+    print_running=True,
+    print_pre_quads=True,
+    print_post_quads=False,
+    print_instructions=False,
+    run_game=False,
+)

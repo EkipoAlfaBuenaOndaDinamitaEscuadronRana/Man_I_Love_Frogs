@@ -1,0 +1,13 @@
+program simpleIfs;
+
+{
+    if (1 == 3) {
+      write("uno");
+    } else if (3 == 4) {
+      write("dos");
+    } else if (4 > 5) {
+      write("tres");
+    } else {
+      write("cuatro");
+    }
+}

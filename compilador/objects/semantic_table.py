@@ -4,12 +4,15 @@ from compilador.objects.function_table import *
 
 
 class SemanticTable:
-    types = {"INT", "FLT", "CHAR", "STR", "BOOL", "NULL"}
+    types = {"INT", "FLT", "CHAR", "STR", "BOOL", "NULL", "FROG"}
 
-    #                  <     >     <=     >=
+    #                 <     >     <=     >=
     comparison_op = {"LT", "GT", "LTE", "GTE"}
 
-    __operations_op = {
+    #               ==     !=      ||    &&
+    matching_op = {"BEQ", "BNEQ", "OR", "AND"}
+
+    operations_op = {
         "ADD",  # +
         "SUB",  # -
         "MUL",  # *
@@ -17,7 +20,7 @@ class SemanticTable:
         "MOD",  # %
     }
 
-    __assignment_operations_op = {
+    assignment_operations_op = {
         "ADDEQ",  # +=
         "SUBEQ",  # -=
         "MULEQ",  # *=
@@ -25,57 +28,54 @@ class SemanticTable:
         "MODEQ",  # %=
     }
 
-    #               ==     !=      ||    &&
-    matching_op = {"BEQ", "BNEQ", "OR", "AND"}
-
     __operations = {
         "INT": {
             "INT": "INT",
             "FLT": "FLT",
             "CHAR": "INT",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "FLT": {
             "INT": "FLT",
             "FLT": "FLT",
             "CHAR": "FLT",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "CHAR": {
             "INT": "INT",
             "FLT": "FLT",
             "CHAR": "STR",
             "STR": "STR",
-            "BOOL": "error",
-            "NULL": "error",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "STR": {
-            "INT": "error",
-            "FLT": "error",
+            "INT": "ERROR",
+            "FLT": "ERROR",
             "CHAR": "STR",
             "STR": "STR",
-            "BOOL": "error",
-            "NULL": "error",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "BOOL": {
             "INT": "BOOL",
             "FLT": "BOOL",
-            "CHAR": "error",
-            "STR": "error",
+            "CHAR": "ERROR",
+            "STR": "ERROR",
             "BOOL": "BOOL",
-            "NULL": "error",
+            "NULL": "ERROR",
         },
         "NULL": {
-            "INT": "error",
-            "FLT": "error",
-            "CHAR": "error",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "INT": "ERROR",
+            "FLT": "ERROR",
+            "CHAR": "ERROR",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
     }
 
@@ -84,49 +84,49 @@ class SemanticTable:
             "INT": "BOOL",
             "FLT": "BOOL",
             "CHAR": "BOOL",
-            "STR": "error",
+            "STR": "ERROR",
             "BOOL": "BOOL",
-            "NULL": "error",
+            "NULL": "ERROR",
         },
         "FLT": {
             "INT": "BOOL",
             "FLT": "BOOL",
             "CHAR": "BOOL",
-            "STR": "error",
+            "STR": "ERROR",
             "BOOL": "BOOL",
-            "NULL": "error",
+            "NULL": "ERROR",
         },
         "CHAR": {
             "INT": "BOOL",
             "FLT": "BOOL",
             "CHAR": "BOOL",
             "STR": "BOOL",
-            "BOOL": "error",
-            "NULL": "error",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "STR": {
-            "INT": "error",
-            "FLT": "error",
+            "INT": "ERROR",
+            "FLT": "ERROR",
             "CHAR": "BOOL",
             "STR": "BOOL",
-            "BOOL": "error",
-            "NULL": "error",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "BOOL": {
-            "INT": "error",
-            "FLT": "error",
-            "CHAR": "error",
-            "STR": "error",
+            "INT": "ERROR",
+            "FLT": "ERROR",
+            "CHAR": "ERROR",
+            "STR": "ERROR",
             "BOOL": "BOOL",
             "NULL": "BOOL",
         },
         "NULL": {
-            "INT": "error",
-            "FLT": "error",
-            "CHAR": "error",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "INT": "ERROR",
+            "FLT": "ERROR",
+            "CHAR": "ERROR",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
     }
 
@@ -135,57 +135,57 @@ class SemanticTable:
             "INT": "INT",
             "FLT": "FLT",
             "CHAR": "INT",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "FLT": {
             "INT": "FLT",
             "FLT": "FLT",
             "CHAR": "FLT",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "CHAR": {
             "INT": "CHAR",
-            "FLT": "error",
-            "CHAR": "error",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "FLT": "ERROR",
+            "CHAR": "ERROR",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "STR": {
-            "INT": "error",
-            "FLT": "error",
+            "INT": "ERROR",
+            "FLT": "ERROR",
             "CHAR": "STR",
             "STR": "STR",
-            "BOOL": "error",
-            "NULL": "error",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
         "BOOL": {
             "INT": "BOOL",
             "FLT": "BOOL",
-            "CHAR": "error",
-            "STR": "error",
+            "CHAR": "ERROR",
+            "STR": "ERROR",
             "BOOL": "BOOL",
-            "NULL": "error",
+            "NULL": "ERROR",
         },
         "NULL": {
-            "INT": "error",
-            "FLT": "error",
-            "CHAR": "error",
-            "STR": "error",
-            "BOOL": "error",
-            "NULL": "error",
+            "INT": "ERROR",
+            "FLT": "ERROR",
+            "CHAR": "ERROR",
+            "STR": "ERROR",
+            "BOOL": "ERROR",
+            "NULL": "ERROR",
         },
     }
 
     def clasify_symbol_op(symbol_op):
-        if symbol_op in SemanticTable.__operations_op:
+        if symbol_op in SemanticTable.operations_op:
             return "operation"
 
-        elif symbol_op in SemanticTable.__assignment_operations_op:
+        elif symbol_op in SemanticTable.assignment_operations_op:
             return "assignment_operation"
 
         elif symbol_op in SemanticTable.comparison_op:
@@ -200,18 +200,26 @@ class SemanticTable:
     def considerate(symbol_1, symbol_op, symbol_2):
         # When input is in string
         if [type(symbol_1), type(symbol_op), type(symbol_2)] == [str, str, str]:
-
             # Convert symbol into correct type
             symbol_op = SemanticTable.clasify_symbol_op(symbol_op)
 
         # When input is in symbol
         else:
-            symbol_1 = symbol_1.type
-            symbol_2 = symbol_2.type
+
+            if symbol_1.address_flag:
+                symbol_1 = symbol_1.address_flag
+            else:
+                symbol_1 = symbol_1.type
+
+            if symbol_2.address_flag:
+                symbol_2 = symbol_2.address_flag
+            else:
+                symbol_2 = symbol_2.type
+
             symbol_op = symbol_op.type
 
         if symbol_1 not in SemanticTable.types or symbol_2 not in SemanticTable.types:
-            return "error"
+            return "ERROR"
 
         elif symbol_op == "operation":
             return SemanticTable.__operations[symbol_1][symbol_2]
@@ -226,7 +234,11 @@ class SemanticTable:
             return "BOOL"
 
         elif symbol_op == "assignment":
-            return symbol_1 if symbol_1 == symbol_2 else "error"
+            return (
+                symbol_2
+                if Symbol.check_type_compatibility(symbol_1, symbol_2)
+                else "ERROR"
+            )
 
         else:
-            return "error"
+            return "ERROR"

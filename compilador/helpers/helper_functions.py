@@ -1,3 +1,4 @@
+from compilador.objects.quadruple import Quadruple
 from router_solver import *
 import compilador.objects.function_table
 import compilador.objects.symbol
@@ -8,6 +9,10 @@ from compilador.objects.symbol import *
 import sys
 import re
 
+# ARCHIVO CON FUNCIONES DE AYUDA AL PARSER
+# CONVIERTEN INPUT DEL PARSER A SYMBLOS
+
+# Diccionario de operandos a simbolos
 operators = {
     "+": Symbol("ADD", "operation"),
     "-": Symbol("SUB", "operation"),
@@ -16,6 +21,8 @@ operators = {
     "%": Symbol("MOD", "operation"),
     "(": Symbol("OP", "parentheses"),
     ")": Symbol("CP", "parentheses"),
+    "[": Symbol("OSB", "parentheses"),
+    "]": Symbol("CSB", "parentheses"),
     "!": Symbol("NOT", "not"),
     "=": Symbol("EQ", "assignment"),
     "<": Symbol("LT", "comparison"),
@@ -25,6 +32,7 @@ operators = {
     "==": Symbol("BEQ", "matching"),
     "!=": Symbol("BNEQ", "matching"),
     "||": Symbol("OR", "matching"),
+    "&&": Symbol("AND", "matching"),
     "+=": Symbol("ADDEQ", "assignment_operation"),
     "-=": Symbol("SUBEQ", "assignment_operation"),
     "*=": Symbol("MULEQ", "assignment_operation"),
@@ -38,7 +46,7 @@ operators = {
     "jump_down": Symbol("JD", "obj_method"),
 }
 
-
+# Aplana una lista con listas anidadas
 def flatten_list(data):
     flat_list = []
     if type(data) != list:
@@ -51,6 +59,7 @@ def flatten_list(data):
     return flat_list
 
 
+# Conviererte parametros a symbolos
 def get_parameters(line):
     paramlist = []
     line = flatten_list(line)
@@ -64,6 +73,7 @@ def get_parameters(line):
     return paramlist
 
 
+# Convierte la lista del parser a un string
 def expresion_to_string(expression):
     if type(expression) != list:
         return str(expression)
@@ -77,8 +87,8 @@ def expresion_to_string(expression):
         return str_exp
 
 
+# Convierte declaración de variables a simbolos
 def get_variables(type, line):
-    # print("INPUT: " + str(line))
     line = flatten_list(line)
     varList = {}
     while line[0] != ";":
@@ -89,31 +99,55 @@ def get_variables(type, line):
             line = line[2:]
             varList.update({currSymbol: expresion_to_string(line[:-1])})
             line = line[-1]
+        elif line[1] == "[":
+            dim_1 = []
+            dim_2 = []
+            while line[2] != "]":
+                dim_1.append(line[2])
+                line.pop(2)
+            dim_1 = expresion_to_string(dim_1)
+            line.pop(2)
+            line.pop(1)
+            if line[1] == "[":
+                while line[2] != "]":
+                    dim_2.append(line[2])
+                    line.pop(2)
+                dim_2 = expresion_to_string(dim_2)
+                line.pop(2)
+                line.pop(1)
+            if line[1] == "=":
+                print("ERROR: Can't assign a value dimensioned type in declaration")
+                sys.exit()
+            if len(dim_2) > 0:
+                dim_1
+                currSymbol = Symbol(line[0], type, dimension_sizes=[dim_1, dim_2])
+            else:
+                currSymbol = Symbol(line[0], type, dimension_sizes=[dim_1])
+            varList.update({currSymbol: None})
+            line.pop(0)
         else:
             currSymbol = Symbol(line[0], type)
             varList.update({currSymbol: None})
             line.pop(0)
 
-    # for e in varList:
-    # print("OUTPUT: " + str(e.name) + " " + str(e.type) + " " + str(varList[e]))
     return varList
 
 
+# Busca variable con asignación en declaración de variable
 def dec_to_as(exp):
-    exp.pop()
-    if "," in exp:
-        loc = exp.index(",")
-        while "," in exp:
-            exp = exp[loc + 1 :]
-            if "," in exp:
-                loc = exp.index(",")
-    return exp
+    if "=" not in exp:
+        print("ERROR: Error trying to assing value in declaration")
+        sys.exit()
+    else:
+        loc = exp.index("=") - 1
+        return exp[loc:-1]
 
 
+# Evalua constantes y les asigna un tipo
 def constant_eval(const):
     patterns = {
-        "INT": r"\d+",
-        "FLT": r"\d+\.\d+",
+        "INT": r"(\d+|-\d+)",
+        "FLT": r"(\d+\.\d+|-\d+\.\d+)",
         "CHAR": r'("|\')([^\"|^\'])("|\')',
         "BOOL": r"(?:true|false)",
         "NULL": r"null",
@@ -128,6 +162,77 @@ def constant_eval(const):
     return None
 
 
+# Valida que la cantidad de dimensiones sean validas
+def validate_dimensions(symbol):
+    dim_list_input = symbol.dimension_sizes
+    dim_list_output = []
+    for d in dim_list_input:
+        d = int(d)
+        if d > 0:
+            dim_list_output.append(d)
+
+    if len(dim_list_input) == len(dim_list_output):
+        return dim_list_output
+    else:
+        return None
+
+
+# Crea diccionario de dimensiones para un arreglo
+def format_array_dimensions(exp):
+    data = {
+        "name": exp.pop(0),
+        "dim": [],
+    }
+    dim_1 = []
+    dim_2 = []
+    stack = []
+    stack.append(exp[0])
+    dim_1.append(exp.pop(0))
+    while len(exp) > 0 and len(stack) > 0:
+        if exp[0].name == "OSB":
+            stack.append(exp[0])
+        elif exp[0].name == "CSB":
+            stack.pop()
+        dim_1.append(exp.pop(0))
+    dim_1.pop(0)
+    dim_1.pop(-1)
+    data["dim"].append(dim_1)
+    if len(exp) > 0 and exp[0].name == "OSB":
+        stack.append(exp[0])
+        dim_2.append(exp.pop(0))
+        while len(exp) > 0 and len(stack) > 0:
+            if exp[0].name == "OSB":
+                stack.append(exp[0])
+            elif exp[0].name == "CSB":
+                stack.pop()
+            dim_2.append(exp.pop(0))
+        dim_2.pop(0)
+        dim_2.pop(-1)
+        data["dim"].append(dim_2)
+
+    return data
+
+
+# Ayuda con la consistencia de los objetos simbolo al generar cuadruplo
+def modify_quad_object(exp, ft):
+    ele = [exp.operand_1, exp.operand_2, exp.result_id]
+    result = []
+    for e in ele:
+        if e != None and ft.get_function_variable_table(e.scope).lookup_variable(
+            e.name
+        ):
+            result.append(
+                ft.get_function_variable_table(e.scope).get_var_symbol(e.name)
+            )
+        elif e != None and ft.lookup_temporal(e):
+            result.append(ft.get_temporal(e))
+        else:
+            result.append(e)
+
+    return Quadruple(exp.operator, result.pop(0), result.pop(0), result.pop(0))
+
+
+# Convierte una expresión del parser en una lista de simbolos
 def expresion_to_symbols(exp, ft, s, d=None):
     if type(exp) != list:
         exp = [exp]
@@ -136,14 +241,35 @@ def expresion_to_symbols(exp, ft, s, d=None):
     sym_list = []
     if d:
         exp = dec_to_as(exp)
+
     for e in exp:
         if e in operators:
-            sym_list.append(operators[e])
+            op = operators[e]
+            op.set_scope(s.get_curr_state_table())
+            sym_list.append(op)
         elif ft.lookup_function(e) and ("(" in exp and ")" in exp):
-            sym_list.append(Symbol(e, ft.get_function_type(e)))
-            start = exp.index("(")
-            end = exp.index(")") + 1
-            del exp[start:end]
+            ret_loc = (
+                ft.get_function_variable_table(s.get_global_table())
+                .get_var_symbol(e)
+                .get_return_location()
+            )
+            if ret_loc != None:
+                sym_list.append(ret_loc)
+            else:
+                sym_list.append(
+                    Symbol(e, ft.get_function_type(e), s.get_global_table())
+                )
+            stack = []
+            count = exp[exp.index(e) :].index("(") + exp.index(e)
+            stack.append(exp[count])
+            del exp[count]
+            while len(stack) > 0 and count < len(exp):
+                if exp[count] == "(":
+                    stack.append(exp[count])
+                elif exp[count] == ")":
+                    stack.pop()
+                exp.pop(count)
+
         elif ft.get_function_variable_table(s.get_curr_state_table()).lookup_variable(
             e
         ):
@@ -152,17 +278,18 @@ def expresion_to_symbols(exp, ft, s, d=None):
                     e
                 )
             )
+
         elif ft.get_function_variable_table(s.get_global_table()).lookup_variable(e):
             sym_list.append(
                 ft.get_function_variable_table(s.get_global_table()).get_var_symbol(e)
             )
         else:
             c_type = constant_eval(e)
-
             if c_type != None:
-                sym_list.append(Symbol(e, c_type))
+                sym_list.append(Symbol(e, c_type, "Constant Segment"))
+
             else:
-                print('ERROR: token " ' + str(e) + ' " not valid or not found')
+                print('ERROR: token "' + str(e) + '" not valid or not found')
                 sys.exit()
 
     return sym_list

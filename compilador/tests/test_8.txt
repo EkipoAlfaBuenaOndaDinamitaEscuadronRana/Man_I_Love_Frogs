@@ -1,9 +1,0 @@
-program forsimplequad;
-int a;
-int b = 10;
-{
-    for(6 times){
-        a = a + 1
-    }
-    b = b + a;
-}

@@ -3,11 +3,11 @@ program functions;
 int a = 0;
 
 func void hola(string nombre, string edad, int prueba){
-    string saludo = "hola me llamo";
+    string saludo = "hola me llamo ";
     saludo = saludo + nombre;
-    saludo = saludo + "y mi edad es ";
+    saludo = saludo + " y mi edad es ";
     saludo = saludo + edad;
-    
+    write(saludo);
 }
 
 {

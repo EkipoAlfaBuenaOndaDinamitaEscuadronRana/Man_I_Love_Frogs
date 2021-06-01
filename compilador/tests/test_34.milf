@@ -1,0 +1,24 @@
+program find;
+
+int array[10];
+
+func bool find_in_array(int item){
+    int i;
+    for(i = 0; i < 10; i+=1){
+     if(array[i] == item){
+        return i;
+        }
+    }
+    return -1;
+}
+
+{
+    int a = -1 + 1;
+    write(a);
+    int x;
+    for(x = 0; x < 10; x += 1){
+        array[x] = x + 5;
+    }
+    write(find_in_array(10));
+}
+

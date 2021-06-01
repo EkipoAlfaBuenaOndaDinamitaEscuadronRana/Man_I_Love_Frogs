@@ -1,0 +1,27 @@
+program ejemplo;
+int i,j,p,k;
+int Arreglo[10];
+int valor = 2;
+int Matriz[3][8];
+
+{
+    for(i = 0; i < 9; i += 1){
+        Arreglo[i] = i;
+    }
+    
+    for(j = 0; j < 2; j += 1){
+        for(k = 0; k < 7; k += 1){
+            Matriz[j][k] = k + j;
+        }
+    }
+    write("A");
+    for(i = 0; i < 9; i += 1){
+        write(Arreglo[i]);
+    }
+    write("B");
+    for(j = 0; j < 2; j += 1){
+        for(k = 0; k < 7; k += 1){
+            write(Matriz[j][k]);
+        }
+    }
+}
