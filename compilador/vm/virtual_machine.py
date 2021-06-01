@@ -253,10 +253,11 @@ class VirtualMachine(object):
             sys.exit()
 
     def __resolve_address_op(
-        self, operation, dir_opnd_1, dir_opnd_2, dir_result, index
+        self, operation, dir_opnd_1, dir_opnd_2, dir_result, parent_name, index
     ):
         val_opnd_1 = self.get_direction_value(dir_opnd_1)
         parent = self.get_direction_symbol(dir_opnd_2)
+        parent_dir = parent.segment_direction
         result = self.get_direction_symbol(dir_result)
 
         if val_opnd_1 == None or val_opnd_1 == "null":
@@ -264,19 +265,20 @@ class VirtualMachine(object):
             print("ERROR: variable " + str(sym_opnd_1) + " has no assigned value")
             sys.exit()
 
-        if dir_opnd_2 == None:
+        if dir_opnd_2 == None or parent_dir == None:
             print("ERROR: Variable " + str(parent.name) + " has not been declared")
             sys.exit()
 
         if operation == "ADD":
             result_value = val_opnd_1 + int(dir_opnd_2)
+            child_dir = val_opnd_1 + int(parent_dir)
             result.value = result_value
             self.modify_direction_value(dir_result, result_value)
-
             array_acces = Symbol(
-                str(parent.name) + "[ " + str(index) + " ]", parent.type, parent.scope
+                str(parent_name) + "[ " + str(index) + " ]", parent.type, parent.scope
             )
-            self.modify_address_symbol(array_acces, result_value)
+            print
+            self.modify_address_symbol(array_acces, child_dir)
 
     def __resolve_op(self, operation, dir_opnd_1, dir_opnd_2, dir_result):
         sym_opnd_1 = self.get_direction_symbol(dir_opnd_1)
@@ -321,6 +323,8 @@ class VirtualMachine(object):
 
             if operation == "ADD":
                 if type_op_1 == "STR" and type_op_2 == "STR":
+                    if val_opnd_1[0] != val_opnd_2[0]:
+                        val_opnd_2[-1] = val_opnd_1[-1]
                     result_value = val_opnd_1[:-1] + val_opnd_2[1:]
                     sym_result.value = val_opnd_1[:-1] + val_opnd_2[1:]
                 else:
@@ -450,42 +454,81 @@ class VirtualMachine(object):
         symbol = self.get_direction_symbol(dir_result)
 
         if symbol.type == "INT":
-            self.modify_direction_value(dir_result, int(user_input))
-            symbol.value = int(user_input)
+            user_input = user_input.replace(" ", "")
+            try:
+                user_input = int(user_input)
+            except:
+                print("ERROR: Not a valid INT input")
+                sys.exit()
+            self.modify_direction_value(dir_result, user_input)
+            symbol.value = user_input
 
         elif symbol.type == "FLT":
-            self.modify_direction_value(dir_result, float(user_input))
-            symbol.value = float(user_input)
+            user_input = user_input.replace(" ", "")
+            try:
+                user_input = float(user_input)
+            except:
+                print("ERROR: Not a valid FLT input")
+                sys.exit()
+            self.modify_direction_value(dir_result, user_input)
+            symbol.value = user_input
 
         elif symbol.type == "CHAR":
             # TODO: Ver como validar que sea un solo char
+            user_input = user_input.replace(" ", "")
             if len(user_input) > 1:
-                print("ERROR: not a valid char input")
+                print("ERROR: Not a valid CHAR input")
                 sys.exit()
-            self.modify_direction_value(dir_result, user_input[0])
-            symbol.value = user_input[0]
+            try:
+                user_input = str(user_input[0])
+                user_input = "'" + user_input + "'"
+            except:
+                print("ERROR: Not a valid CHAR input")
+                sys.exit()
+            self.modify_direction_value(dir_result, user_input)
+            symbol.value = user_input
 
         elif symbol.type == "STR":
-            self.modify_direction_value(dir_result, str(user_input))
+            try:
+                user_input = str(user_input)
+                user_input = '"' + user_input + '"'
+
+            except:
+                print("ERROR: Not a valid STR input")
+                sys.exit()
+            self.modify_direction_value(dir_result, user_input)
             symbol.value = user_input
 
         elif symbol.type == "BOOL":
-            booleans = {"true": True, "false": False, "1": True, "0": False}
-            self.modify_direction_value(dir_result, booleans[user_input])
-            symbol.value = booleans[user_input]
+            user_input = user_input.replace(" ", "")
+            booleans = {"true": True, "false": False, "0": False}
+            if user_input not in booleans:
+                try:
+                    user_input = int(user_input)
+                    user_input = True if user_input > 0 else False
+                except:
+                    print("ERROR: Not a valid BOOL input")
+                    sys.exit()
+            else:
+                user_input = booleans[user_input]
 
-        elif symbol.type == "NULL":
-            # TODO: Ver como validar que sea siempre null
-            if user_input == "null":
-                self.modify_direction_value(dir_result, None)
-                symbol.value = None
-        # print("########", symbol.value)
-        # print("########", symbol.type)
+            self.modify_direction_value(dir_result, user_input)
+            symbol.value = user_input
 
     def __resolve_frog_method(self, operation, dir_frog, dir_result):
-        valid_hats = {'"cowboy"': 1, '"cool"': 2, '"shoes"': 3, '"makeup"': 4}
+        valid_hats = {
+            '"cowboy"': 1,
+            '"cool"': 2,
+            '"shoes"': 3,
+            '"makeup"': 4,
+            "'cowboy'": 1,
+            "'cool'": 2,
+            "'shoes'": 3,
+            "'makeup'": 4,
+        }
+        frog = self.get_direction_value(dir_frog)
+
         if operation == "hat":
-            frog = self.get_direction_symbol(dir_frog).name
             hat = self.get_direction_value(dir_result)
             if hat not in valid_hats:
                 hat = 0
@@ -493,7 +536,6 @@ class VirtualMachine(object):
                 hat = valid_hats[hat]
             return Instruction(frog, operation, hat)
         else:
-            frog = self.get_direction_symbol(dir_frog).name
             times = self.get_direction_value(dir_result)
             return Instruction(frog, operation, times)
 
@@ -521,6 +563,7 @@ class VirtualMachine(object):
             # self.__print_all_memory()
             # print("---------------")
             # print("---------------")
+            # print()
             # print()
             if curr_type in ["operation", "comparison", "matching"]:
                 if type(curr_quad.operand_2) == Symbol:
@@ -571,6 +614,7 @@ class VirtualMachine(object):
                 else:
                     dir_opnd_1 = curr_quad.operand_1.global_direction
                     dir_opnd_2 = curr_quad.operand_2.symbol.global_direction
+                    parent_name = curr_quad.operand_2.parent
                     result_id = curr_quad.result_id
                     if len(saved_functions) > 0:
                         f = saved_functions[-1]
@@ -590,6 +634,7 @@ class VirtualMachine(object):
                         dir_opnd_1,
                         dir_opnd_2,
                         dir_result,
+                        parent_name,
                         index_accessed.pop(),
                     )
 
@@ -624,6 +669,8 @@ class VirtualMachine(object):
 
                     if result_id.address_flag:
                         dir_result = self.get_direction_symbol(result_id.value)
+                        # print(result_id.name)
+                        # print(dir_result.global_direction)
                         dir_result = dir_result.global_direction
                     else:
                         dir_result = result_id.global_direction
@@ -728,8 +775,9 @@ class VirtualMachine(object):
 
             elif operation == "PARAM":
                 if curr_quad.operand_1.address_flag:
+                    print
                     dir_operand = self.get_direction_symbol(curr_quad.operand_1.value)
-                    dir_operand = dir_opnd_1.global_direction
+                    dir_operand = dir_operand.global_direction
                 else:
                     dir_operand = curr_quad.operand_1.global_direction
                 dir_result = curr_quad.result_id.name
@@ -766,7 +814,12 @@ class VirtualMachine(object):
                 continue
 
             elif curr_type == "obj_method":
-                dir_frog = curr_quad.operand_1.global_direction
+                if curr_quad.operand_1.address_flag:
+                    dir_frog = self.get_direction_symbol(curr_quad.operand_1.value)
+                    dir_frog = dir_frog.global_direction
+                else:
+                    dir_frog = curr_quad.operand_1.global_direction
+
                 dir_result = curr_quad.result_id.global_direction
                 game_instructions.append(
                     self.__resolve_frog_method(operation, dir_frog, dir_result)

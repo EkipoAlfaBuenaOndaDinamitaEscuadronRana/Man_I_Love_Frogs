@@ -95,7 +95,7 @@ class MemorySegment(object):
             symbol.global_direction = self.initial_position + symbol_position
             self.__memory[symbol_position] = symbol
             self.__memory_values[symbol_position] = symbol.value
-            if self.name == "Constant Segment":
+            if self.name == "Constant Segment" or symbol.type == "FROG":
                 symbol.value = symbol.name
                 self.__memory_values[symbol_position] = symbol.name
         # Two- or three-dimensional array

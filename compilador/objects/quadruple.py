@@ -207,7 +207,11 @@ class Quadruple(object):
         resulting_quads,
         result_quadruple_id,
     ):
-        s_type = symbol.type
+        if symbol.address_flag:
+            s_type = symbol.address_flag
+        else:
+            s_type = symbol.type
+
         s_name = symbol.name
         s_scope = symbol.scope
 

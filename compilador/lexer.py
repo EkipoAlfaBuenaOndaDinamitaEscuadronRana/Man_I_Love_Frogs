@@ -124,15 +124,16 @@ def t_NL(t):
     t.lexer.lineno += len(t.value)
 
 
-def t_CINT(t):
-    r"\d+"
-    t.value = int(t.value)
-    return t
-
-
 def t_CFLT(t):
     r"\d+\.\d+"
     t.value = float(t.value)
+    print(t)
+    return t
+
+
+def t_CINT(t):
+    r"\d+"
+    t.value = int(t.value)
     return t
 
 
@@ -155,7 +156,5 @@ def t_ID(t):
 
 
 def t_error(t):
-    print("Token Error!")
-    print(t)
-    print("\n")
-    t.lexer.skip(1)
+    print("ERROR: Invalid token in line", t.lineno)
+    sys.exit()

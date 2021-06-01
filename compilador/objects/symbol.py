@@ -52,7 +52,7 @@ type_translation = {
     "BOOL": ["INT", "FLT", "BOOL", "NULL", "read"],
     "NULL": ["NULL"],
     "STR": ["STR", "CHAR", "NULL", "read"],
-    "FROG": ["NULL"],
+    "FROG": ["FROG", "NULL"],
 }
 
 
@@ -84,7 +84,7 @@ class Symbol(object):
         return_location=[],
         dimension_sizes=[],
         address=[],
-        address_flag=False,
+        address_flag=None,
         object_atr_flag=None,
     ):
         self.name = name

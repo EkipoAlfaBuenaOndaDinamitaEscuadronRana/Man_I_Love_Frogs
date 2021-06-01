@@ -9,7 +9,7 @@ Executer("compilador/tests/test_30.milf").run(
     run_game=False,
 )
 
-# levels = ["*", "levels/level1.milf","levels/level2.milf"]
+# levels = ["*", "levels/level1.milf","levels/prueba_L2.milf","levels/level2.milf"]
 
 # if len(sys.argv) > 1:
 

@@ -1,0 +1,23 @@
+program level2;
+
+func void printer(string a, int n){
+    for(n times){
+        write(a);
+    }
+}
+{
+    string rosita[5];
+    string r;
+    int i;
+    rosita[0] = "a";
+    rosita[1] = "b";
+    rosita[2] = "c";
+    rosita[3] = "d";
+    rosita[4] = "e";
+
+
+    for(i = 0; i < 5; i+=1){
+        printer(rosita[i], i + 1);
+        write();
+    }
+}

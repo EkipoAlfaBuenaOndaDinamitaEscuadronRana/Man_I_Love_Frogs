@@ -1,21 +1,29 @@
 program level2;
 
-int array[10];
 
-func bool find_in_array(int item){
-    int i;
-    for(i = 0; i < 10; i+=1){
-     if(array[i] == item){
-        return i;
-        }
-    }
-    return -1;
+func void salta (frog f, int n){
+    f.jump_left(n);
 }
+
 
 {
-    int x;
-    for(x = 0; x < 10; x += 1){
-        array[x] = x + 5;
+    frog amigos[5];
+    frog adrian;
+    frog fer;
+    frog rosita;
+    frog ale;
+    frog eldita;
+
+    amigos[0] = adrian;
+    amigos[1] = fer;
+    amigos[2] = rosita;
+    amigos[3] = ale;
+    amigos[4] = eldita;
+
+    int i;
+    for(i = 0; i < 5; i+=1){
+        salta(amigos[i], i + 1);
+        write();
     }
-    write(find_in_array(10));
 }
+

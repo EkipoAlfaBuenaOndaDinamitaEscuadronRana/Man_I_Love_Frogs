@@ -284,7 +284,10 @@ class QuadrupleStack(object):
         self.array_stack.append(self.qstack[self.count_prev].result_id)
         aux_1 = self.array_stack.pop()
         temp = Symbol(
-            "(" + str("T" + str(self.temp_count)) + ")", "INT", scope, address_flag=True
+            "(" + str("T" + str(self.temp_count)) + ")",
+            "INT",
+            scope,
+            address_flag=array_id.type,
         )
         ft.push_temporal(temp)
         self.push_quad(
@@ -337,9 +340,16 @@ class QuadrupleStack(object):
     def expresion_or_id(self, param, type, error_message):
         if len(param) == 1:
             param = param[0]
-            if Symbol.check_type_compatibility(type, param.type):
+            if param.address_flag:
+                param = param.address_flag
+            else:
+                param = param.type
+            if Symbol.check_type_compatibility(type, param):
                 return True
             else:
+                print(type, param.type)
+                print(param.name)
+
                 print(
                     "ERROR: "
                     + error_message
@@ -349,11 +359,17 @@ class QuadrupleStack(object):
                 )
                 sys.exit()
         else:
-            if Symbol.check_type_compatibility(
-                type, self.qstack[self.count_prev].result_id.type
-            ):
+
+            if self.qstack[self.count_prev].result_id.address_flag:
+                exp = self.qstack[self.count_prev].result_id.address_flag
+            else:
+                exp = self.qstack[self.count_prev].result_id.type
+            if Symbol.check_type_compatibility(type, exp):
                 return False
             else:
+                print(type, param.type)
+                print(param.name)
+                print(exp)
                 print(
                     "ERROR: "
                     + error_message

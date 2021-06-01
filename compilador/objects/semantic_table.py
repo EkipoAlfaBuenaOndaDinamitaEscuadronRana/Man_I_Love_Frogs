@@ -4,7 +4,7 @@ from compilador.objects.function_table import *
 
 
 class SemanticTable:
-    types = {"INT", "FLT", "CHAR", "STR", "BOOL", "NULL"}
+    types = {"INT", "FLT", "CHAR", "STR", "BOOL", "NULL", "FROG"}
 
     #                 <     >     <=     >=
     comparison_op = {"LT", "GT", "LTE", "GTE"}
@@ -200,14 +200,22 @@ class SemanticTable:
     def considerate(symbol_1, symbol_op, symbol_2):
         # When input is in string
         if [type(symbol_1), type(symbol_op), type(symbol_2)] == [str, str, str]:
-
             # Convert symbol into correct type
             symbol_op = SemanticTable.clasify_symbol_op(symbol_op)
 
         # When input is in symbol
         else:
-            symbol_1 = symbol_1.type
-            symbol_2 = symbol_2.type
+
+            if symbol_1.address_flag:
+                symbol_1 = symbol_1.address_flag
+            else:
+                symbol_1 = symbol_1.type
+
+            if symbol_2.address_flag:
+                symbol_2 = symbol_2.address_flag
+            else:
+                symbol_2 = symbol_2.type
+
             symbol_op = symbol_op.type
 
         if symbol_1 not in SemanticTable.types or symbol_2 not in SemanticTable.types:
