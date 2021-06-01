@@ -5,7 +5,7 @@ class Instruction(object):
     def __init__(self, character_name, movement, times=None):
         self.character_name = character_name
         self.movement = movement
-        self.times = int(times)
+        self.times = int(times)  # TODO: Change this name attribute
 
     def __eq__(self, other):
         if type(self) is Instruction and type(other) is Instruction:

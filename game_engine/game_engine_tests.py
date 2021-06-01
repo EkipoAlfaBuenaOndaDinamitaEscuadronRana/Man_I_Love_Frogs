@@ -7,7 +7,7 @@ import unittest
 
 
 class TestEngine(unittest.TestCase):
-    def test_instruction_movement(self):
+    def _test_instruction_movement(self):
         characters = {"pikachu": Character(100, 100, 30, 30, 50)}
         instructions = [
             Instruction("pikachu", "JD", 3),
@@ -38,7 +38,7 @@ class TestEngine(unittest.TestCase):
 
 
 class TestCharacter(unittest.TestCase):
-    def test_move_down(self):
+    def _test_move_down(self):
         character = Character(0, 50, 30, 30, 50)
         display_height = 500
 
@@ -46,14 +46,14 @@ class TestCharacter(unittest.TestCase):
         character.move_down(display_height, 1)
         self.assertEqual(character.y, 100)
 
-    def test_move_up(self):
+    def _test_move_up(self):
         character = Character(0, 50, 30, 30, 50)
 
         self.assertEqual(character.y, 50)
         character.move_up(1)
         self.assertEqual(character.y, 0)
 
-    def test_move_right(self):
+    def _test_move_right(self):
         character = Character(0, 50, 30, 30, 50)
         display_width = 500
 
@@ -61,7 +61,7 @@ class TestCharacter(unittest.TestCase):
         character.move_right(display_width, 1)
         self.assertEqual(character.x, 50)
 
-    def test_move_left(self):
+    def _test_move_left(self):
         character = Character(50, 50, 30, 30, 50)
 
         self.assertEqual(character.x, 50)
