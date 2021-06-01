@@ -217,6 +217,9 @@ class Symbol(object):
         if self.type:
             print("TYPE:", self.type)
 
+        if self.name in ["arr", "mat"]:
+            print("dimension_sizes", self.dimension_sizes)
+
         if len(self.dimension_sizes):
             print("DIMENSIONS:", self.dimensions)
             print("DIMENSION_SIZES:", self.dimension_sizes)
