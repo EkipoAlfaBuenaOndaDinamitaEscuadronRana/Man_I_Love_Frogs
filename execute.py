@@ -74,10 +74,9 @@ class Executer(object):
             self.__print_instructions(instructions)
 
         if kwargs.get("run_game") and len(instructions):
-            if kwargs.get("run_game") == 1:
+            if self.running_file == "levels/level1.milf":
                 self.__load_level_one(instructions)
-            elif kwargs.get("run_game") == 2:
+            elif self.running_file == "levels/level2.milf":
                 self.__load_level_two(instructions)
-
 
         return instructions
