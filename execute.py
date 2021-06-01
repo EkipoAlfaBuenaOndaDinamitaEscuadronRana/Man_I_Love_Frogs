@@ -27,7 +27,6 @@ class Executer(object):
                 self.quads[q].print_quad()
             print("-------------------------------------")
 
-
     def __print_instructions(self, instructions):
         print("\nResulting Instructions:")
         print("-------------------------------------")
