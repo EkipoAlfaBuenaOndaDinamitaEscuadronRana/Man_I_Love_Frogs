@@ -4,6 +4,13 @@ from compilador.helpers.printer import *
 import numpy as np
 import symbol
 
+# CLASE SYMBOL
+# Objeto guarda los datos de un token
+
+
+####################### GLOBALS #######################
+
+# Diccoionario de para consistencia de tipos de datos
 type_dictionary = {
     "int": "INT",
     "float": "FLT",
@@ -45,6 +52,7 @@ memory_sizes = {
     "NULL": 1,
 }
 
+# Diccionario de compatibilidad de tipos de datos
 type_translation = {
     "INT": ["INT", "NULL", "read"],
     "FLT": ["INT", "FLT", "NULL", "read"],
@@ -76,6 +84,8 @@ class Symbol(object):
     However, this value is expected to be assigned by the virtual machine.
     """
 
+    ####################### INITS #######################
+
     def __init__(
         self,
         name=None,
@@ -87,27 +97,30 @@ class Symbol(object):
         address_flag=None,
         object_atr_flag=None,
     ):
-        self.name = name
-        self.type = type_dictionary[type] if type in type_dictionary else None
-        self.scope = scope
-        self.dimension_sizes = dimension_sizes
-        self.dimension_nodes = {}
-        self.dimensions = len(dimension_sizes)
-        self.return_location = return_location
-        self.address = address
-        self.segment_direction = None
-        self.global_direction = None
-        self.value = None
-        self.address_flag = address_flag
-        self.object_atr_flag = object_atr_flag
+        self.name = name  # Nombre de simbolo
+        self.type = (
+            type_dictionary[type] if type in type_dictionary else None
+        )  # Tipo de simbolo
+        self.scope = scope  # Contexto de simbolo
+        self.dimension_sizes = dimension_sizes  # Tamaño de simbolo dimensionado
+        self.dimension_nodes = {}  # Nodos de dimensiones
+        self.return_location = (
+            return_location  # Stack de temporales con valor de retorno
+        )
+        self.address = address  # Direcciones de memoria en tabla de variables
+        self.segment_direction = None  # Dirección en segmento
+        self.global_direction = None  # Dirección global
+        self.value = None  # Valor
+        self.address_flag = address_flag  # Guarda el tipo de la dirección que guarda
+        self.object_atr_flag = object_atr_flag  # Guarda el simbolo de su objeto padre
 
+    # Operador == entre dos simbolos
     def __eq__(self, other):
         if type(self) is Symbol and type(other) is Symbol:
             self_data = [
                 self.name,
                 self.type,
                 self.dimension_sizes,
-                self.dimensions,
                 self.segment_direction,
                 self.global_direction,
                 self.value,
@@ -118,7 +131,6 @@ class Symbol(object):
                 other.name,
                 other.type,
                 other.dimension_sizes,
-                other.dimensions,
                 other.segment_direction,
                 other.global_direction,
                 other.value,
@@ -133,9 +145,11 @@ class Symbol(object):
         else:
             return False
 
+    # valor unico de simbolo
     def __hash__(self):
         return id(self)
 
+    #
     def set_name(self, name):
         self.name = name
 
@@ -223,13 +237,6 @@ class Symbol(object):
 
         if self.name in ["arr", "mat"]:
             print("dimension_sizes", self.dimension_sizes)
-
-        if type(self.dimension_sizes) == int:
-            print("DIMENSIONS:", self.dimensions)
-            print("DIMENSION_SIZES:", self.dimension_sizes)
-        elif len(self.dimension_sizes):
-            print("DIMENSIONS:", self.dimensions)
-            print("DIMENSION_SIZES:", self.dimension_sizes)
 
         if self.segment_direction != None and self.global_direction != None:
             print("SEGMENT_DIRECTION:", self.segment_direction)

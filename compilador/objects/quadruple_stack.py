@@ -92,7 +92,7 @@ class QuadrupleStack(object):
             if result:
                 if result.start() == 0 and result.end() == (len(str(temp))):
                     if not ft.lookup_temporal(temp_obj):
-                        ft.push_temporal(temp_obj)
+                        ft.set_temporal(temp_obj)
                     temp = int(temp[1:])
                     if temp >= self.temp_count:
                         self.temp_count = temp + 1
@@ -103,7 +103,7 @@ class QuadrupleStack(object):
                 if result:
                     if result.start() == 0 and result.end() == (len(str(temp))):
                         if not ft.lookup_temporal(temp_obj):
-                            ft.push_temporal(temp_obj)
+                            ft.set_temporal(temp_obj)
                         temp = int(temp[2:-1])
                         if type(q.operand_2) == BaseAddress:
                             if temp >= self.temp_count:
@@ -217,7 +217,7 @@ class QuadrupleStack(object):
             self.array_stack.append(exp_sent)
             if DIM_COUNT < len(DIM):
                 temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
-                ft.push_temporal(temp)
+                ft.set_temporal(temp)
 
                 m = Symbol(
                     int(array_id.dimension_nodes[DIM_COUNT]["M"]),
@@ -244,7 +244,7 @@ class QuadrupleStack(object):
                 aux_2 = self.array_stack.pop()
                 aux_1 = self.array_stack.pop()
                 temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
-                ft.push_temporal(temp)
+                ft.set_temporal(temp)
                 self.push_quad(
                     modify_quad_object(
                         Quadruple(
@@ -266,7 +266,7 @@ class QuadrupleStack(object):
         #    Pop Fake Botom
         aux_1 = self.array_stack.pop()
         temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
-        ft.push_temporal(temp)
+        ft.set_temporal(temp)
         m = Symbol(
             int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),
             "INT",
@@ -289,7 +289,7 @@ class QuadrupleStack(object):
             scope,
             address_flag=array_id.type,
         )
-        ft.push_temporal(temp)
+        ft.set_temporal(temp)
         self.push_quad(
             modify_quad_object(
                 Quadruple(
@@ -468,7 +468,7 @@ class QuadrupleStack(object):
     def parche_guadalupano(self, func_var, scope, ft):
         if func_var.type != "VOID":
             temp = Symbol(str("T" + str(self.temp_count)), func_var.type, scope)
-            ft.push_temporal(temp)
+            ft.set_temporal(temp)
 
             self.push_quad(
                 modify_quad_object(
@@ -551,7 +551,7 @@ class QuadrupleStack(object):
         s = Symbol(0, "INT", "Constant Segment")
         ft.insert_to_constant_table([s])
         temp_reuse = Symbol(str("T" + str(self.temp_count)), "INT", scope)
-        ft.push_temporal(temp_reuse)
+        ft.set_temporal(temp_reuse)
         self.push_quad(
             modify_quad_object(
                 Quadruple(Symbol("EQ", "assignment", scope), s, None, temp_reuse), ft
@@ -561,7 +561,7 @@ class QuadrupleStack(object):
         self.temp_count += 1
         self.ciclo_1()
         temp = Symbol(str("T" + str(self.temp_count)), "BOOL", scope)
-        ft.push_temporal(temp)
+        ft.set_temporal(temp)
         self.push_quad(
             modify_quad_object(
                 Quadruple(Symbol("LT", "comparison", scope), temp_reuse, exp, temp), ft

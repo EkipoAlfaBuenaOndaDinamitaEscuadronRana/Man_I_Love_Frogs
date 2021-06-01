@@ -21,9 +21,7 @@ reserved = {
     "frog": "FROG",  # player
     "void": "VOID",  # void
     # OBJ ATRs & MTDs
-    "color": "COLOR",  # color
     "hat": "HAT",  # hat
-    "items": "ITEMS",  # items
     "jump_left": "JL",  # jump_left
     "jump_right": "JR",  # jump_right
     "jump_up": "JU",  # jump_up

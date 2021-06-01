@@ -1656,7 +1656,7 @@ def p_llamada(p):
             # usar la llamada como una variable en expresiones
             global_func_table.get_function_variable_table(
                 current_state.get_global_table()
-            ).add_return_location(
+            ).set_return_location(
                 p[1], quad_stack.qstack[quad_stack.count_prev].result_id
             )
 
