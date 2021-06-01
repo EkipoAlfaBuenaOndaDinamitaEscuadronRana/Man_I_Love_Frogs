@@ -13,6 +13,8 @@ class Constants:
     FROG_IMAGE = "game_engine/sprites/ranita_resized.png"
     ROCK_IMAGE = "game_engine/sprites/rock_resized.png"
     FLY_IMAGE = "game_engine/sprites/fly_resized.png"
+    FROG_IMAGE_L = "game_engine/sprites/sprite_left_resized.png"
+    FROG_IMAGE_R = "game_engine/sprites/sprite_right_resized.png"
 
     # Objects dimensions
     FROG_WIDTH = 50
@@ -23,10 +25,10 @@ class Constants:
 
     # Frog Sprite dimensions and values
     FROG_SPRITE_WIDTH = 700
-    FROG_SPRITE_HEIGHT = 100
+    FROG_SPRITE_HEIGHT = 250
 
     FROG_SPRITE_NUMBER = 14
-    FROG_HATS_NUMBER = 2
+    FROG_HATS_NUMBER = 5
 
     # Original size
     # FROG_SPRITE_WIDTH = 5460

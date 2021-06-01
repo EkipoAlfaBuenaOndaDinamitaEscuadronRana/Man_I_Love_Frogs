@@ -28,6 +28,18 @@ class Character(pygame.sprite.Sprite):
                 "R": [],
                 "L": [],
             },
+            2: {
+                "R": [],
+                "L": [],
+            },
+            3: {
+                "R": [],
+                "L": [],
+            },
+            4: {
+                "R": [],
+                "L": [],
+            },
         }
 
         self.moving = False
@@ -37,23 +49,47 @@ class Character(pygame.sprite.Sprite):
         self.rect = None
 
     def construct_animation(self):
-        x = 1
-        y = 1
+        x = 0
+        y = 0
         w = Constants.FROG_SPRITE_WIDTH // Constants.FROG_SPRITE_NUMBER
         h = Constants.FROG_SPRITE_HEIGHT // Constants.FROG_HATS_NUMBER
-        sprite_sheet = SpriteSheet(Constants.FROG_IMAGE)
+        sprite_sheet_l = SpriteSheet(Constants.FROG_IMAGE_L)
+        sprite_sheet_r = SpriteSheet(Constants.FROG_IMAGE_R)
 
         # TODO: turn images on left frames
         for _ in range(14):
-            image = sprite_sheet.get_image(x, y, w, h)
-            self.walking_frames[0]["L"].append(image)
-            self.walking_frames[0]["R"].append(image)
 
-            image = sprite_sheet.get_image(x, y + 50, w, h)
-            self.walking_frames[1]["R"].append(image)
-            self.walking_frames[1]["L"].append(image)
+            image_l = sprite_sheet_l.get_image(x, y, w, h)
+            image_r = sprite_sheet_r.get_image(x, y, w, h)
+            self.walking_frames[0]["L"].append(image_l)
+            self.walking_frames[0]["R"].append(image_r)
+
+            y += 50
+            image_l = sprite_sheet_l.get_image(x, y, w, h)
+            image_r = sprite_sheet_r.get_image(x, y, w, h)
+            self.walking_frames[1]["L"].append(image_l)
+            self.walking_frames[1]["R"].append(image_r)
+
+            y += 50
+            image_l = sprite_sheet_l.get_image(x, y, w, h)
+            image_r = sprite_sheet_r.get_image(x, y, w, h)
+            self.walking_frames[2]["L"].append(image_l)
+            self.walking_frames[2]["R"].append(image_r)
+
+            y += 50
+            image_l = sprite_sheet_l.get_image(x, y, w, h)
+            image_r = sprite_sheet_r.get_image(x, y, w, h)
+            self.walking_frames[3]["L"].append(image_l)
+            self.walking_frames[3]["R"].append(image_r)
+
+            y += 50
+            image_l = sprite_sheet_l.get_image(x, y, w, h)
+            image_r = sprite_sheet_r.get_image(x, y, w, h)
+            self.walking_frames[4]["L"].append(image_l)
+            self.walking_frames[4]["R"].append(image_r)
 
             x += w
+            y = 0
 
         self.image = self.walking_frames[self.hat][self.sprite_direction][0]
         self.rect = self.image.get_rect()
@@ -126,7 +162,6 @@ class Character(pygame.sprite.Sprite):
             self.rect.x = self.x
             self.moving = True
 
-
         return self.fix_return_board_position()
 
     def move_left(self, times, board):
@@ -144,4 +179,4 @@ class Character(pygame.sprite.Sprite):
 
     def change_hat(self, hat_id):
         self.hat = int(hat_id)
-        return hat in [0, 1]
+        return hat in [0, 1, 2, 3, 4]
