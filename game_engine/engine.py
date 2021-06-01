@@ -1,6 +1,7 @@
 import os
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+
 import pygame
 from router_solver import *
 import game_engine.character
@@ -205,16 +206,3 @@ class Engine:
                 display.blit(ponganos_cien, ponganos_cien_rect)
 
             pygame.display.update()
-
-
-# characters = {
-#     "Rosita Fresita": Character(0, 300, 50, 50, 50),
-#     "Dino Adrian": Character(0, 400, 50, 50, 50),
-# }
-
-instructions = [
-    # Instruction("Rosita Fresita", "JR", 1),
-    # Instruction("Dino Adrian", "JD", 1),
-]
-
-# Engine.start(characters, instructions, "two")

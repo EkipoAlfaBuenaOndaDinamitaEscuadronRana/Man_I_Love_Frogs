@@ -1,13 +1,9 @@
 from pygame.constants import AUDIO_ALLOW_FORMAT_CHANGE
 from execute import *
 
-Executer("compilador/tests/test_28.milf").run(
-    print_running=True,
-    print_pre_quads=True,
-    print_post_quads=False,
-    print_instructions=False,
-    run_game=False,
-)
+
+Executer("levels/level2.milf").run(
+    print_running=False, print_quads=True, print_instructions=False, run_game=2)
 
 # levels = ["*", "levels/level1.milf","levels/prueba_L2.milf","levels/level2.milf"]
 

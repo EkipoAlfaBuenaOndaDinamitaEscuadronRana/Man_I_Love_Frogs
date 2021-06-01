@@ -27,6 +27,7 @@ class Executer(object):
                 self.quads[q].print_quad()
             print("-------------------------------------")
 
+
     def __print_instructions(self, instructions):
         print("\nResulting Instructions:")
         print("-------------------------------------")
@@ -61,6 +62,9 @@ class Executer(object):
         if kwargs.get("print_post_quads"):
             self.__print_quads(False)
 
+        if kwargs.get("print_post_quads"):
+            self.__print_quads(False)
+
         if kwargs.get("print_running"):
             self.__print_running()
 
@@ -74,5 +78,6 @@ class Executer(object):
                 self.__load_level_one(instructions)
             elif kwargs.get("run_game") == 2:
                 self.__load_level_two(instructions)
+
 
         return instructions

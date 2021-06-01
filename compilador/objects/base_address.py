@@ -22,6 +22,7 @@ class BaseAddress(object):
         self.global_direction = None  # Guarda su dirección global
 
     # Imprime datos de objeto
+
     def print_base_address(self):
         if self.name:
             print("VAR:", self.name)
