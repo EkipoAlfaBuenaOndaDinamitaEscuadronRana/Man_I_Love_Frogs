@@ -179,4 +179,3 @@ class Character(pygame.sprite.Sprite):
 
     def change_hat(self, hat_id):
         self.hat = int(hat_id)
-        return hat in [0, 1, 2, 3, 4]

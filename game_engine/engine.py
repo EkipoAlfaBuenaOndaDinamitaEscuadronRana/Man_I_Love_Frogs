@@ -39,8 +39,9 @@ class Engine:
         elif movement == "JL":
             x, y = character.move_left(times, board)
 
-        elif movement == "HAT":
-            x, y = character.change_hat(times, board)
+        elif movement == "hat":
+            character.change_hat(times)
+            return
 
         else:
             return

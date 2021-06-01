@@ -5,9 +5,13 @@ frog dinoAdrian;
 
 {
     int i;
+    dinoAdrian.hat = "cool";
+    rositaFresita.hat = "cowboy";
     for (i = 0; i<9; i = i + 1) {
         dinoAdrian.jump_right();
     }
+    dinoAdrian.jump_right(2);
+    dinoAdrian.jump_left(2);
     dinoAdrian.jump_right(2);
 
     for (i = 0; i<7; i = i + 1) {
