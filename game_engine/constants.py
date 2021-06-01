@@ -1,8 +1,3 @@
-"""
-Global constants
-"""
-
-
 class Constants:
     # Colors
     BLACK = (0, 0, 0)
@@ -12,14 +7,18 @@ class Constants:
     # Screen dimensions
     DISPLAY_WIDTH = 1500
     DISPLAY_HEIGHT = 900
-    SPEED = 14
+    SPEED = 40
 
     # Images
     FROG_IMAGE = "game_engine/sprites/ranita_resized.png"
+    ROCK_IMAGE = "game_engine/sprites/rock_resized.png"
+    FLY_IMAGE = "game_engine/sprites/fly_resized.png"
 
-    # Frog dimensions
+    # Objects dimensions
     FROG_WIDTH = 50
     FROG_HEIGHT = 50
+    ITEM_WIDTH = 50
+    ITEM_HEIGHT = 50
     FROG_SPEED = 50
 
     # Frog Sprite dimensions and values

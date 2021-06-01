@@ -10,12 +10,12 @@ class Character(pygame.sprite.Sprite):
         self.x = x
         self.y = y
 
-        self.board_x = None
-        self.board_y = None
-
         self.width = width
         self.height = height
         self.__speed = speed
+
+        self.board_x = None
+        self.board_y = None
 
         self.hat = 0
 
@@ -70,52 +70,77 @@ class Character(pygame.sprite.Sprite):
                 self.moving = False
 
     def available_position(self, board, x, y):
-        return True
-        # return board[x][y] == None
+        fixed_x = x // Constants.FROG_WIDTH
+        fixed_y = y // Constants.FROG_HEIGHT
+        position = board[fixed_y][fixed_x]
+
+        if position == None:
+            return True
+
+        elif type(position) == Character:
+            return False
+
+        elif position.type == "Fly":
+            position.eaten = True
+            return True
+
+        return False
+
+    def fix_return_board_position(self):
+        x = self.x // Constants.FROG_WIDTH
+        y = self.y // Constants.FROG_HEIGHT
+        return [x, y]
 
     def move_down(self, times, board):
         times = int(times)
         movement = self.height * times
-        is_available = self.available_position(board, 0, 0)
-        if self.y + self.height + movement <= Constants.DISPLAY_HEIGHT:
+        new_y = self.y + movement
+        is_available = self.available_position(board, self.x, new_y)
+        if self.y + self.height + movement <= Constants.DISPLAY_HEIGHT and is_available:
             self.y += movement
             self.rect.y = self.y
             self.moving = True
 
-        return [self.x, self.y]
+        return self.fix_return_board_position()
 
     def move_up(self, times, board):
         times = int(times)
         movement = self.height * times
-        is_available = self.available_position(board, 0, 0)
-        if self.y - movement >= 0:
+        new_y = self.y - movement
+        is_available = self.available_position(board, self.x, new_y)
+        if self.y - movement >= 0 and is_available:
             self.y -= movement
             self.rect.y = self.y
             self.moving = True
 
-        return [self.x, self.y]
+        return self.fix_return_board_position()
 
     def move_right(self, times, board):
         times = int(times)
         movement = self.width * times
-        is_available = self.available_position(board, 0, 0)
+        new_x = self.x + movement
+        is_available = self.available_position(board, new_x, self.y)
         if self.x + self.width + movement <= Constants.DISPLAY_WIDTH and is_available:
+            self.sprite_direction = "R"
             self.x += movement
             self.rect.x = self.x
             self.moving = True
 
-        return [self.x, self.y]
+
+        return self.fix_return_board_position()
 
     def move_left(self, times, board):
         times = int(times)
         movement = self.width * times
-        is_available = self.available_position(board, 0, 0)
+        new_x = self.x - movement
+        is_available = self.available_position(board, new_x, self.y)
         if self.x - self.width - movement >= 0 and is_available:
+            self.sprite_direction = "L"
             self.x -= movement
             self.rect.x = self.x
             self.moving = True
 
-        return [self.x, self.y]
+        return self.fix_return_board_position()
 
     def change_hat(self, hat_id):
         self.hat = int(hat_id)
