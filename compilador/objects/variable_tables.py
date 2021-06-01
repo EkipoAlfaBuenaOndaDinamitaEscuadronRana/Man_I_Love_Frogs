@@ -54,7 +54,6 @@ class VariableTable(object):
 
     # Guarda el temporal donde se asigno el valor de retorno de una función
     def set_return_location(self, name, loc):
-        print(name, loc.name)
         self.variables[name].set_return_location(loc)
 
     ####################### GETS #######################

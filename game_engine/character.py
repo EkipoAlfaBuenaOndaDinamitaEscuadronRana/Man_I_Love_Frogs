@@ -126,7 +126,6 @@ class Character(pygame.sprite.Sprite):
             self.rect.x = self.x
             self.moving = True
 
-
         return self.fix_return_board_position()
 
     def move_left(self, times, board):

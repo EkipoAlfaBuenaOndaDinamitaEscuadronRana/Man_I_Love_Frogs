@@ -347,8 +347,6 @@ class QuadrupleStack(object):
             if Symbol.check_type_compatibility(type, param):
                 return True
             else:
-                print(type, param.type)
-                print(param.name)
 
                 print(
                     "ERROR: "
@@ -367,9 +365,6 @@ class QuadrupleStack(object):
             if Symbol.check_type_compatibility(type, exp):
                 return False
             else:
-                print(type, param.type)
-                print(param.name)
-                print(exp)
                 print(
                     "ERROR: "
                     + error_message

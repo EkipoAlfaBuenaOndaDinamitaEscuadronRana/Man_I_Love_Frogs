@@ -41,8 +41,6 @@ class VirtualMachine(object):
             self.local_segment = None
             self.local_functions = 0
 
-
-
     def __build_local_segment(
         self,
         local_size,
@@ -94,7 +92,6 @@ class VirtualMachine(object):
             # print("------------------------")
 
         return name
-
 
     def __find_function_segment(self, func_name):
         for func_segment in self.local_segment:
@@ -185,7 +182,6 @@ class VirtualMachine(object):
         # Direction is in Constant Segment
         elif direction < global_size + constant_size:
             return self.constant_segment.search_value(direction)
-
 
         # Direction is bigger than memory
         elif direction > self.__total_size:
@@ -447,8 +443,6 @@ class VirtualMachine(object):
         self.modify_direction_value(dir_result, val_operand)
         val_result.value = val_operand
 
-        
-
     def __resolve_write(self, dir_result):
         if dir_result == "empty":
             print()
@@ -552,17 +546,6 @@ class VirtualMachine(object):
         # self.constant_segment.print_memory_segment()
         for segment in self.local_segment:
             segment.print_memory_segment()
-
-    def __add_params(self, saved_params, func_name):
-        for param in self.func_table.functions[func_name]["p"]:
-            param.value = saved_params.pop(0).value
-
-    def __resolve_return(self, saved_functions, dir_operand):
-        function = saved_functions.pop()
-        val_operand = self.get_direction_symbol(dir_operand).value
-        function.value = val_operand
-        # print("------------------__resolve_return------------------")
-        # function.print_symbol()
 
     def run(self, quad_dir):
         era = False
@@ -740,7 +723,6 @@ class VirtualMachine(object):
                 else:
                     dir_operand = operand_1.global_direction
 
-
                 self.__resolve_not(dir_operand, dir_result)
 
             elif operation == "VER":
@@ -839,7 +821,6 @@ class VirtualMachine(object):
                     dir_frog = dir_frog.global_direction
                 else:
                     dir_frog = curr_quad.operand_1.global_direction
-
 
                 dir_result = curr_quad.result_id.global_direction
                 game_instructions.append(
