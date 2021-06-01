@@ -10,5 +10,5 @@ func int factorial(int n){
 }
 
 {
-    int respuesta = factorial(5);
+    write(factorial(5));
 }

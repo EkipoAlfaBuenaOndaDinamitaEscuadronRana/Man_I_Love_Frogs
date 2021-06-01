@@ -1,8 +1,8 @@
 program ejemplo;
 int i,j,p,k;
-int Arreglo[10];
-float valor;
-int Matriz[3][8];
+int arreglo[10];
+float valor = 2.5;
+int matriz[10][10];
 
 func int fact(int j){
     int i;
@@ -14,11 +14,12 @@ func int fact(int j){
     }
 }
 
+
 func void inicia(int y){
     int x;
     x = 0;
     while (x < 11){
-        Arreglo[x] = y * x;
+        arreglo[x] = y * x;
         x += 1;
     }
 }
@@ -27,20 +28,34 @@ func void inicia(int y){
     read(p);
     j = p * 2;
     inicia(p * j - 5);
+
     for(i = 0; i < 9; i += 1){
-        Arreglo[p] = Arreglo[i] * fact(Arreglo[i] - p);
+        arreglo[i] = i + 5;
+    }
+    
+    for(j = 0; j < 2; j += 1){
+        for(k = 0; k < 7; k += 1){
+            matriz[j][k] = k + j;
+        }
+    }
+
+    for(i = 0; i < 9; i += 1){
+        arreglo[i] = arreglo[i] * fact(arreglo[i] - p);
     }
     for(j = 0; j < 2; j += 1){
         for(k = 0; k < 7; k += 1){
-            Matriz[j][k] = Arreglo[j + k - fact(p) + p * k] * p + j;
+            matriz[j][k] = arreglo[p + k - fact(p) + p * k] * p + j;
         }
 
     }
 
     while( i >= 0){
         write("Resultado");
-        write(Arreglo[i]);
-        write(fact(i +2) * valor);
+        write(arreglo[i]);
+        write(valor);
+        write(fact(i + 2));
+
+        write(fact(i + 2) * valor);
         i -= 1;
     }
 }

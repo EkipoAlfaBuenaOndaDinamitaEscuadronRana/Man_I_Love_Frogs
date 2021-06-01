@@ -5,7 +5,8 @@ class Instruction(object):
     def __init__(self, character_name, movement, times=None):
         self.character_name = character_name
         self.movement = movement
-        self.times = int(times)  # TODO: Change this name attribute
+        if type(times) == int:
+            self.times = int(times)  # TODO: Change this name attribute
 
     def __eq__(self, other):
         if type(self) is Instruction and type(other) is Instruction:
@@ -29,6 +30,19 @@ class Instruction(object):
     def print_instructions(instructions):
         for instruction in instructions:
             print("CHARACTER_NAME:", instruction.character_name)
-            print("MOVEMENT:", instruction.movement)
-            print("TIMES:", instruction.times)
+
+            if instruction.movement == "hat":
+                valid_hats = {1: '"cowboy"', 2: '"cool"', 3: '"shoes"', 4: '"makeup"'}
+                name = ""
+                if instruction.times not in valid_hats:
+                    name = "None"
+                else:
+                    name = valid_hats[instruction.times]
+
+                print("ATRIBUTE:", instruction.movement)
+                print("NAME:", name)
+            else:
+                print("MOVEMENT:", instruction.movement)
+                print("TIMES:", instruction.times)
+
             print()

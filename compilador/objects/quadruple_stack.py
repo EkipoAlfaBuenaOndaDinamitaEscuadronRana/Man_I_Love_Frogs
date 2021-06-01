@@ -73,6 +73,7 @@ class QuadrupleStack(object):
             i -= 1
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
         if type(sol) == str:
+
             print(sol)
             sys.exit()
         else:
@@ -91,7 +92,7 @@ class QuadrupleStack(object):
             if result:
                 if result.start() == 0 and result.end() == (len(str(temp))):
                     if not ft.lookup_temporal(temp_obj):
-                        ft.push_temporal(temp_obj)
+                        ft.set_temporal(temp_obj)
                     temp = int(temp[1:])
                     if temp >= self.temp_count:
                         self.temp_count = temp + 1
@@ -102,7 +103,7 @@ class QuadrupleStack(object):
                 if result:
                     if result.start() == 0 and result.end() == (len(str(temp))):
                         if not ft.lookup_temporal(temp_obj):
-                            ft.push_temporal(temp_obj)
+                            ft.set_temporal(temp_obj)
                         temp = int(temp[2:-1])
                         if type(q.operand_2) == BaseAddress:
                             if temp >= self.temp_count:
@@ -193,35 +194,47 @@ class QuadrupleStack(object):
                 ):
                     print("ERROR: using a non-int value to try to access an array")
                     sys.exit()
-
+            limI = Symbol(
+                array_id.dimension_nodes[DIM_COUNT]["LI"], "INT", "Constant Segment"
+            )
+            limS = Symbol(
+                array_id.dimension_nodes[DIM_COUNT]["LS"], "INT", "Constant Segment"
+            )
+            ft.insert_to_constant_table([limI, limS])
             self.push_quad(
-                Quadruple(
-                    Symbol("VER", "instructions", scope),
-                    exp_sent,
-                    Symbol(
-                        array_id.dimension_nodes[DIM_COUNT]["LI"], "INT", array_id.scope
+                modify_quad_object(
+                    Quadruple(
+                        Symbol("VER", "instructions", scope),
+                        exp_sent,
+                        limI,
+                        limS,
                     ),
-                    Symbol(
-                        array_id.dimension_nodes[DIM_COUNT]["LS"], "INT", array_id.scope
-                    ),
+                    ft,
                 ),
                 scope,
             )
+
             self.array_stack.append(exp_sent)
             if DIM_COUNT < len(DIM):
-                temp = Symbol(str("T" + str(self.temp_count)), "INT", array_id.scope)
-                ft.push_temporal(temp)
+                temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
+                ft.set_temporal(temp)
+
+                m = Symbol(
+                    int(array_id.dimension_nodes[DIM_COUNT]["M"]),
+                    "INT",
+                    "Constant Segment",
+                )
+                ft.insert_to_constant_table([m])
 
                 self.push_quad(
-                    Quadruple(
-                        Symbol("MUL", "operation", scope),
-                        self.array_stack.pop(),
-                        Symbol(
-                            int(array_id.dimension_nodes[DIM_COUNT]["M"]),
-                            "INT",
-                            array_id.scope,
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol("MUL", "operation", scope),
+                            self.array_stack.pop(),
+                            m,
+                            temp,
                         ),
-                        temp,
+                        ft,
                     ),
                     scope,
                 )
@@ -230,10 +243,15 @@ class QuadrupleStack(object):
             if DIM_COUNT > 1:
                 aux_2 = self.array_stack.pop()
                 aux_1 = self.array_stack.pop()
-                temp = Symbol(str("T" + str(self.temp_count)), "INT", array_id.scope)
-                ft.push_temporal(temp)
+                temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
+                ft.set_temporal(temp)
                 self.push_quad(
-                    Quadruple(Symbol("ADD", "operation", scope), aux_1, aux_2, temp),
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol("ADD", "operation", scope), aux_1, aux_2, temp
+                        ),
+                        ft,
+                    ),
                     scope,
                 )
                 self.temp_count += 1
@@ -247,41 +265,47 @@ class QuadrupleStack(object):
         #    PilaO.Push((Tn))
         #    Pop Fake Botom
         aux_1 = self.array_stack.pop()
-        temp = Symbol(str("T" + str(self.temp_count)), "INT", array_id.scope)
-        ft.push_temporal(temp)
-
+        temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
+        ft.set_temporal(temp)
+        m = Symbol(
+            int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),
+            "INT",
+            "Constant Segment",
+        )
+        ft.insert_to_constant_table([m])
         self.push_quad(
-            Quadruple(
-                Symbol("ADD", "operation", scope),
-                aux_1,
-                Symbol(
-                    int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),
-                    "INT",
-                    array_id.scope,
-                ),
-                temp,
+            modify_quad_object(
+                Quadruple(Symbol("ADD", "operation", scope), aux_1, m, temp), ft
             ),
             scope,
         )
+
         self.temp_count += 1
         self.array_stack.append(self.qstack[self.count_prev].result_id)
         aux_1 = self.array_stack.pop()
         temp = Symbol(
-            "(" + str("T" + str(self.temp_count)) + ")", array_id.type, array_id.scope
+            "(" + str("T" + str(self.temp_count)) + ")",
+            "INT",
+            scope,
+            address_flag=array_id.type,
         )
-        ft.push_temporal(temp)
+        ft.set_temporal(temp)
         self.push_quad(
-            Quadruple(
-                Symbol("ADD", "operation", scope),
-                aux_1,
-                BaseAddress(
-                    str(str(array_id.name) + "-BA"),
-                    array_id.name,
-                    array_id.type,
-                    array_id.scope,
-                    array_id.address[0],
+            modify_quad_object(
+                Quadruple(
+                    Symbol("ADD", "operation", scope),
+                    aux_1,
+                    BaseAddress(
+                        str(str(array_id.name) + "-BA"),
+                        array_id,
+                        array_id.name,
+                        array_id.type,
+                        array_id.scope,
+                        array_id.address[0],
+                    ),
+                    temp,
                 ),
-                temp,
+                ft,
             ),
             scope,
         )
@@ -316,9 +340,16 @@ class QuadrupleStack(object):
     def expresion_or_id(self, param, type, error_message):
         if len(param) == 1:
             param = param[0]
-            if Symbol.check_type_compatibility(type, param.type):
+            if param.address_flag:
+                param = param.address_flag
+            else:
+                param = param.type
+            if Symbol.check_type_compatibility(type, param):
                 return True
             else:
+                print(type, param.type)
+                print(param.name)
+
                 print(
                     "ERROR: "
                     + error_message
@@ -328,11 +359,17 @@ class QuadrupleStack(object):
                 )
                 sys.exit()
         else:
-            if Symbol.check_type_compatibility(
-                type, self.qstack[self.count_prev].result_id.type
-            ):
+
+            if self.qstack[self.count_prev].result_id.address_flag:
+                exp = self.qstack[self.count_prev].result_id.address_flag
+            else:
+                exp = self.qstack[self.count_prev].result_id.type
+            if Symbol.check_type_compatibility(type, exp):
                 return False
             else:
+                print(type, param.type)
+                print(param.name)
+                print(exp)
                 print(
                     "ERROR: "
                     + error_message
@@ -354,7 +391,7 @@ class QuadrupleStack(object):
                     sent_param,
                     None,
                     Symbol(
-                        "param" + str(self.param_count),
+                        self.param_count,
                         current_func_param.type,
                         current_func_param.scope,
                     ),
@@ -367,7 +404,7 @@ class QuadrupleStack(object):
                     self.qstack[self.count_prev].result_id,
                     None,
                     Symbol(
-                        ("param" + str(self.param_count)),
+                        self.param_count,
                         current_func_param.type,
                         current_func_param.scope,
                     ),
@@ -378,23 +415,39 @@ class QuadrupleStack(object):
             sys.exit()
 
     # Crea el quadruplo de return
-    def return_in_function(self, type, scope, exp=None):
+    def return_in_function(self, type, scope, exp=None, ft=None):
         if exp:
             # esto es si no es un void
+            find_return_symbol = ft.get_function_variable_table("Global Segment")
+            find_return_symbol = find_return_symbol.get_var_symbol(scope)
             if self.expresion_or_id(exp, type, "Return"):
                 exp = exp[0]
                 self.push_quad(
-                    Quadruple(Symbol("RETURN", exp.type, scope), exp, None, None), scope
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol("RETURN", exp.type, scope),
+                            exp,
+                            None,
+                            find_return_symbol,
+                        ),
+                        ft,
+                    ),
+                    scope,
                 )
             else:
                 self.push_quad(
-                    Quadruple(
-                        Symbol(
-                            "RETURN", self.qstack[self.count_prev].result_id.type, scope
+                    modify_quad_object(
+                        Quadruple(
+                            Symbol(
+                                "RETURN",
+                                self.qstack[self.count_prev].result_id.type,
+                                scope,
+                            ),
+                            self.qstack[self.count_prev].result_id,
+                            None,
+                            find_return_symbol,
                         ),
-                        self.qstack[self.count_prev].result_id,
-                        None,
-                        None,
+                        ft,
                     ),
                     scope,
                 )
@@ -415,19 +468,24 @@ class QuadrupleStack(object):
     def parche_guadalupano(self, func_var, scope, ft):
         if func_var.type != "VOID":
             temp = Symbol(str("T" + str(self.temp_count)), func_var.type, scope)
-            ft.push_temporal(temp)
+            ft.set_temporal(temp)
 
             self.push_quad(
-                Quadruple(Symbol("EQ", "assignment", scope), func_var, None, temp),
+                modify_quad_object(
+                    Quadruple(Symbol("EQ", "assignment", scope), func_var, None, temp),
+                    ft,
+                ),
                 scope,
             )
             self.temp_count += 1
 
-    def write_quad(self, exp, scope):
-        if len(exp) == 1:
-            exp = exp[0]
-        else:
-            exp = self.qstack[self.count_prev].result_id
+    def write_quad(self, scope, exp=None):
+        if exp:
+            if len(exp) == 1:
+                exp = exp[0]
+            else:
+                exp = self.qstack[self.count_prev].result_id
+
         a = Quadruple(Symbol("WRITE", "instruction", scope), None, None, exp)
         return a
 
@@ -442,18 +500,23 @@ class QuadrupleStack(object):
             print("ERROR: Error in read asignation")
             sys.exit()
 
-    def object_method_quad(self, data, scope):
+    def object_method_quad(self, data, scope, ft):
         if len(data) == 3:
             if data[2].type == "parentheses":
+                s = Symbol(1, "INT", "Constant Segment")
+                ft.insert_to_constant_table([s])
                 self.push_quad(
-                    Quadruple(
-                        data[1], data[0], None, Symbol("1", "INT", "Constant Segment")
-                    ),
+                    modify_quad_object(Quadruple(data[1], data[0], None, s), ft),
                     scope,
                 )
             else:
                 if Symbol.check_type_compatibility("INT", data[2].type):
-                    self.push_quad(Quadruple(data[1], data[0], None, data[2]), scope)
+                    self.push_quad(
+                        modify_quad_object(
+                            Quadruple(data[1], data[0], None, data[2]), ft
+                        ),
+                        scope,
+                    )
                 else:
                     print("ERROR: Error parameter in object method not INT type")
                     sys.exit()
@@ -479,16 +542,56 @@ class QuadrupleStack(object):
         end = self.jumpStack.pop()
         self.fill(end, scope)
 
+    def for_simple(self, exp, scope, ft):
+        if self.expresion_or_id(exp, "INT", "Times"):
+            exp = exp[0]
+        else:
+            exp = self.qstack[self.count_prev].result_id
+
+        s = Symbol(0, "INT", "Constant Segment")
+        ft.insert_to_constant_table([s])
+        temp_reuse = Symbol(str("T" + str(self.temp_count)), "INT", scope)
+        ft.set_temporal(temp_reuse)
+        self.push_quad(
+            modify_quad_object(
+                Quadruple(Symbol("EQ", "assignment", scope), s, None, temp_reuse), ft
+            ),
+            scope,
+        )
+        self.temp_count += 1
+        self.ciclo_1()
+        temp = Symbol(str("T" + str(self.temp_count)), "BOOL", scope)
+        ft.set_temporal(temp)
+        self.push_quad(
+            modify_quad_object(
+                Quadruple(Symbol("LT", "comparison", scope), temp_reuse, exp, temp), ft
+            ),
+            scope,
+        )
+        self.temp_count += 1
+        self.ciclo_2(scope)
+        s = Symbol(1, "INT", "Constant Segment")
+        ft.insert_to_constant_table([s])
+        self.wait_to_call.append(
+            modify_quad_object(
+                Quadruple(Symbol("ADDEQ", "assignment", scope), s, None, temp_reuse), ft
+            )
+        )
+
     def ciclo_cero(self, scope, ft):
         if len(self.wait_to_call) > 0:
-            self.push_list(
-                self.solve_expression(
-                    self.wait_to_call.pop(),
+            call = self.wait_to_call.pop()
+            if type(call) == Quadruple:
+                self.push_quad(call, scope)
+            else:
+                self.push_list(
+                    self.solve_expression(
+                        call,
+                        ft,
+                    ),
+                    scope,
                     ft,
-                ),
-                scope,
-                ft,
-            )
+                )
 
     def ciclo_1(self):
         # Esta va antes de las expresiones del while

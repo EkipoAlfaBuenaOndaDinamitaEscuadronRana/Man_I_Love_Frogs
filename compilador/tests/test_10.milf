@@ -16,9 +16,13 @@ func int random(int a, int b, int c){
 {
     int a, b, c, d;
     a = 1 + random(5, -10, 4);
+    write(a);
     b = random(a, 3, 100);
+    write(b);
     c = random(random(5 , 5 , 5) , 5 , 5);
+    write(c);
     d = random(1,2,3) + random(4,5,6);
+    write(d);
     
 
 }

@@ -6,7 +6,22 @@ from compilador.objects.symbol import *
 import compilador.objects.base_address as base_address
 from compilador.objects.base_address import *
 
+# ARCHIVO QUE AYUDA A HACER TABLAS DE OBJETOS
+# SE IMPRIMEN CON EL FIN DE DEBUGGEAR
 
+# Genera tabla con los estados del stack
+def get_statetable_formatted(st):
+    headers = ["Table", "Optional"]
+    values = []
+    for s in st:
+        row = []
+        row.append(s.table)
+        row.append(s.opt)
+        values.append(row)
+    return tabulate(values, headers, tablefmt="fancy_grid")
+
+
+# Genera tabla con todos los cuadruplos en el stack
 def get_quad_stack_formatted(qs):
 
     quads = []
@@ -20,51 +35,14 @@ def get_quad_stack_formatted(qs):
     return tabulate(quads, tablefmt="fancy_grid")
 
 
+# Genera tabla para cada cuadruplo individualmente
 def get_quad_formatted(q):
-    # headers = ["Operator", "Operand_1", "Operand_1", "Result", "Scope"]
     quad = []
     quad = get_symbol_formatted([q.operator, q.operand_1, q.operand_2, q.operand_2])
-
-    """
-    quad.append(
-        str(
-            "-"
-            if q.operator == None
-            else get_symbol_formatted(q.operator)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.operand_1 == None
-            else get_symbol_formatted(q.operand_1)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.operand_2 == None
-            else get_symbol_formatted(q.operand_2)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.result_id == None
-            else get_symbol_formatted(q.result_id)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.scope == None
-            else q.scope
-        )
-    )
-    """
     return tabulate([quad], tablefmt="plain", colalign=("center", "center"))
 
 
+# Genera tabla con tabla de funciones
 def get_functable_formatted(ft):
     headers = ["Name", "Type", "Parameters", "Size", "Variable Table"]
     values = []
@@ -80,23 +58,15 @@ def get_functable_formatted(ft):
     return tabulate(values, headers, tablefmt="fancy_grid")
 
 
+# Genera tabla con tabla variables
 def get_vartable_formatted(vt):
     symbols = []
     for v in vt:
         symbols.append(vt[v])
     return get_symbol_formatted(symbols)
 
-    # headers = ["Name", "Type"]
-    # values = []
-    # for v in vt:
-    #     row = []
-    #     row.append(v)
-    #     row.append(vt[v])
-    #     values.append(row)
 
-    # return tabulate(values, headers, tablefmt="fancy_grid")
-
-
+# Genera tabla con los datos de un simbolo
 def get_symbol_formatted(s):
     headers = ["Name", "Type", "Dimensions", "Dimension_Nodes", "Scope", "Address"]
     values = []
@@ -147,6 +117,14 @@ def get_symbol_formatted(s):
                 row.append("-")
                 row.append(v.scope)
                 row.append(v.offset)
+            elif type(v) == str or type(v) == int:
+                row.append(v)
+                row.append("-")
+                row.append("-")
+                row.append("-")
+                row.append("-")
+                row.append("-")
+                row.append("-")
             else:
                 row.append(v.name)
                 row.append(v.type)
@@ -177,15 +155,4 @@ def get_symbol_formatted(s):
             values.append(row)
     if len(values) == 0:
         return tabulate([], [], tablefmt="fancy_grid")
-    return tabulate(values, headers, tablefmt="fancy_grid")
-
-
-def get_statetable_formatted(st):
-    headers = ["Table", "Optional"]
-    values = []
-    for s in st:
-        row = []
-        row.append(s.table)
-        row.append(s.opt)
-        values.append(row)
     return tabulate(values, headers, tablefmt="fancy_grid")

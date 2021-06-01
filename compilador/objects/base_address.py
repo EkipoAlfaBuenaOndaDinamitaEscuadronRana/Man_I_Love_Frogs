@@ -3,17 +3,25 @@ import compilador.helpers.printer
 from compilador.helpers.printer import *
 import numpy as np
 
+# CLASE BASE ADDRESS
+# Objeto que guarda la dirección base de un arreglo
+
 
 class BaseAddress(object):
-    def __init__(self, name=None, parent=None, type=None, scope=None, offset=None):
-        self.name = name  # A-BA
-        self.parent = parent  # A
-        self.type = type  # INT
-        self.scope = scope  # GLOBAL
-        self.offset = offset  # 17
-        self.value = None
-        self.segment_direction = None
-        self.global_direction = None
+    def __init__(
+        self, name=None, symbol=None, parent=None, type=None, scope=None, offset=None
+    ):
+        self.name = name  # Nombre de variable - BA
+        self.symbol = symbol  # Guarda el simbolo de su padre
+        self.parent = parent  # Guarda el nombre de su padre
+        self.type = type  # Guarda el tipo de su padre
+        self.scope = scope  # Guarda el contexto de su padre
+        self.offset = offset  # Guarda el tamaño de su padre
+        self.value = None  # Guarda su valor real
+        self.segment_direction = None  # Guarda su dirección en el segmento
+        self.global_direction = None  # Guarda su dirección global
+
+    # Imprime datos de objeto
 
     def print_base_address(self):
         if self.name:

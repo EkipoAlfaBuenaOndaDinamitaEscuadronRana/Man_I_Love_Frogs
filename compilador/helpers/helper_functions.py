@@ -9,6 +9,10 @@ from compilador.objects.symbol import *
 import sys
 import re
 
+# ARCHIVO CON FUNCIONES DE AYUDA AL PARSER
+# CONVIERTEN INPUT DEL PARSER A SYMBLOS
+
+# Diccionario de operandos a simbolos
 operators = {
     "+": Symbol("ADD", "operation"),
     "-": Symbol("SUB", "operation"),
@@ -28,6 +32,7 @@ operators = {
     "==": Symbol("BEQ", "matching"),
     "!=": Symbol("BNEQ", "matching"),
     "||": Symbol("OR", "matching"),
+    "&&": Symbol("AND", "matching"),
     "+=": Symbol("ADDEQ", "assignment_operation"),
     "-=": Symbol("SUBEQ", "assignment_operation"),
     "*=": Symbol("MULEQ", "assignment_operation"),
@@ -41,7 +46,7 @@ operators = {
     "jump_down": Symbol("JD", "obj_method"),
 }
 
-
+# Aplana una lista con listas anidadas
 def flatten_list(data):
     flat_list = []
     if type(data) != list:
@@ -54,6 +59,7 @@ def flatten_list(data):
     return flat_list
 
 
+# Conviererte parametros a symbolos
 def get_parameters(line):
     paramlist = []
     line = flatten_list(line)
@@ -67,6 +73,7 @@ def get_parameters(line):
     return paramlist
 
 
+# Convierte la lista del parser a un string
 def expresion_to_string(expression):
     if type(expression) != list:
         return str(expression)
@@ -80,8 +87,8 @@ def expresion_to_string(expression):
         return str_exp
 
 
+# Convierte declaración de variables a simbolos
 def get_variables(type, line):
-    # print("INPUT: " + str(line))
     line = flatten_list(line)
     varList = {}
     while line[0] != ";":
@@ -126,6 +133,7 @@ def get_variables(type, line):
     return varList
 
 
+# Busca variable con asignación en declaración de variable
 def dec_to_as(exp):
     if "=" not in exp:
         print("ERROR: Error trying to assing value in declaration")
@@ -135,6 +143,7 @@ def dec_to_as(exp):
         return exp[loc:-1]
 
 
+# Evalua constantes y les asigna un tipo
 def constant_eval(const):
     patterns = {
         "INT": r"(\d+|-\d+)",
@@ -153,6 +162,7 @@ def constant_eval(const):
     return None
 
 
+# Valida que la cantidad de dimensiones sean validas
 def validate_dimensions(symbol):
     dim_list_input = symbol.dimension_sizes
     dim_list_output = []
@@ -167,6 +177,7 @@ def validate_dimensions(symbol):
         return None
 
 
+# Crea diccionario de dimensiones para un arreglo
 def format_array_dimensions(exp):
     data = {
         "name": exp.pop(0),
@@ -202,6 +213,7 @@ def format_array_dimensions(exp):
     return data
 
 
+# Ayuda con la consistencia de los objetos simbolo al generar cuadruplo
 def modify_quad_object(exp, ft):
     ele = [exp.operand_1, exp.operand_2, exp.result_id]
     result = []
@@ -220,6 +232,7 @@ def modify_quad_object(exp, ft):
     return Quadruple(exp.operator, result.pop(0), result.pop(0), result.pop(0))
 
 
+# Convierte una expresión del parser en una lista de simbolos
 def expresion_to_symbols(exp, ft, s, d=None):
     if type(exp) != list:
         exp = [exp]
