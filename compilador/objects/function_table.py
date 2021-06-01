@@ -9,10 +9,12 @@ class FunctionTable(object):
     def __init__(self):
         self.functions = {}
         self.temp_table = {}
+        self.function_symbols = {}
 
     def reset_functionTable(self):
         self.functions = {}
         self.temp_table = {}
+        self.function_symbols = {}
 
     def push_temporal(self, symbol):
         data = str([symbol.name, symbol.scope])
@@ -28,13 +30,17 @@ class FunctionTable(object):
         else:
             return False
 
-    def set_function(self, name, type, parameters, variable_table):
+    def set_function(self, name, type, parameters, variable_table, scope=None):
         self.functions[name] = {
             "t": (type_dictionary[type] if type in type_dictionary else None),
             "p": parameters,
             "s": 0,
             "vt": variable_table,
         }
+        self.function_symbols[name] = Symbol(name, type, scope)
+
+    def get_function_symbol(self, name):
+        return self.function_symbols[name]
 
     def set_function_variable_table_at(self, name):
         self.functions[name]["vt"] = VariableTable()

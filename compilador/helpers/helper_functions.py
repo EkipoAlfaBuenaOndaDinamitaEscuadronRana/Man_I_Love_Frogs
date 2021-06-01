@@ -127,14 +127,12 @@ def get_variables(type, line):
 
 
 def dec_to_as(exp):
-    exp.pop()
-    if "," in exp:
-        loc = exp.index(",")
-        while "," in exp:
-            exp = exp[loc + 1 :]
-            if "," in exp:
-                loc = exp.index(",")
-    return exp
+    if "=" not in exp:
+        print("ERROR: Error trying to assing value in declaration")
+        sys.exit()
+    else:
+        loc = exp.index("=") - 1
+        return exp[loc:-1]
 
 
 def constant_eval(const):
@@ -230,6 +228,7 @@ def expresion_to_symbols(exp, ft, s, d=None):
     sym_list = []
     if d:
         exp = dec_to_as(exp)
+
     for e in exp:
         if e in operators:
             op = operators[e]

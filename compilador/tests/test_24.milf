@@ -1,0 +1,9 @@
+program test;
+
+func int square(int a, int b){
+    return a * a;
+}
+
+{
+    int b = square(2, 3);
+}
