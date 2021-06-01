@@ -7,5 +7,5 @@ Executer("levels/level2.milf").run(
     print_pre_quads=False,
     print_post_quads=False,
     print_instructions=False,
-    run_game=True
+    run_game=True,
 )

@@ -6,7 +6,6 @@ frog dinoAdrian;
 {
     int i;
     dinoAdrian.hat = "cool";
-    rositaFresita.hat = "cowboy";
     for (i = 0; i<9; i = i + 1) {
         dinoAdrian.jump_right();
     }
@@ -25,6 +24,7 @@ frog dinoAdrian;
         dinoAdrian.jump_right();
     }
 
+    rositaFresita.hat = "cowboy";
     for (i = 0; i<9; i = i + 1) {
         rositaFresita.jump_right();
     }

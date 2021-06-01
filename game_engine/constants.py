@@ -1,3 +1,4 @@
+# Constantes usadas en el juego
 class Constants:
     # Colors
     BLACK = (0, 0, 0)
