@@ -45,6 +45,7 @@ class VariableTable(object):
         )
 
     def add_return_location(self, name, loc):
+        print(name, loc.name)
         self.variables[name].set_return_location(loc)
 
     def get_size(self):

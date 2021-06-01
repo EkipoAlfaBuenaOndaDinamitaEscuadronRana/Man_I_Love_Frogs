@@ -21,47 +21,8 @@ def get_quad_stack_formatted(qs):
 
 
 def get_quad_formatted(q):
-    # headers = ["Operator", "Operand_1", "Operand_1", "Result", "Scope"]
     quad = []
     quad = get_symbol_formatted([q.operator, q.operand_1, q.operand_2, q.operand_2])
-
-    """
-    quad.append(
-        str(
-            "-"
-            if q.operator == None
-            else get_symbol_formatted(q.operator)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.operand_1 == None
-            else get_symbol_formatted(q.operand_1)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.operand_2 == None
-            else get_symbol_formatted(q.operand_2)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.result_id == None
-            else get_symbol_formatted(q.result_id)
-        )
-    )
-    quad.append(
-        str(
-            "-"
-            if q.scope == None
-            else q.scope
-        )
-    )
-    """
     return tabulate([quad], tablefmt="plain", colalign=("center", "center"))
 
 

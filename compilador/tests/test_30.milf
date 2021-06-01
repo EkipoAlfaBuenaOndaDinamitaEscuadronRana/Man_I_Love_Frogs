@@ -23,7 +23,6 @@ func void salta (frog f, int n){
     int i;
     for(i = 0; i < 5; i+=1){
         salta(amigos[i], i + 1);
-        write();
     }
 }
 
