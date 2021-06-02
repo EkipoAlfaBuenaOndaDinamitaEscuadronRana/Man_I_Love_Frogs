@@ -16,8 +16,8 @@ class Executer(object):
         self.quads = self.data["q"] # Guarda cuadruplos
         self.pretty_quads = self.data["str"] # Guarda cuarduplos en formato STR
         self.function_table = self.data["ft"] # Guarda tabla de funciones
-    
-    # Imprime cuadruplos 
+
+    # Imprime cuadruplos
     def __print_quads(self, pre_quads):
         if pre_quads:
             print("Program Quads before assignations:")
@@ -29,13 +29,13 @@ class Executer(object):
                 print("--{}----------------------------------".format(q))
                 self.quads[q].print_quad()
             print("-------------------------------------")
-    
+
     # Imprime instrucciones generadas
     def __print_instructions(self, instructions):
         print("\nResulting Instructions:")
         print("-------------------------------------")
         Instruction.print_instructions(instructions)
-    
+
     # Imprime nombre de archivo uq ese esta corriendo
     def __print_running(self):
         print("Running: {}".format(self.running_file))
@@ -48,7 +48,7 @@ class Executer(object):
         }
 
         Engine.start(characters, instructions, "one")
-    
+
     # Carga segundo nivel del juego
     def __load_level_two(self, instructions):
         characters = {
@@ -68,9 +68,6 @@ class Executer(object):
         if kwargs.get("print_post_quads"):
             self.__print_quads(False)
 
-        if kwargs.get("print_post_quads"):
-            self.__print_quads(False)
-
         if kwargs.get("print_running"):
             self.__print_running()
 
@@ -78,6 +75,9 @@ class Executer(object):
 
         if kwargs.get("print_instructions"):
             self.__print_instructions(instructions)
+
+        if kwargs.get("return_quads") and not (kwargs.get("run_game") or kwargs.get("play_level")):
+            return self.quads
 
         if (kwargs.get("run_game") or kwargs.get("play_level")) and len(instructions):
 

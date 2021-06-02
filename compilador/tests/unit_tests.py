@@ -938,3 +938,124 @@ class TestExecuter(unittest.TestCase):
             run_game=False,
         )
         self.assertEqual(len(run_instructions), 5)
+
+        run_instructions = Executer("levels/level1.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=False,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 14)
+
+        run_instructions = Executer("levels/level2.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=False,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 55)
+
+    def test_quadruple_generation(self):
+        run_instructions = Executer("compilador/tests/test_1.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 2)
+
+        run_instructions = Executer("compilador/tests/test_4.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 12)
+
+        run_instructions = Executer("compilador/tests/test_5.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 17)
+
+        run_instructions = Executer("compilador/tests/test_7.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 14)
+
+        run_instructions = Executer("compilador/tests/test_12.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 7)
+
+        run_instructions = Executer("compilador/tests/test_23.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 10)
+
+        run_instructions = Executer("compilador/tests/test_25.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 10)
+
+        run_instructions = Executer("compilador/tests/test_30.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 37)
+
+        run_instructions = Executer("levels/level1.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 17)
+
+        run_instructions = Executer("levels/level2.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 54)
