@@ -13,19 +13,20 @@ import sys
 # CLASE QUADRUPLE STACK
 # Objeto que guarda stack de quadruplos y sus indices
 
+
 class QuadrupleStack(object):
     ####################### INITS #######################
 
     def __init__(self):
-        self.qstack = {}        # Diccionario con indices y cuadruplos
-        self.count_prev = 0     # Contador con valor real de indice
-        self.count = 1          # Contador que siempre va un paso adelante
-        self.jumpStack = []     # Lista de indices para rellenar direcciones
-        self.jumpStackR = []    # Lista de indices para rellenar direcciones en return
-        self.funcjump = {}      # Diccionario con nombre de función e indice de inicio
-        self.param_count = 0    # Conteo de parametros siendo procesados
-        self.temp_count = 1     # Contador de temporales
-        self.array_stack = []   # Stack de temporales con dirección resultante de arreglo
+        self.qstack = {}  # Diccionario con indices y cuadruplos
+        self.count_prev = 0  # Contador con valor real de indice
+        self.count = 1  # Contador que siempre va un paso adelante
+        self.jumpStack = []  # Lista de indices para rellenar direcciones
+        self.jumpStackR = []  # Lista de indices para rellenar direcciones en return
+        self.funcjump = {}  # Diccionario con nombre de función e indice de inicio
+        self.param_count = 0  # Conteo de parametros siendo procesados
+        self.temp_count = 1  # Contador de temporales
+        self.array_stack = []  # Stack de temporales con dirección resultante de arreglo
         self.wait_to_call = []  # Guarda lista de simbolos que todavia no se procesasn
 
     # Reinica los valores para cuando compilan cosas consecutivamente
@@ -48,10 +49,9 @@ class QuadrupleStack(object):
     def reset_temp_count(self):
         self.temp_count = 1
 
-
     ####################### PUSH #######################
 
-    # Agrega un cuadruplo al stack 
+    # Agrega un cuadruplo al stack
     def push_quad(self, quadruple, scope):
         quadruple.scope = scope
         self.qstack[self.count] = quadruple
@@ -64,7 +64,7 @@ class QuadrupleStack(object):
             self.push_quad(modify_quad_object(elem, ft), scope)
 
     ####################### SETS / GETS #######################
-    
+
     # Guarda el indice de inicio de una función
     def set_function_location(self, name):
         self.funcjump[name] = self.count
@@ -76,8 +76,6 @@ class QuadrupleStack(object):
     # Regresa el contador actual de parametros
     def get_param_count(self):
         return self.param_count
-
-
 
     ####################### QUADRUPLE OPERATIONS #######################
 
@@ -106,7 +104,7 @@ class QuadrupleStack(object):
             i -= 1
         # Llama a resolver la expresión a los cuadruplos
         sol = Quadruple.arithmetic_expression(expresion, self.temp_count)
-        
+
         # Si recibe un error lo imprime y termina la ejecución
         if type(sol) == str:
             print(sol)
@@ -115,7 +113,7 @@ class QuadrupleStack(object):
             # Cambia el valor del conteo de temporales al ultimo temporal
             self.get_last_temporal(sol, ft)
             return sol
-    
+
     # Busca el valor del ultimo temporal en el stack
     def get_last_temporal(self, list, ft):
         r = r"T(\d+)"
@@ -151,18 +149,18 @@ class QuadrupleStack(object):
         if flag:
             self.temp_count += 1
 
-    # Generación de cuaruplos de acceso a arreglos 
+    # Generación de cuaruplos de acceso a arreglos
     def array_access(self, symbol, scope, ft):
         # 1: ya se hizo, es en el ID validar que exista
         #    y que tenga dimensiones
 
         # 2: Al llegar a primera dimension
-        
-        # Inicializa DIM_COUNT a 1 
+
+        # Inicializa DIM_COUNT a 1
         DIM_COUNT = 1
         #    Agarra nombre variable dimensionada
         array_id = symbol["name"]
-        
+
         # Agarra los datos de las dimensiones y valida que sea igual a las
         # dimensiones de la variable que se llamo
         DIM = symbol["dim"]
@@ -172,11 +170,9 @@ class QuadrupleStack(object):
             )
             sys.exit()
 
-   
-
         # Para cada dimensión del arrelglo
         for d in DIM:
-            # Valida que lo que se mando sea un INT 
+            # Valida que lo que se mando sea un INT
             # Cuando es solo un valor
             if self.expresion_or_id(d, "INT", "index"):
                 exp_sent = d[0]
@@ -184,7 +180,7 @@ class QuadrupleStack(object):
                     print("ERROR: using a non-int value to try to access an array")
                     sys.exit()
             else:
-                # Cuando es una expresión 
+                # Cuando es una expresión
                 # Si hay dimensiones las resuelve
                 # Si hay expresion la resuelve
                 i = 0
@@ -211,7 +207,7 @@ class QuadrupleStack(object):
                 self.push_list(self.solve_expression(d, ft), scope, ft)
                 # Asigna el valor del resultado del ultimo cuadruplo
                 exp_sent = self.qstack[self.count_prev].result_id
-                # Valida que sea de tipo INT 
+                # Valida que sea de tipo INT
                 if (
                     not Symbol.check_type_compatibility("INT", exp_sent.type)
                     or exp_sent.type == "NULL"
@@ -227,7 +223,7 @@ class QuadrupleStack(object):
             )
             # Los mete a la tabla de constantes
             ft.insert_to_constant_table([limI, limS])
-            
+
             # 3: despues de leer expresión
 
             # Genera cuadruplo VER con expresion que se mando y limites
@@ -246,8 +242,8 @@ class QuadrupleStack(object):
 
             # Se guarda la expresión que se mando
             self.array_stack.append(exp_sent)
-            
-            # Si hay otra dimensión 
+
+            # Si hay otra dimensión
             if DIM_COUNT < len(DIM):
                 temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
                 ft.set_temporal(temp)
@@ -258,7 +254,7 @@ class QuadrupleStack(object):
                     "Constant Segment",
                 )
                 ft.insert_to_constant_table([m])
-                
+
                 # Genera cuadruplo de expresion * Mn
                 self.push_quad(
                     modify_quad_object(
@@ -292,7 +288,7 @@ class QuadrupleStack(object):
                     ),
                     scope,
                 )
-                # Indica que se genero un temporal 
+                # Indica que se genero un temporal
                 self.temp_count += 1
                 # Guarda resultado de dimensión
                 self.array_stack.append(self.qstack[self.count_prev].result_id)
@@ -305,7 +301,7 @@ class QuadrupleStack(object):
         aux_1 = self.array_stack.pop()
         temp = Symbol(str("T" + str(self.temp_count)), "INT", scope)
         ft.set_temporal(temp)
-        
+
         # Se le agrega K que en nuestro caso siempre es 0
         m = Symbol(
             int(array_id.dimension_nodes[DIM_COUNT - 1]["M"]),
@@ -313,7 +309,7 @@ class QuadrupleStack(object):
             "Constant Segment",
         )
         ft.insert_to_constant_table([m])
-        
+
         # Genera cuadruplo de expresion acumulada + K
         self.push_quad(
             modify_quad_object(
@@ -321,14 +317,14 @@ class QuadrupleStack(object):
             ),
             scope,
         )
-        
+
         # Indica que generamos otro temporal
         self.temp_count += 1
         # Se agrega el resultado a la pila y se saca
         self.array_stack.append(self.qstack[self.count_prev].result_id)
         aux_1 = self.array_stack.pop()
-        
-        # Se genera cuadruplo de desplazamiento + dirección base 
+
+        # Se genera cuadruplo de desplazamiento + dirección base
         temp = Symbol(
             "(" + str("T" + str(self.temp_count)) + ")",
             "INT",
@@ -408,7 +404,7 @@ class QuadrupleStack(object):
 
     # Regresa el cuadruplo de parametros
     def validate_parameters(self, func_param, sent_param, scope):
-        # Valida que no hayamos contado más parametros de los que 
+        # Valida que no hayamos contado más parametros de los que
         # tiene la función
         if self.param_count < len(func_param):
             # Agarra el parametro en el indice que buscamos
@@ -418,7 +414,7 @@ class QuadrupleStack(object):
                 # Lo saca de la lista, incrementa conteo de parametros
                 sent_param = sent_param[0]
                 self.param_count += 1
-                # Regresa cuadruplo de parametros 
+                # Regresa cuadruplo de parametros
                 return Quadruple(
                     Symbol("PARAM", sent_param.type, scope),
                     sent_param,
@@ -475,7 +471,7 @@ class QuadrupleStack(object):
             else:
                 # Si es una expresión
                 # Genera e inserta el cuadruplo con el valor de retorno del
-                # cuadruplo anterior 
+                # cuadruplo anterior
                 self.push_quad(
                     modify_quad_object(
                         Quadruple(
@@ -514,7 +510,7 @@ class QuadrupleStack(object):
         if func_var.type != "VOID":
             temp = Symbol(str("T" + str(self.temp_count)), func_var.type, scope)
             ft.set_temporal(temp)
-            # Agrega cuadruplo para asignar valor del valor que tiene 
+            # Agrega cuadruplo para asignar valor del valor que tiene
             # la variable de la función en la tabla global
             # y lo asigna a un temporal para no perder el resultado
             self.push_quad(
@@ -568,7 +564,7 @@ class QuadrupleStack(object):
             if data[2].type == "parentheses":
                 s = Symbol(1, "INT", "Constant Segment")
                 ft.insert_to_constant_table([s])
-                # Genera e incerta cuadruplo de un solo movimiento 
+                # Genera e incerta cuadruplo de un solo movimiento
                 self.push_quad(
                     modify_quad_object(Quadruple(data[1], data[0], None, s), ft),
                     scope,
@@ -638,7 +634,7 @@ class QuadrupleStack(object):
                 Quadruple(Symbol("ADDEQ", "assignment", scope), s, None, temp_reuse), ft
             )
         )
-    
+
     # Saca la asignación guardada
     def ciclo_cero(self, scope, ft):
         # Genera y/o incerta el cuadruplo de incremento al final
@@ -765,7 +761,7 @@ class QuadrupleStack(object):
             sys.exit()
 
     ####################### PRINTS #######################
-    
+
     # Imprime un cuadruplo individual
     def print_quad(self, q):
         print(get_quad_formatted(q))
@@ -774,7 +770,7 @@ class QuadrupleStack(object):
     def print_quads(self):
         print(get_quad_stack_formatted(self.qstack))
 
-    # Regresa los cuadruplos en formato string 
+    # Regresa los cuadruplos en formato string
     def return_quads(self):
         rq = ""
         for k, v in self.qstack.items():

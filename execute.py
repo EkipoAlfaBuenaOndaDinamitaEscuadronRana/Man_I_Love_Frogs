@@ -9,13 +9,14 @@ from game_engine.engine import *
 # CLASE EXECUTER
 # Comunicación entre parser, vm y juego
 
+
 class Executer(object):
     def __init__(self, running_file):
-        self.running_file = running_file # Nombre del archivo
-        self.data = parser_file(running_file) # Manda archivo al parser y recibe datos
-        self.quads = self.data["q"] # Guarda cuadruplos
-        self.pretty_quads = self.data["str"] # Guarda cuarduplos en formato STR
-        self.function_table = self.data["ft"] # Guarda tabla de funciones
+        self.running_file = running_file  # Nombre del archivo
+        self.data = parser_file(running_file)  # Manda archivo al parser y recibe datos
+        self.quads = self.data["q"]  # Guarda cuadruplos
+        self.pretty_quads = self.data["str"]  # Guarda cuarduplos en formato STR
+        self.function_table = self.data["ft"]  # Guarda tabla de funciones
 
     # Imprime cuadruplos
     def __print_quads(self, pre_quads):
@@ -76,7 +77,9 @@ class Executer(object):
         if kwargs.get("print_instructions"):
             self.__print_instructions(instructions)
 
-        if kwargs.get("return_quads") and not (kwargs.get("run_game") or kwargs.get("play_level")):
+        if kwargs.get("return_quads") and not (
+            kwargs.get("run_game") or kwargs.get("play_level")
+        ):
             return self.quads
 
         if (kwargs.get("run_game") or kwargs.get("play_level")) and len(instructions):

@@ -17,18 +17,26 @@ from game_engine.instruction import *
 
 
 class VirtualMachine(object):
-        
-        ####################### INITS #######################
+
+    ####################### INITS #######################
 
     def __init__(self, global_size, constant_size, local_size, func_table=None):
-        self.__total_size = global_size + constant_size + local_size # Guarda tamaño total de vm
-        self.func_table = func_table   # Tabla de funciones
-        self.global_segment = MemorySegment("Global Segment", global_size, 0) # Genera segmento de memoria global
+        self.__total_size = (
+            global_size + constant_size + local_size
+        )  # Guarda tamaño total de vm
+        self.func_table = func_table  # Tabla de funciones
+        self.global_segment = MemorySegment(
+            "Global Segment", global_size, 0
+        )  # Genera segmento de memoria global
         self.constant_segment = MemorySegment(
-            "Constant Segment", constant_size, global_size      # Genera segmento de memoria de constantes
+            "Constant Segment",
+            constant_size,
+            global_size,  # Genera segmento de memoria de constantes
         )
-        self.declared_symbols = [] # Lista de simbolos en maquina virtual
-        self.next_function_segment = [] # Guarda siguiente dirección de memoria disponible en segmento local
+        self.declared_symbols = []  # Lista de simbolos en maquina virtual
+        self.next_function_segment = (
+            []
+        )  # Guarda siguiente dirección de memoria disponible en segmento local
 
         if func_table:
             local_size_memory = global_size + constant_size
@@ -50,7 +58,7 @@ class VirtualMachine(object):
         self,
         local_size,
         local_start_direction,
-    ):  
+    ):
         # Revisa cuantas funciones hay y divide los segmentos locales entre ello
         num_local_segments = len(self.func_table.functions)
         if not num_local_segments:
@@ -60,8 +68,8 @@ class VirtualMachine(object):
         local_segment_size = local_size // num_local_segments
         local_memory_size = local_size // num_local_segments
         start_direction = local_start_direction
-        
-        # Crea segmento de memoria del main 
+
+        # Crea segmento de memoria del main
         segments = []
         segments.append(MemorySegment("main", local_segment_size, start_direction))
         # Guarda sigueinte dirección disponible y la guarda
@@ -85,24 +93,26 @@ class VirtualMachine(object):
                 for k, v in vars.items():
                     self.insert_symbol_in_segment(ft, v)
 
-    # Genera segmento de memoria de función para instancia de función 
+    # Genera segmento de memoria de función para instancia de función
     def __function_instance(self, func_name):
         function_object = self.func_table.functions
-        
+
         # Saca su tamaño de la tabla y lo multiplica por el numero de tipos de variables
         function_size = function_object[func_name]["s"] * 7
-        
+
         # Se saca la dirección de inicio
         start_direction = self.next_function_segment.pop()
-        
+
         # Valida que hay espacio en la memoria local para instanciar la función
         if function_size + start_direction < self.__total_size:
-            # Se genera el nombre unico de la instancia 
+            # Se genera el nombre unico de la instancia
             # Se agrega su segmento de memoria al segmento local
             name = str(func_name) + "-" + str(start_direction)
-            self.local_segment.append(MemorySegment(name, function_size, start_direction))
-            
-            # Se actualiza la dirección de inicio del siguiente segmento de memoria 
+            self.local_segment.append(
+                MemorySegment(name, function_size, start_direction)
+            )
+
+            # Se actualiza la dirección de inicio del siguiente segmento de memoria
             start_direction += function_size
             self.next_function_segment.append(start_direction)
 
@@ -113,10 +123,10 @@ class VirtualMachine(object):
             # Inserta las variables al segmento de memoria
             for k, v in vars.items():
                 self.insert_symbol_in_segment(name, v)
-            
+
             # Regresa nombre unico
             return name
-        else: 
+        else:
             print("ERROR: Local Memory exceded, can't instance " + func_name)
             sys.exit()
 
@@ -128,7 +138,7 @@ class VirtualMachine(object):
                 return func_segment
 
         return None
-    
+
     # Inserta un simbolo en el segmento indicado
     def insert_symbol_in_segment(self, segment_name, symbol):
         self.declared_symbols.append(symbol)
@@ -171,7 +181,7 @@ class VirtualMachine(object):
                 return False
             # Inserta simbolo a dirección indicada
             return function_segment.modify_address(array_access, result_value)
-    
+
     # Regresa segmento de memoria al que le pertenece esa dirección
     def __get_local_segment(self, direction):
         current_segment_direction = (
@@ -249,21 +259,21 @@ class VirtualMachine(object):
             segment.modify_value(direction, value)
 
     ################## FUNCTION CALL PREPARATION ##################
-    
+
     # Regresa un diccionario con valores de variables en segmento actual
     def __save_local_scope(self, scope):
         f_name = scope[1]
         f_unique = scope[0]
         segment = self.__find_function_segment(f_unique)
         return segment.save_local_memory()
-    
+
     # Regresa los valores guardados a su dirección
     def __unfreeze_local_scope(self, scope, frozen_memory):
         f_name = scope[1]
         f_unique = scope[0]
         segment = self.__find_function_segment(f_unique)
         segment.backtrack_memory(frozen_memory)
-    
+
     # Borra un segmento de memoria cuando termina de usarse
     def __erase_local_instance(self):
         # Saca el segmento de memoria de la lista
@@ -272,23 +282,23 @@ class VirtualMachine(object):
         new_next = self.next_function_segment.pop()
         # Cambia la siguiente dirección a la nueva
         new_next = new_next - local_segment.size
-        # Borra memoria local 
+        # Borra memoria local
         local_segment.erase_local_memory()
         # Guarda nueva dirección
         self.next_function_segment.append(new_next)
 
     ########################### RESOLVE ###########################
 
-    # ......................... ARREGLOS ......................... # 
-    
+    # ......................... ARREGLOS ......................... #
+
     # Resuelve cuadruplo de instrucción VER
     def __resolve_ver(self, dir_opnd_1, dir_opnd_2, dir_result):
         # Valor en dirección de indice a accesar
         val_opnd_1 = self.get_direction_value(dir_opnd_1)
-        
+
         # Valor en dirección de limite inferior
         val_opnd_2 = self.get_direction_value(dir_opnd_2)
-        
+
         # Valor en dirección de limite inferior
         result = self.get_direction_value(dir_result)
 
@@ -299,7 +309,12 @@ class VirtualMachine(object):
             sys.exit()
 
         # Se valida que se hayan encontrado los valores de los limites
-        if val_opnd_2 == None or val_opnd_2 == "null" or result == None or val_opnd_2 == "null" :
+        if (
+            val_opnd_2 == None
+            or val_opnd_2 == "null"
+            or result == None
+            or val_opnd_2 == "null"
+        ):
             print("ERROR: array missing dimension value")
             sys.exit()
 
@@ -310,16 +325,17 @@ class VirtualMachine(object):
 
     # Resuelve la operación de agregar el desplazamiento a la dirección base
     def __resolve_address_op(
-        self, operation, dir_opnd_1, dir_opnd_2, dir_result, parent_name, index):
+        self, operation, dir_opnd_1, dir_opnd_2, dir_result, parent_name, index
+    ):
         # Valor de desplazamiento
         val_opnd_1 = self.get_direction_value(dir_opnd_1)
-        # Simbolo del arreglo 
+        # Simbolo del arreglo
         parent_sym = self.get_direction_symbol(dir_opnd_2)
         # Dirección en segmento del padre
         parent_dir = parent_sym.segment_direction
         # Simbolo que guarda la dirección
         result = self.get_direction_symbol(dir_result)
-        
+
         # Valida que haya valores asignados a las variables
         if val_opnd_1 == None or val_opnd_1 == "null":
             sym_opnd_1 = self.get_direction_symbol(dir_opnd_1).name
@@ -341,12 +357,14 @@ class VirtualMachine(object):
             self.modify_direction_value(dir_result, result_value)
             # Crea el simbolo del indice del arreglo
             array_access = Symbol(
-                str(parent_name) + "[ " + str(index) + " ]", parent_sym.type, parent_sym.scope
+                str(parent_name) + "[ " + str(index) + " ]",
+                parent_sym.type,
+                parent_sym.scope,
             )
             # Inserta simbolo de indice a memoria
             self.modify_address_symbol(array_access, child_dir)
-    
-    # ......................... FUNCIONES ......................... # 
+
+    # ......................... FUNCIONES ......................... #
 
     # Resuelve la asignación a parametros
     def __resolve_param(self, dir_operand, index_result, func_name):
@@ -386,10 +404,10 @@ class VirtualMachine(object):
 
         self.modify_direction_value(dir_result, val_operand)
         val_result.value = val_operand
-  
-    # ......................... OPERACIONES ......................... # 
 
-    # Resuelve operaciones aritmeticas y booleanas 
+    # ......................... OPERACIONES ......................... #
+
+    # Resuelve operaciones aritmeticas y booleanas
     def __resolve_op(self, operation, dir_opnd_1, dir_opnd_2, dir_result):
         sym_opnd_1 = self.get_direction_symbol(dir_opnd_1)
         sym_opnd_2 = self.get_direction_symbol(dir_opnd_2)
@@ -466,7 +484,7 @@ class VirtualMachine(object):
                     sys.exit()
                 result_value = val_opnd_1 % val_opnd_2
                 sym_result.value = val_opnd_1 % val_opnd_2
-            # < 
+            # <
             elif operation == "LT":
                 result_value = val_opnd_1 < val_opnd_2
                 sym_result.value = val_opnd_1 < val_opnd_2
@@ -482,11 +500,11 @@ class VirtualMachine(object):
             elif operation == "GTE":
                 result_value = val_opnd_1 >= val_opnd_2
                 sym_result.value = val_opnd_1 >= val_opnd_2
-        
+
         # Modifica valor en dirección resultante
         self.modify_direction_value(dir_result, result_value)
 
-    # Resuelve operaciones de asignación y asignación compuesta 
+    # Resuelve operaciones de asignación y asignación compuesta
     def __resolve_eq(self, assign_op, dir_opnd, dir_result):
         val_operand = self.get_direction_value(dir_opnd)
         result = self.get_direction_symbol(dir_result)
@@ -523,19 +541,19 @@ class VirtualMachine(object):
         elif assign_op == "DIVEQ":
             # Valida que no se pueda divir por cero
             if val_operand == 0:
-                    print("ERROR: Trying to divide by cero")
-                    sys.exit()
+                print("ERROR: Trying to divide by cero")
+                sys.exit()
             result_value /= val_operand
             result.value /= val_operand
         # %=
         elif assign_op == "MODEQ":
             # Valida que no se pueda dividir por cero
             if val_operand == 0:
-                    print("ERROR: Trying to divide by cero")
-                    sys.exit()
+                print("ERROR: Trying to divide by cero")
+                sys.exit()
             result_value %= val_operand
             result.value %= val_operand
-        
+
         # Modifica valor resultante de variable receptora
         self.modify_direction_value(dir_result, result_value)
 
@@ -545,7 +563,12 @@ class VirtualMachine(object):
         val_operand = self.get_direction_value(dir_operand)
         result = self.get_direction_symbol(dir_result)
         # Si el operando tiene un valor no booleano el not es falso
-        if val_operand != None and val_operand != "null" and sym_operand.type != "BOOL" and val_operand != 0:
+        if (
+            val_operand != None
+            and val_operand != "null"
+            and sym_operand.type != "BOOL"
+            and val_operand != 0
+        ):
             result_value = False
             result.value = False
         # Si el valor es None, null ó 0 el not es verdadero
@@ -556,13 +579,13 @@ class VirtualMachine(object):
             # Si ya es booleano se hace el not a su valor
             result_value = not val_operand
             result.value = not val_operand
-        
+
         # Se guarda el valor del resultado
         self.modify_direction_value(dir_result, result_value)
 
-    # ......................... INPUT / OUTPUT ......................... # 
+    # ......................... INPUT / OUTPUT ......................... #
 
-    # Imprime expresión que se busca 
+    # Imprime expresión que se busca
     def __resolve_write(self, dir_result):
         if dir_result == "empty":
             print()
@@ -585,7 +608,7 @@ class VirtualMachine(object):
                 sys.exit()
             self.modify_direction_value(dir_result, user_input)
             symbol.value = user_input
-        
+
         # Si se busca asignar a un FLT intenta convertirlo a FLT y asignarlo
         elif symbol.type == "FLT":
             user_input = user_input.replace(" ", "")
@@ -596,8 +619,8 @@ class VirtualMachine(object):
                 sys.exit()
             self.modify_direction_value(dir_result, user_input)
             symbol.value = user_input
-        
-        # Si se busca asignar a un CHAR valida que sea un solo caracter, 
+
+        # Si se busca asignar a un CHAR valida que sea un solo caracter,
         # convertirlo a STR y asignar solo la primera casilla del input
         elif symbol.type == "CHAR":
             user_input = user_input.replace(" ", "")
@@ -623,7 +646,7 @@ class VirtualMachine(object):
                 sys.exit()
             self.modify_direction_value(dir_result, user_input)
             symbol.value = user_input
-        # Si es un BOOL 
+        # Si es un BOOL
         elif symbol.type == "BOOL":
             user_input = user_input.replace(" ", "")
             booleans = {"true": True, "false": False, "0": False}
@@ -643,7 +666,7 @@ class VirtualMachine(object):
             self.modify_direction_value(dir_result, user_input)
             symbol.value = user_input
 
-    # ......................... MTD OBJ ......................... # 
+    # ......................... MTD OBJ ......................... #
 
     def __resolve_frog_method(self, operation, dir_frog, dir_result):
         # Diccionario de accesorios de rana
@@ -671,10 +694,10 @@ class VirtualMachine(object):
             # Regresa instrucción
             return Instruction(frog, operation, hat)
         else:
-            # Regresa instrucción de operando 
+            # Regresa instrucción de operando
             times = self.get_direction_value(dir_result)
             return Instruction(frog, operation, times)
-    
+
     ########################### MAIN ###########################
 
     # Imprime la memoria para debugging
@@ -683,19 +706,23 @@ class VirtualMachine(object):
         self.constant_segment.print_memory_segment()
         for segment in self.local_segment:
             segment.print_memory_segment()
-    
+
     # Itera sobre los quadruplos y resuelve la instrucción
     def run(self, quad_dir):
 
-        era = False             # Avisa si estamos llamando a una función
-        running = True          # Lee mientras no lleguemos al ENDOF 
-        instruction = 1         # Inicia en el primer cuadruplo
-        saved_positions = []    # Guarda indice cuando se llama una función
-        saved_functions = []    # Stack con nombre de función y nombre unico de su espacio de meoria
+        era = False  # Avisa si estamos llamando a una función
+        running = True  # Lee mientras no lleguemos al ENDOF
+        instruction = 1  # Inicia en el primer cuadruplo
+        saved_positions = []  # Guarda indice cuando se llama una función
+        saved_functions = (
+            []
+        )  # Stack con nombre de función y nombre unico de su espacio de meoria
         game_instructions = []  # Guarda las instrucciones del juego
-        frozen_memory = []      # Guarda diccionario de direcciones + su valor antes de hacer llamada
-        index_accessed = []     # Guarda indice de dimension a accesar     
-        
+        frozen_memory = (
+            []
+        )  # Guarda diccionario de direcciones + su valor antes de hacer llamada
+        index_accessed = []  # Guarda indice de dimension a accesar
+
         # Mientras no sea ENDOF
         while running:
             # Saca cuadruplo en dirección actual y el nombre / tipo del operando
@@ -711,12 +738,13 @@ class VirtualMachine(object):
                     if curr_quad.operand_1.address_flag:
                         # Si es el caso busca el valor en la dirección
                         dir_opnd_1 = self.get_direction_symbol(
-                            curr_quad.operand_1.value)
+                            curr_quad.operand_1.value
+                        )
                         dir_opnd_1 = dir_opnd_1.global_direction
                     else:
                         # Si no solo asigna su dirección
                         dir_opnd_1 = curr_quad.operand_1.global_direction
-                    
+
                     # Checa si el operando_2 es una dirección
                     if curr_quad.operand_2.address_flag:
                         # Si es el caso busca el valor en la dirección
@@ -727,7 +755,7 @@ class VirtualMachine(object):
                     else:
                         # Si no solo asigna su dirección
                         dir_opnd_2 = curr_quad.operand_2.global_direction
-                    
+
                     # Agarra simbolo de resultado
                     result_id = curr_quad.result_id
 
@@ -758,11 +786,11 @@ class VirtualMachine(object):
                     dir_opnd_1 = curr_quad.operand_1.global_direction
                     # Dirección de simbolo padre de dirección base
                     dir_opnd_2 = curr_quad.operand_2.symbol.global_direction
-                    # Nombre del simbolo padre de la dirección base 
+                    # Nombre del simbolo padre de la dirección base
                     parent_name = curr_quad.operand_2.parent
                     # Agarra simbolo de resultado
                     result_id = curr_quad.result_id
-          
+
                     # Si el simbolo no tiene dirección de memoria
                     if result_id.global_direction == None:
                         if len(saved_functions) > 0:
@@ -810,7 +838,7 @@ class VirtualMachine(object):
                 else:
                     operand_1 = curr_quad.operand_1
                     result_id = curr_quad.result_id
-                    
+
                     # Si el simbolo no tiene dirección de memoria
                     if result_id.global_direction == None:
                         if len(saved_functions) > 0:
@@ -828,7 +856,7 @@ class VirtualMachine(object):
                         else:
                             # Se inserta en su propio scope
                             self.insert_symbol_in_segment(result_id.scope, result_id)
-                    
+
                     # Checa si el resultado es una dirección
                     if result_id.address_flag:
                         # Si es el caso busca el valor en la dirección
@@ -837,8 +865,8 @@ class VirtualMachine(object):
                     else:
                         # Si no solo asigna su dirección
                         dir_result = result_id.global_direction
-                   
-                   # Checa si el operando_1 es una dirección
+
+                    # Checa si el operando_1 es una dirección
                     if operand_1.address_flag:
                         # Si es el caso busca el valor en la dirección
                         dir_operand = self.get_direction_symbol(operand_1.value)
@@ -846,7 +874,7 @@ class VirtualMachine(object):
                     else:
                         # Si no solo asigna su dirección
                         dir_operand = operand_1.global_direction
-                    
+
                     # Resuelve operación
                     self.__resolve_eq(operation, dir_operand, dir_result)
                     # Si estamos asignando a un atributo objeto
@@ -865,7 +893,7 @@ class VirtualMachine(object):
                 result_id = curr_quad.result_id
                 # Si el simbolo no tiene dirección de memoria
                 if result_id.global_direction == None:
-                    if len(saved_functions) > 0:  
+                    if len(saved_functions) > 0:
                         # Busca nombre del contexto actual
                         f = saved_functions[-1]
                         f_name = f[1]
@@ -877,10 +905,10 @@ class VirtualMachine(object):
                     if result_id.scope == f_name:
                         # Se inserta en segmento actual
                         self.insert_symbol_in_segment(f_address, result_id)
-                    else:   
+                    else:
                         # Se inserta en su propio scope
                         self.insert_symbol_in_segment(result_id.scope, result_id)
-                
+
                 # Checa si el resultado es una dirección
                 if result_id.address_flag:
                     # Si es el caso busca el valor en la dirección
@@ -889,7 +917,7 @@ class VirtualMachine(object):
                 else:
                     # Si no solo asigna su dirección
                     dir_result = result_id.global_direction
-                
+
                 # Checa si el operando_1 es una dirección
                 if operand_1.address_flag:
                     # Si es el caso busca el valor en la dirección
@@ -994,11 +1022,12 @@ class VirtualMachine(object):
             elif operation == "RETURN":
                 # Si existe valor de retorno
                 if curr_quad.operand_1 and curr_quad.result_id:
-                   # Checa si el operando_1 es una dirección
+                    # Checa si el operando_1 es una dirección
                     if curr_quad.operand_1.address_flag:
                         # Si es el caso busca el valor en la dirección
                         dir_operand = self.get_direction_symbol(
-                            curr_quad.operand_1.value)
+                            curr_quad.operand_1.value
+                        )
                         dir_operand = dir_opnd_1.global_direction
                     else:
                         # Si no solo asigna su dirección
@@ -1040,7 +1069,7 @@ class VirtualMachine(object):
                 game_instructions.append(
                     self.__resolve_frog_method(operation, dir_frog, dir_result)
                 )
-            # Acaba la iteración de cuadruplos    
+            # Acaba la iteración de cuadruplos
             elif operation == "ENDOF":
                 running = False
                 continue

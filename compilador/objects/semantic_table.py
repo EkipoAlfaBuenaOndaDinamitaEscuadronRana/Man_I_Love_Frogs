@@ -6,10 +6,11 @@ from compilador.objects.function_table import *
 # CLASE SEMANTIC TABLE
 # Guarda y valida relación entre operandos usando operadores
 
+
 class SemanticTable:
     ####################### INITS #######################
- 
-    # Tipos validos para hacer operaciones 
+
+    # Tipos validos para hacer operaciones
     types = {"INT", "FLT", "CHAR", "STR", "BOOL", "NULL", "FROG"}
 
     # Operadores de comparación
@@ -239,11 +240,11 @@ class SemanticTable:
         # Regresa el valor resultante de una operación aritmetica entre tipos
         elif symbol_op == "operation":
             return SemanticTable.__operations[symbol_1][symbol_2]
-        
+
         # Regresa el valor resultante de una operación de comparación entre tipos
         elif symbol_op == "comparison":
             return SemanticTable.__comparison[symbol_1][symbol_2]
-        
+
         # Regresa el valor resultante de una operación de asignación compuesta entre tipos
         elif symbol_op == "assignment_operation":
             return SemanticTable.__assignment_operations[symbol_1][symbol_2]
