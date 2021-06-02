@@ -22,6 +22,7 @@ class Engine:
     __speed = Constants.SPEED
     __flys = 0
 
+    # Actualiza el estado de un character dependiendo de la instrucción dada
     def instruction_movement(instruction, characters, board):
         character = characters[instruction.character_name]
         movement = instruction.movement
@@ -39,14 +40,16 @@ class Engine:
         elif movement == "JL":
             x, y = character.move_left(times, board)
 
-        elif movement == "HAT":
-            x, y = character.change_hat(times, board)
+        elif movement == "hat":
+            character.change_hat(times)
+            return
 
         else:
             return
 
         Engine.update_board(board, character, x, y)
 
+    # Elimina una mosca del juego
     def delete_fly(fly):
         fly.rect.x = 2000
         fly.rect.y = 2000
@@ -54,6 +57,8 @@ class Engine:
         fly.x = 2000
         Engine.__flys -= 1
 
+    # Actualiza el tablero colocando personajes en lugares especificos o bien,
+    # Actualizando items
     def update_board(board, character, x, y):
         for i in range(len(board)):
             for j in range(len(board[i])):
@@ -66,8 +71,8 @@ class Engine:
                         board[i][j] = None
 
         board[y][x] = character
-        # Engine.print_board(board)
 
+    # Despliega la matriz del tablero del juego
     def print_board(board):
         for row in board:
             for space in row:
@@ -83,6 +88,7 @@ class Engine:
             print()
         print()
 
+    # Construye el nievel dependiendo del parametro dado
     def build_level(played_level):
         if played_level == "one":
             return Levels.LEVEL_ONE
@@ -90,6 +96,7 @@ class Engine:
         elif played_level == "two":
             return Levels.LEVEL_TWO
 
+    # genera animaciones y contruye sprites de los objetos del juego
     def build_characters_and_items(characters, items):
         active_sprite_list = pygame.sprite.Group()
         for item in items:
@@ -110,6 +117,7 @@ class Engine:
 
         return active_sprite_list
 
+    # Inicializa los valores de los personajes, crea el tablero
     def init_game(characters, items):
         cols = Constants.DISPLAY_WIDTH // Constants.FROG_WIDTH
         rows = Constants.DISPLAY_HEIGHT // Constants.FROG_HEIGHT
@@ -134,24 +142,25 @@ class Engine:
 
         return board
 
+    # Revisa que el usuario haya dado a salir en el juego
     def check_if_quit():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-    """
-    characters = {
+    # Inicializa todas las funciones del juego
+    def start(characters, instructions, played_level):
+        """INPUT EXAMPLE
+        characters = {
         "Rosita Fresita": Character(0, 0, 50, 50, 50),
         "Dino Adrian": Character(0, 50, 50, 50, 50),
-    }
+        }
 
-    instructions = [
+        instructions = [
         Instruction("Rosita Fresita", "JR", 1),
         Instruction("Dino Adrian", "JD", 1),
-    ]
-    """
-
-    def start(characters, instructions, played_level):
+        ]
+        """
         pygame.init()
 
         clock = pygame.time.Clock()

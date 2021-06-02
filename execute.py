@@ -79,10 +79,12 @@ class Executer(object):
         if kwargs.get("print_instructions"):
             self.__print_instructions(instructions)
 
-        if kwargs.get("run_game") and len(instructions):
-            if kwargs.get("run_game") == 1:
+        if (kwargs.get("run_game") or kwargs.get("play_level")) and len(instructions):
+
+            if 1 in [kwargs.get("run_game"), kwargs.get("play_level")]:
+                print("helloasd")
                 self.__load_level_one(instructions)
-            elif kwargs.get("run_game") == 2:
+            elif 2 in [kwargs.get("run_game"), kwargs.get("play_level")]:
                 self.__load_level_two(instructions)
 
         return instructions
