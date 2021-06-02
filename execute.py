@@ -6,15 +6,18 @@ from compilador.vm.virtual_machine import *
 import game_engine.engine
 from game_engine.engine import *
 
+# CLASE EXECUTER
+# Comunicación entre parser, vm y juego
 
 class Executer(object):
     def __init__(self, running_file):
-        self.running_file = running_file
-        self.data = parser_file(running_file)
-        self.quads = self.data["q"]
-        self.pretty_quads = self.data["str"]
-        self.function_table = self.data["ft"]
-
+        self.running_file = running_file # Nombre del archivo
+        self.data = parser_file(running_file) # Manda archivo al parser y recibe datos
+        self.quads = self.data["q"] # Guarda cuadruplos
+        self.pretty_quads = self.data["str"] # Guarda cuarduplos en formato STR
+        self.function_table = self.data["ft"] # Guarda tabla de funciones
+    
+    # Imprime cuadruplos 
     def __print_quads(self, pre_quads):
         if pre_quads:
             print("Program Quads before assignations:")
@@ -26,23 +29,27 @@ class Executer(object):
                 print("--{}----------------------------------".format(q))
                 self.quads[q].print_quad()
             print("-------------------------------------")
-
+    
+    # Imprime instrucciones generadas
     def __print_instructions(self, instructions):
         print("\nResulting Instructions:")
         print("-------------------------------------")
         Instruction.print_instructions(instructions)
-
+    
+    # Imprime nombre de archivo uq ese esta corriendo
     def __print_running(self):
         print("Running: {}".format(self.running_file))
         print("-------------------------------------")
 
+    # Carga primer nivel del juego
     def __load_level_one(self, instructions):
         characters = {
             "pepe": Character(0, 0, 50, 50, 50),
         }
 
         Engine.start(characters, instructions, "one")
-
+    
+    # Carga segundo nivel del juego
     def __load_level_two(self, instructions):
         characters = {
             "dinoAdrian": Character(0, 400, 50, 50, 50),
@@ -51,12 +58,12 @@ class Executer(object):
 
         Engine.start(characters, instructions, "two")
 
+    # Corre la maquina vrtual y el juego
     def run(self, **kwargs):
         if kwargs.get("print_pre_quads"):
             self.__print_quads(True)
 
         vm = VirtualMachine(3000, 1000, 6000, self.function_table)
-        # vm.quadruple_direction_allocator(self.quads)
 
         if kwargs.get("print_post_quads"):
             self.__print_quads(False)

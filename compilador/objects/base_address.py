@@ -6,7 +6,6 @@ import numpy as np
 # CLASE BASE ADDRESS
 # Objeto que guarda la dirección base de un arreglo
 
-
 class BaseAddress(object):
     def __init__(
         self, name=None, symbol=None, parent=None, type=None, scope=None, offset=None
@@ -45,9 +44,3 @@ class BaseAddress(object):
 
         if self.offset:
             print("VALUE: ", self.offset)
-
-    def memory_size(self):
-        # self.print_base_address()
-        # print("------------------------------")
-        # TODO: Change to real size
-        return 2

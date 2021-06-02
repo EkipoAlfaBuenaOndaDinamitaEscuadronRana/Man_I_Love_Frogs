@@ -5,7 +5,7 @@ import numpy as np
 import symbol
 
 # CLASE SYMBOL
-# Objeto guarda los datos de un token
+# Objeto que guarda los datos de un token
 
 
 ####################### GLOBALS #######################
@@ -41,17 +41,6 @@ type_dictionary = {
     "instruction": "instruction",
     "address": "address",
 }
-
-# NOTE: This sizes are no longer used... But I don't want to delete them yet...
-memory_sizes = {
-    "INT": 4,
-    "FLT": 4,
-    "CHAR": 1,
-    "STR": 1,
-    "BOOL": 1,
-    "NULL": 1,
-}
-
 # Diccionario de compatibilidad de tipos de datos
 type_translation = {
     "INT": ["INT", "NULL", "read"],
@@ -65,24 +54,6 @@ type_translation = {
 
 
 class Symbol(object):
-    """docstring for Symbol
-    A symbol represents a memory space, for example:
-        int A;
-
-    It would be represented like this
-        Symbol("A", "INT")
-
-    To represent non-scalar values as vectors or arrays, such as the following:
-        float arr[5];
-        float mat[3][10];
-
-    You need to send the size of the dimensions in your parameters as follows:
-        Symbol("arr", "FLT", [5])
-        Symbol("mat", "FLT", [3, 10])
-
-    It is also possible to specify a memory address.
-    However, this value is expected to be assigned by the virtual machine.
-    """
 
     ####################### INITS #######################
 
@@ -145,20 +116,37 @@ class Symbol(object):
         else:
             return False
 
-    # valor unico de simbolo
+    # Valor unico de simbolo
     def __hash__(self):
         return id(self)
 
-    #
-    def set_name(self, name):
-        self.name = name
-
-    def is_dimensioned(self):
-        if type(self.dimension_sizes) == list:
-            return len(self.dimension_sizes) > 0
+    ####################### SETS #######################
+    
+    # Guarda una dirección considerando lo que ya se guardo en la tabla
+    def set_address(self, offset):
+        self.address = []
+        self.address.append(offset)
+        if type(self.dimension_sizes) == int or len(self.dimension_sizes) > 0:
+            self.address.append(offset + self.dimension_sizes)
+            return offset + self.dimension_sizes + 1
         else:
-            return self.dimension_sizes > 0
+            self.address.append(offset)
+            return offset + 1
+    
+    # Guarda el contexto en el que se usa el simbolo
+    def set_scope(self, scope):
+        self.scope = scope
 
+    # Guarda el temporal al que se le asigno el valor de retorno de una función
+    def set_return_location(self, loc):
+        self.return_location.append(loc)
+
+    # Guarda los parametros que se le enviaron a la variable en declaración
+    def set_dimension_sizes(self, d_sizes):
+        if type(d_sizes) == list:
+            self.dimension_sizes = d_sizes
+
+    # Crea los nodos de dimensiones del arreglo
     def create_dimension_nodes(self):
         DIM = 1
         R = 1
@@ -177,57 +165,44 @@ class Symbol(object):
             R = m
             Offset = Offset + v["LI"] * m
         self.dimension_nodes[DIM - 1]["M"] = Offset
+    
+    ####################### GETS #######################
 
-    def get_dimension_size(self):
-        return list(self.dimension_nodes.keys())[-1]
-
-    def set_address(self, offset):
-        self.address = []
-        self.address.append(offset)
-        if type(self.dimension_sizes) == int or len(self.dimension_sizes) > 0:
-            self.address.append(offset + self.dimension_sizes)
-            return offset + self.dimension_sizes + 1
-        else:
-            self.address.append(offset)
-            return offset + 1
-
-    def get_address(self):
-        return self.address
-
-    def get_dimension_nodes_len(self):
-        return len(self.dimension_nodes)
-
-    def set_dimension_sizes(self, d_sizes):
-        if type(d_sizes) == list:
-            self.dimension_sizes = d_sizes
-
-    def get_dimension_sizes(self):
-        return self.dimension_sizes
-
-    def set_scope(self, scope):
-        self.scope = scope
-
-    def set_type(self, type):
-        self.type = type_dictionary[type] if type in type_dictionary else None
-
-    def set_return_location(self, loc):
-        self.return_location.append(loc)
-
+    # Regresa el nombre de el simbolo
     def get_name(self):
         return self.name
 
+    # Regresa el numero de dimensiones del arreglo
+    def get_dimension_size(self):
+        return list(self.dimension_nodes.keys())[-1]
+
+    # Regresa el tamaño real del objeto en memoria 
+    def get_dimension_sizes(self):
+        return self.dimension_sizes
+
+    # Regresa el temporal donde esta guardado el valor de retorno
     def get_return_location(self):
         if len(self.return_location) > 0:
             return self.return_location.pop()
         else:
             return None
+   
+       ####################### VALIDATIONS #######################
 
-    def get_type(self):
-        return self.type
+    # Indica si una variable es dimensionada
+    def is_dimensioned(self):
+        if type(self.dimension_sizes) == list:
+            return len(self.dimension_sizes) > 0
+        else:
+            return self.dimension_sizes > 0
 
+    # Indica si los tipos de los simbolos son compatibles
     def check_type_compatibility(type_recipient, type_sender):
         return type_sender in type_translation[type_recipient]
 
+    ####################### PRINTS #######################
+
+    # Imprime los datos de un simbolo
     def print_symbol(self):
         if self.name:
             print("VAR:", self.name)
@@ -248,5 +223,6 @@ class Symbol(object):
         if self.value:
             print("VALUE: ", self.value)
 
+    # Calcula el tamaño real del simbolo en memoria
     def memory_size(self):
         return int(np.prod(self.dimension_sizes))

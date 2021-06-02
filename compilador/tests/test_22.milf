@@ -57,5 +57,6 @@ func void inicia(int y){
 
         write(fact(i + 2) * valor);
         i -= 1;
+        write();
     }
 }
