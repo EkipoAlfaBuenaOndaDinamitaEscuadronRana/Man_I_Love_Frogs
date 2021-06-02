@@ -2,15 +2,18 @@ from router_solver import *
 import compilador.objects.semantic_table
 from compilador.objects.semantic_table import *
 
+# CLASE QUADRUPLE
+# Objeto que guarda operando, operadores y resultado de una expresión o instrucción
 
 class Quadruple(object):
     def __init__(self, operator, operand_1, operand_2, result_id):
-        self.operator = operator
-        self.operand_1 = operand_1
-        self.operand_2 = operand_2
-        self.result_id = result_id
+        self.operator = operator # Operador o instrucción de cuadruplo
+        self.operand_1 = operand_1  # Primer operador
+        self.operand_2 = operand_2  # Segundo operador
+        self.result_id = result_id  # Operador donde se asigna el resultado
         self.scope = None
 
+    # Guarda operadores de expresiones aritmeticas
     def __is_operator(symbol):
         return symbol in [
             "+",
@@ -28,6 +31,7 @@ class Quadruple(object):
             "!",
         ]
 
+    # Guarda nombres de operadores de asignación y asignación compuesta
     def __is_assignment(operator):
         return operator in [
             "EQ",
@@ -38,6 +42,7 @@ class Quadruple(object):
             "MODEQ",
         ]
 
+    # Recibe como input una expresión tipo string y la divide en simbolos 
     def __divide_expression(expression):
         exp = []
         operand = ""
@@ -75,6 +80,7 @@ class Quadruple(object):
 
         return exp
 
+    # Elimina los parenteses del stack de operadores
     def __sub_stack_from_parentheses(stack):
         if "(" in stack:
             stack.reverse()
@@ -86,20 +92,24 @@ class Quadruple(object):
 
         return stack
 
+    # Valida si hay un operador * / % en el stack 
     def __another_op_mdr_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(item in ["MUL", "DIV", "MOD"] for item in sub_stack_operators)
 
+    # Valida si hay otro operador + - en el stack
     def __another_op_as_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(item in ["ADD", "SUB"] for item in sub_stack_operators)
 
+    # Valida si hay otro operador + - * / % en el stack
     def __another_op_as_mdr_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(
             item in ["MUL", "DIV", "MOD", "ADD", "SUB"] for item in sub_stack_operators
         )
 
+    # Valida si hay otro operador + - * / %  > < >= <= en el stack
     def __another_op_as_mdr_comp_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(
@@ -107,28 +117,27 @@ class Quadruple(object):
             for item in sub_stack_operators
         )
 
+    # Valida si hay un operador ! en el stack 
     def __a_not_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return "NOT" in sub_stack_operators
 
+    # Valida si hay cualquier tipo de operador en el stack
     def __any_op_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return True if len(sub_stack_operators) else False
 
-    def __another_comparator_or_matcher_in_stack():
-        sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
-        return any(
-            item in Quadruple.__comparators_and_matchers for item in sub_stack_operators
-        )
-
+    # Consideración al hacer una expresion de tipo NOT
     def __not_consideration(stack_types):
         return "BOOL"  # if stack_types[-1] == "BOOL" else "ERROR"
 
+    # Manda los tipos de los operandos y el operador a la tabla semantica para validar comatibilidad
     def __type_consideration(stack_types, stack_operators):
         return SemanticTable.considerate(
             stack_types[-2], stack_operators[-1], stack_types[-1]
         )
 
+    # Genera el objeto cuadruplo con los datos del stack  
     def __generate_quadruple(
         stack_values,
         stack_operators,
@@ -160,6 +169,7 @@ class Quadruple(object):
         stack_values.append(result_id)
         stack_scopes.append(q.result_id.scope)
 
+    # Genera el cuadruplo de una expresion de tipo NOT !
     def __generate_not_quadruple(
         stack_values,
         stack_operators,
@@ -181,6 +191,8 @@ class Quadruple(object):
         stack_values.append(result_id)
         stack_scopes.append(q.result_id.scope)
 
+    # Genera el cuadruplo de una expresion de tipo EQ = 
+
     def __generate_assignment_quadruple(
         stack_values,
         stack_operators,
@@ -198,6 +210,7 @@ class Quadruple(object):
         q = Quadruple(operator, value, None, quad_result)
         resulting_quads.append(q)
 
+    # Saca los datos de un simbolo, revisa que hay en el stack y toma acción ante ello
     def evaluate_symbol(
         symbol,
         stack_values,
@@ -463,6 +476,8 @@ class Quadruple(object):
 
         return result_quadruple_id
 
+    # Recibe lista de simbolos de la expresion
+    # llama a evaluación de expresión y generación cuadruplo 
     def arithmetic_expression(expression, result_quadruple_id):
         stack_values = []  # ["A", "B"]
         stack_operators = []  # ["ADD"]
@@ -516,13 +531,9 @@ class Quadruple(object):
         # resulting_quads.append(result_quadruple_id)
         return resulting_quads
 
-    def format_quadruple(self):
-        second_value = None if not self.operand_2 else self.operand_2.name
-
-        return "{} {} {} {}".format(
-            self.operator.name, self.operand_1.name, second_value, self.result_id.name
-        )
-
+    # Si recibe una expresión de tipo string la convierte a simbolos
+    # NOTA : se espera que se reciban simbolos siempre
+    #        pero se valida para evitar errores
     def format_expression(expression):
         response = []
 
@@ -565,6 +576,7 @@ class Quadruple(object):
 
         return response
 
+    # Imprime cuadruplo 
     def print_quad(self):
         if type(self.operator) == Symbol:
             print("OPERATOR: ")
