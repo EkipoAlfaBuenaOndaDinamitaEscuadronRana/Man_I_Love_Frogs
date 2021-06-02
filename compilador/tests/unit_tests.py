@@ -18,7 +18,7 @@ import unittest
 
 class TestYacc(unittest.TestCase):
     def _test_yacc(self):
-        def test_file(file_name, answer):
+        def _test_file(file_name, answer):
             data = parser_file(file_name)
             result = data["str"]
             if result == answer:
@@ -134,7 +134,7 @@ class TestFuncTable(unittest.TestCase):
 
 
 class TestLexer(unittest.TestCase):
-    def test_lexer(self):
+    def _test_lexer(self):
         lexer = lex.lex()
         lexer.input("program test : { a = 1; b = true }")
 
@@ -185,7 +185,7 @@ class TestLexer(unittest.TestCase):
 
 
 class TestSemanticTable(unittest.TestCase):
-    def test_considerate(self):
+    def _test_considerate(self):
         # Existent types
         s_flt = Symbol("float", "FLT")
         s_int = Symbol("int", "INT")
@@ -229,7 +229,7 @@ class TestSemanticTable(unittest.TestCase):
 
 
 class TestQuadruple(unittest.TestCase):
-    def test_arithmetic_expression(self):
+    def _test_arithmetic_expression(self):
         def format_response(quad_response):
             if type(quad_response) == str:
                 return quad_response
@@ -461,7 +461,7 @@ class TestQuadruple(unittest.TestCase):
             Quadruple.format_expression(in_list_of_symbols), in_list_of_symbols
         )
 
-    def test_evaluate_symbol(self):
+    def _test_evaluate_symbol(self):
         symbol = Symbol("SUB", "operation", "main")
         stack_values = ["A", "B"]
         stack_operators = ["ADD"]
@@ -493,7 +493,7 @@ class TestQuadruple(unittest.TestCase):
         self.assertEqual(stack_scopes, ["main", "main"])
         self.assertEqual(resulting_quads_formatted, ["ADD A B T1"])
 
-    def test_format_quadruple(self):
+    def _test_format_quadruple(self):
         q = Quadruple(
             Symbol("MUL", "operation"),
             Symbol("B", "FLT"),
@@ -504,7 +504,7 @@ class TestQuadruple(unittest.TestCase):
 
 
 class TestMemorySegment(unittest.TestCase):
-    def test_insert_symbol(self):
+    def _test_insert_symbol(self):
         ms = MemorySegment("Global Segment", 7, 0)
         a_flt = Symbol("A", "FLT")
         b_flt = Symbol("B", "FLT")
@@ -543,7 +543,7 @@ class TestMemorySegment(unittest.TestCase):
 
 
 class TestVirtualMachine(unittest.TestCase):
-    def test_insert_symbol_in_segment(self):
+    def _test_insert_symbol_in_segment(self):
         ft = FunctionTable()
         vt = VariableTable()
         ft.set_function("main", "void", [], vt)
@@ -562,7 +562,7 @@ class TestVirtualMachine(unittest.TestCase):
         self.assertEqual(vm.insert_symbol_in_segment("main", a_frg), True)
         self.assertEqual(vm.insert_symbol_in_segment("main", b_frg), False)
 
-    def test_get_direction_symbol(self):
+    def _test_get_direction_symbol(self):
         ft = FunctionTable()
         vt = VariableTable()
         ft.set_function("func1", "void", [], vt)
@@ -759,7 +759,7 @@ class TestVirtualMachine(unittest.TestCase):
         self.assertEqual(t1.segment_direction, 143)
         self.assertEqual(t1.global_direction, 3143)
 
-    def test_run(self):
+    def _test_run(self):
         # Operators
         eq = Symbol("EQ", "assignment")
         add = Symbol("ADD", "operation")
@@ -839,7 +839,7 @@ class TestVirtualMachine(unittest.TestCase):
 
 
 class TestExecuter(unittest.TestCase):
-    def test_run(self):
+    def _test_run(self):
 
         expected_instructions = [
             Instruction("pepe", "JL", 1),

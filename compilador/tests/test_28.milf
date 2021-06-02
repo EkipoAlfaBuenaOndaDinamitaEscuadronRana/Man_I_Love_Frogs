@@ -14,15 +14,16 @@ func int patito(int a, int b){
 func void patitoo(int a, int b){
     arr[a] = patito(a,b);
 }
-{
+{   
     int a = 0;
     int b =  3;
     int c = 20;
-
     int d = patito(c , b);
     write(d);
     patitoo(1 , 2);
-    write();
     write(arr[1]);
+    for(arr[1] times){
+        write("Ganamos");
+    }
     
 }

@@ -166,7 +166,7 @@ def p_global_vartable(p):
     global_func_table.reset_functionTable()
 
     # 2
-    current_state.push_state(State("Global Segment"))
+    current_state.set_state(State("Global Segment"))
 
     # 3
     global_func_table.set_function(
@@ -404,7 +404,7 @@ def p_var(p):
             current_state.pop_curr_state()
 
         # Sale del estado declaraicón de variables
-        current_state.remove_curr_state_opt()
+        current_state.pop_curr_state_opt()
 
 
 # p_var_1 => NO TERMINAL
@@ -479,7 +479,7 @@ def p_func_declaration(p):
     p[0] = p[1]
 
     # 1
-    current_state.push_state(State("funcD", "varD"))
+    current_state.set_state(State("funcD", "varD"))
 
 
 # p_func => NO TERMINAL
@@ -570,7 +570,7 @@ def p_func_header(p):
             # Salimos del estado FuncD
             current_state.pop_curr_state()
             # Entramos al estado con el ID de la función
-            current_state.push_state(State(p[2]))
+            current_state.set_state(State(p[2]))
 
 
 # p_func_distruct => TERMINAL
@@ -749,7 +749,7 @@ def p_main_vartable_init(p):
     )
 
     # 2
-    current_state.push_state(State("main"))
+    current_state.set_state(State("main"))
 
     # 3
     quad_stack.go_to_main(current_state.get_curr_state_table())
@@ -909,7 +909,7 @@ def p_asignatura(p):
 
     # Estado de asignación para resolver el cuadruplo de asignación en declaración
     else:
-        current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
+        current_state.set_state(State(current_state.get_curr_state_table(), "as_on"))
 
 
 # p_compound_assignment => NO TERMINAL
@@ -957,7 +957,7 @@ def p_compound_assignment(p):
 
     # Estado de asignación para resolver el cuadruplo de asignación en declaración
     else:
-        current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
+        current_state.set_state(State(current_state.get_curr_state_table(), "as_on"))
 
 
 # p_op_compass => TERMINAL
@@ -998,7 +998,7 @@ def p_as_on(p):
     p[0] = p[1]
 
     # 1
-    current_state.push_state(State(current_state.get_curr_state_table(), "as_on"))
+    current_state.set_state(State(current_state.get_curr_state_table(), "as_on"))
 
 
 # p_as_off => TERMINAL
@@ -1230,7 +1230,7 @@ def p_no_var_off(p):
 
     p[0] = p[1]
 
-    current_state.remove_curr_state_opt()
+    current_state.pop_curr_state_opt()
 
 
 # p_estatuto_con_bloque => NO TERMINAL
@@ -1520,7 +1520,7 @@ def p_ciclo_cero_fill(p):
         current_state.pop_curr_state()
     else:
         # 2
-        current_state.push_state(State(current_state.get_curr_state_table(), "wait"))
+        current_state.set_state(State(current_state.get_curr_state_table(), "wait"))
 
 
 # p_ciclo_cero => TERMINAL
@@ -1770,7 +1770,7 @@ def p_param_check(p):
     p[0] = p[1]
 
     # 1
-    current_state.push_state(State(current_state.get_curr_state_table(), "param_check"))
+    current_state.set_state(State(current_state.get_curr_state_table(), "param_check"))
 
 
 ############################ EXPRESIONES ############################
@@ -2151,7 +2151,7 @@ def p_id_func(p):
                 ),
                 current_state.get_curr_state_table(),
             )
-            current_state.push_state(State(current_state.get_curr_state_table(), p[1]))
+            current_state.set_state(State(current_state.get_curr_state_table(), p[1]))
 
 
 # p_param_check => TERMINAL Y NO TERMINAL
@@ -2350,7 +2350,7 @@ def p_dim_val(p):
         sys.exit()
     else:
         # 2
-        current_state.push_state(State(current_state.get_curr_state_table(), "dim"))
+        current_state.set_state(State(current_state.get_curr_state_table(), "dim"))
 
 
 ############################ OBJETOS ############################

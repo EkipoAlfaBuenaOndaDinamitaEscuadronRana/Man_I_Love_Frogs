@@ -3,15 +3,24 @@ import compilador.objects.function_table
 from compilador.objects.function_table import *
 
 
+# CLASE SEMANTIC TABLE
+# Guarda y valida relación entre operandos usando operadores
+
 class SemanticTable:
+    ####################### INITS #######################
+ 
+    # Tipos validos para hacer operaciones 
     types = {"INT", "FLT", "CHAR", "STR", "BOOL", "NULL", "FROG"}
 
+    # Operadores de comparación
     #                 <     >     <=     >=
     comparison_op = {"LT", "GT", "LTE", "GTE"}
 
+    # Operadores de igualdad
     #               ==     !=      ||    &&
     matching_op = {"BEQ", "BNEQ", "OR", "AND"}
 
+    # Operadores aritmeticos
     operations_op = {
         "ADD",  # +
         "SUB",  # -
@@ -20,6 +29,7 @@ class SemanticTable:
         "MOD",  # %
     }
 
+    # Operadores de asignación compuesta
     assignment_operations_op = {
         "ADDEQ",  # +=
         "SUBEQ",  # -=
@@ -28,6 +38,7 @@ class SemanticTable:
         "MODEQ",  # %=
     }
 
+    # Diccionario que indica el resultado de una operación aritmetica entre dos tipos
     __operations = {
         "INT": {
             "INT": "INT",
@@ -79,6 +90,7 @@ class SemanticTable:
         },
     }
 
+    # Diccionario que indica el resultado de una operación de comparación entre dos tipos
     __comparison = {
         "INT": {
             "INT": "BOOL",
@@ -130,6 +142,7 @@ class SemanticTable:
         },
     }
 
+    # Diccionario que indica el resultado de una operación de asignación compuesta entre dos tipos
     __assignment_operations = {
         "INT": {
             "INT": "INT",
@@ -181,6 +194,7 @@ class SemanticTable:
         },
     }
 
+    # Si llega un operador como string valida su tipo
     def clasify_symbol_op(symbol_op):
         if symbol_op in SemanticTable.operations_op:
             return "operation"
@@ -197,12 +211,12 @@ class SemanticTable:
         elif symbol_op == "EQ":
             return "assignment"
 
+    # Regresa resultado de consideración semantica entre dos operandos y un operador
     def considerate(symbol_1, symbol_op, symbol_2):
         # When input is in string
         if [type(symbol_1), type(symbol_op), type(symbol_2)] == [str, str, str]:
             # Convert symbol into correct type
             symbol_op = SemanticTable.clasify_symbol_op(symbol_op)
-
         # When input is in symbol
         else:
 
@@ -218,21 +232,27 @@ class SemanticTable:
 
             symbol_op = symbol_op.type
 
+        # Valida que lo que llego es un tipo válido para operaciones
         if symbol_1 not in SemanticTable.types or symbol_2 not in SemanticTable.types:
             return "ERROR"
 
+        # Regresa el valor resultante de una operación aritmetica entre tipos
         elif symbol_op == "operation":
             return SemanticTable.__operations[symbol_1][symbol_2]
-
+        
+        # Regresa el valor resultante de una operación de comparación entre tipos
         elif symbol_op == "comparison":
             return SemanticTable.__comparison[symbol_1][symbol_2]
-
+        
+        # Regresa el valor resultante de una operación de asignación compuesta entre tipos
         elif symbol_op == "assignment_operation":
             return SemanticTable.__assignment_operations[symbol_1][symbol_2]
 
+        # Regresa un valor booleano cuando se hace una operación de igualdad
         elif symbol_op == "matching":
             return "BOOL"
 
+        # Regresa el tipo resultante de una asignación y valida compatibilidad de tipos
         elif symbol_op == "assignment":
             return (
                 symbol_2
