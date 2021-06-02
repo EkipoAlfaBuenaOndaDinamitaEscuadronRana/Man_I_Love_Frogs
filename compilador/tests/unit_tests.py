@@ -847,8 +847,7 @@ class TestExecuter(unittest.TestCase):
             Instruction("pepe", "JU", 1),
         ]
 
-        exe = Executer("compilador/tests/test_12.milf")
-        run_instructions = exe.run(
+        run_instructions = Executer("compilador/tests/test_12.milf").run(
             print_running=False,
             print_pre_quads=False,
             print_post_quads=False,
@@ -857,3 +856,85 @@ class TestExecuter(unittest.TestCase):
         )
 
         self.assertEqual(expected_instructions, run_instructions)
+
+    def test_several_files(self):
+        run_instructions = Executer("compilador/tests/test_1.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(run_instructions, [])
+
+        run_instructions = Executer("compilador/tests/test_4.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(run_instructions, [])
+
+        run_instructions = Executer("compilador/tests/test_5.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(run_instructions, [])
+
+        run_instructions = Executer("compilador/tests/test_6.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(run_instructions, [])
+
+        run_instructions = Executer("compilador/tests/test_7.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(run_instructions, [])
+
+        run_instructions = Executer("compilador/tests/test_12.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 4)
+
+        run_instructions = Executer("compilador/tests/test_23.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(run_instructions, [])
+
+        run_instructions = Executer("compilador/tests/test_25.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(run_instructions, [])
+
+        run_instructions = Executer("compilador/tests/test_30.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 5)
