@@ -2,7 +2,8 @@
 Compilador de Rosamaría Martínez y Adrián García
 
 ## Documentación
-Podrás encontrar la documentación en [este archivo](https://docs.google.com/document/d/1uo_Ad0OShn6FkB5r4D5TGvB4o_46ZmvYzrOaCscHmEU/edit?usp=sharing)
+Podrás encontrar la documentación en [este archivo](https://docs.google.com/document/d/1yh9PV4dqKJ10bkaMHHXp7yJ19GaLfQbklpi_tYDAzPs/edit?usp=sharing)
+El manual de usuario se encuentra [aquí](https://docs.google.com/document/d/1eBrXh212QIauN29T9Zh9PYMf4DlJNwKYw7pHiyCVCd4/edit?usp=sharing)
 
 ## Instalación
 Lo primero, es abrir una terminal y clonar el repositorio escribiendo:
