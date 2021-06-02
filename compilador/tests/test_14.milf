@@ -1,4 +1,4 @@
-program arreglos; 
+program arreglos;
 int B[5][5];
 int A[10];
 int x = 0;
@@ -14,4 +14,3 @@ int x = 0;
     write(c);
     write("HOLA");
 }
-

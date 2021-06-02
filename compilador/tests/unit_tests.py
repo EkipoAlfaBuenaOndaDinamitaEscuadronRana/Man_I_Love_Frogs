@@ -1000,6 +1000,16 @@ class TestExecuter(unittest.TestCase):
         )
         self.assertEqual(len(run_instructions), 14)
 
+        run_instructions = Executer("compilador/tests/test_8.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 10)
+
         run_instructions = Executer("compilador/tests/test_12.milf").run(
             print_running=False,
             print_pre_quads=False,
