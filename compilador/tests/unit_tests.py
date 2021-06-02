@@ -1020,6 +1020,16 @@ class TestExecuter(unittest.TestCase):
         )
         self.assertEqual(len(run_instructions), 7)
 
+        run_instructions = Executer("compilador/tests/test_14.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 36)
+
         run_instructions = Executer("compilador/tests/test_23.milf").run(
             print_running=False,
             print_pre_quads=False,
@@ -1029,6 +1039,16 @@ class TestExecuter(unittest.TestCase):
             run_game=False,
         )
         self.assertEqual(len(run_instructions), 10)
+
+        run_instructions = Executer("compilador/tests/test_24.milf").run(
+            print_running=False,
+            print_pre_quads=False,
+            print_post_quads=False,
+            print_instructions=False,
+            return_quads=True,
+            run_game=False,
+        )
+        self.assertEqual(len(run_instructions), 21)
 
         run_instructions = Executer("compilador/tests/test_25.milf").run(
             print_running=False,
