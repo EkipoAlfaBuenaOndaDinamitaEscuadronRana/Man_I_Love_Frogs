@@ -1,5 +1,5 @@
-program miPrograma;
+program level1;
 
 {
-  write("hello");
+   write("Hello");
 }

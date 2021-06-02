@@ -8,5 +8,6 @@ Executer(file_name).run(
     print_pre_quads=False,
     print_post_quads=False,
     print_instructions=False,
+    play_level=None,
     run_game=True,
 )

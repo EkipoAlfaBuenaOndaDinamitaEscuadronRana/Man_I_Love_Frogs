@@ -83,11 +83,9 @@ class Executer(object):
             return self.quads
 
         if (kwargs.get("run_game") or kwargs.get("play_level")) and len(instructions):
-
-            if 1 in [kwargs.get("run_game"), kwargs.get("play_level")]:
-                print("helloasd")
+            if kwargs.get("play_level") == 1:
                 self.__load_level_one(instructions)
-            elif 2 in [kwargs.get("run_game"), kwargs.get("play_level")]:
+            elif kwargs.get("play_level") == 2:
                 self.__load_level_two(instructions)
 
         return instructions
