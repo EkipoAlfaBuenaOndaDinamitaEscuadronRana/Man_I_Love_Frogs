@@ -25,5 +25,5 @@ func void patitoo(int a, int b){
     for(arr[1] times){
         write("Ganamos");
     }
-    
+
 }

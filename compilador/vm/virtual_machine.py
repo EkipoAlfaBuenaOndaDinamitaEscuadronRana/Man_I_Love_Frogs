@@ -451,6 +451,11 @@ class VirtualMachine(object):
                 print("ERROR: variable " + str(sym_opnd_2) + " has no assigned value")
                 sys.exit()
 
+            if type_op_1 == "CHAR" and (type_op_2 == "INT" or type_op_2 == "FLT"):
+                val_opnd_1 = ord(val_opnd_1[1])
+            elif type_op_2 == "CHAR" and (type_op_1 == "INT" or type_op_1 == "FLT"):
+                val_opnd_2 = ord(val_opnd_2[1])
+
             # +
             if operation == "ADD":
                 # Suma entre strings quita los "" que los separan
@@ -460,6 +465,7 @@ class VirtualMachine(object):
                     result_value = val_opnd_1[:-1] + val_opnd_2[1:]
                     sym_result.value = val_opnd_1[:-1] + val_opnd_2[1:]
                 else:
+
                     result_value = val_opnd_1 + val_opnd_2
                     sym_result.value = val_opnd_1 + val_opnd_2
             # -
