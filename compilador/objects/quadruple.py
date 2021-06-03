@@ -5,9 +5,10 @@ from compilador.objects.semantic_table import *
 # CLASE QUADRUPLE
 # Objeto que guarda operando, operadores y resultado de una expresión o instrucción
 
+
 class Quadruple(object):
     def __init__(self, operator, operand_1, operand_2, result_id):
-        self.operator = operator # Operador o instrucción de cuadruplo
+        self.operator = operator  # Operador o instrucción de cuadruplo
         self.operand_1 = operand_1  # Primer operador
         self.operand_2 = operand_2  # Segundo operador
         self.result_id = result_id  # Operador donde se asigna el resultado
@@ -42,7 +43,7 @@ class Quadruple(object):
             "MODEQ",
         ]
 
-    # Recibe como input una expresión tipo string y la divide en simbolos 
+    # Recibe como input una expresión tipo string y la divide en simbolos
     def __divide_expression(expression):
         exp = []
         operand = ""
@@ -92,7 +93,7 @@ class Quadruple(object):
 
         return stack
 
-    # Valida si hay un operador * / % en el stack 
+    # Valida si hay un operador * / % en el stack
     def __another_op_mdr_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return any(item in ["MUL", "DIV", "MOD"] for item in sub_stack_operators)
@@ -117,7 +118,7 @@ class Quadruple(object):
             for item in sub_stack_operators
         )
 
-    # Valida si hay un operador ! en el stack 
+    # Valida si hay un operador ! en el stack
     def __a_not_in_stack(stack_operators):
         sub_stack_operators = Quadruple.__sub_stack_from_parentheses(stack_operators)
         return "NOT" in sub_stack_operators
@@ -137,7 +138,7 @@ class Quadruple(object):
             stack_types[-2], stack_operators[-1], stack_types[-1]
         )
 
-    # Genera el objeto cuadruplo con los datos del stack  
+    # Genera el objeto cuadruplo con los datos del stack
     def __generate_quadruple(
         stack_values,
         stack_operators,
@@ -191,7 +192,7 @@ class Quadruple(object):
         stack_values.append(result_id)
         stack_scopes.append(q.result_id.scope)
 
-    # Genera el cuadruplo de una expresion de tipo EQ = 
+    # Genera el cuadruplo de una expresion de tipo EQ =
 
     def __generate_assignment_quadruple(
         stack_values,
@@ -477,7 +478,7 @@ class Quadruple(object):
         return result_quadruple_id
 
     # Recibe lista de simbolos de la expresion
-    # llama a evaluación de expresión y generación cuadruplo 
+    # llama a evaluación de expresión y generación cuadruplo
     def arithmetic_expression(expression, result_quadruple_id):
         stack_values = []  # ["A", "B"]
         stack_operators = []  # ["ADD"]
@@ -576,7 +577,7 @@ class Quadruple(object):
 
         return response
 
-    # Imprime cuadruplo 
+    # Imprime cuadruplo
     def print_quad(self):
         if type(self.operator) == Symbol:
             print("OPERATOR: ")

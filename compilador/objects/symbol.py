@@ -121,7 +121,7 @@ class Symbol(object):
         return id(self)
 
     ####################### SETS #######################
-    
+
     # Guarda una dirección considerando lo que ya se guardo en la tabla
     def set_address(self, offset):
         self.address = []
@@ -132,7 +132,7 @@ class Symbol(object):
         else:
             self.address.append(offset)
             return offset + 1
-    
+
     # Guarda el contexto en el que se usa el simbolo
     def set_scope(self, scope):
         self.scope = scope
@@ -165,7 +165,7 @@ class Symbol(object):
             R = m
             Offset = Offset + v["LI"] * m
         self.dimension_nodes[DIM - 1]["M"] = Offset
-    
+
     ####################### GETS #######################
 
     # Regresa el nombre de el simbolo
@@ -176,7 +176,7 @@ class Symbol(object):
     def get_dimension_size(self):
         return list(self.dimension_nodes.keys())[-1]
 
-    # Regresa el tamaño real del objeto en memoria 
+    # Regresa el tamaño real del objeto en memoria
     def get_dimension_sizes(self):
         return self.dimension_sizes
 
@@ -186,8 +186,8 @@ class Symbol(object):
             return self.return_location.pop()
         else:
             return None
-   
-       ####################### VALIDATIONS #######################
+
+    ####################### VALIDATIONS #######################
 
     # Indica si una variable es dimensionada
     def is_dimensioned(self):

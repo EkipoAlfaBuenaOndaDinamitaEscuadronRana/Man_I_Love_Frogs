@@ -1,6 +1,4 @@
 program test;
-int A[10];
-int B[5][5];
 
 func int patito(int a, int b){
     int c = a + b;
@@ -12,10 +10,12 @@ func int patito(int a, int b){
 }
 
 {
+    int array[10];
+    int arr[5][5];
     int a = 0;
     int b =  3;
     int c = 20;
     int d = patito(c , b);
 
-    write(d);
+    // write(d);
 }

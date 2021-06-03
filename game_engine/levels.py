@@ -1,7 +1,7 @@
 import game_engine.item
 from game_engine.item import *
 
-
+# Constantes de niveles
 class Levels:
     LEVEL_ONE = [
         # Rocks

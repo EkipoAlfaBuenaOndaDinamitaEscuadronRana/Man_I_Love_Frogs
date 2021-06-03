@@ -1,16 +1,15 @@
 from pygame.constants import AUDIO_ALLOW_FORMAT_CHANGE
 from execute import *
 
-level = "levels/level1.milf"
-miPrograma = "miPrograma.milf"
-test = "compilador/tests/test_1.milf"
+level = int(input("Introduce el nivel que quieres jugar: "))
+file_name = input("Escribe el nombre de tu programa: ")
 
-Executer(test).run(
+
+Executer(file_name).run(
     print_running=True,
     print_pre_quads=False,
     print_post_quads=False,
     print_instructions=False,
-    return_quads=False,
-    run_game=False,
-    play_level=1,
+    play_level=level,
+    run_game=True,
 )

@@ -6,8 +6,9 @@ class Instruction(object):
         self.character_name = character_name
         self.movement = movement
         if type(times) == int:
-            self.times = int(times)  # TODO: Change this name attribute
+            self.times = int(times)
 
+    # Verifica que dos instructiones sean iguales
     def __eq__(self, other):
         if type(self) is Instruction and type(other) is Instruction:
             self_data = [

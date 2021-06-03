@@ -1,17 +1,16 @@
-program arreglos; 
-int B[5][5];
-int A[10];
+program arreglos;
+int bonito[5][5];
+int arr[10];
 int x = 0;
 {
-    B[1][4] = 11;
-    A[6] = 7;
-    A[2] = 4;
+    bonito[1][4] = 11;
+    arr[6] = 7;
+    arr[2] = 4;
     int a = 3;
     int b = 9;
-    int d = B[1][A[a - 1]];
-    int c = A[b - a];
-    write(d);
-    write(c);
-    write("HOLA");
+    int d = bonito[1][arr[a - 1]];
+    int c = arr[b - a];
+    // swrite(d);
+    // write(c);
+    // write("HOLA");
 }
-

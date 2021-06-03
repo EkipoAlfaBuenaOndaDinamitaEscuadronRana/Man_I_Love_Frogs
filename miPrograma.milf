@@ -1,0 +1,5 @@
+program level1;
+
+{
+   write("Hello");
+}

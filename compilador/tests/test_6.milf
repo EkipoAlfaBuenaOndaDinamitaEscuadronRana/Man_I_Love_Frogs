@@ -3,9 +3,7 @@ int a = 1;
 int b = 2;
 int c = 0;
 {
-while(a > b){
-    c = a + b;
+    while(a > b){
+        c = a + b;
+    }
 }
-}
-
-

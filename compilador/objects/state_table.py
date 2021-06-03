@@ -1,22 +1,25 @@
 from router_solver import *
 
-# CLASE STATE 
+# CLASE STATE
 # Objeto que guarda el nombre del contexto actual e información del estado actual
+
 
 class State(object):
     def __init__(self, table=None, opt=None):
-        self.table = table      # Nombre del contexto actual
-        self.opt = opt          # Opcional de estado actual
+        self.table = table  # Nombre del contexto actual
+        self.opt = opt  # Opcional de estado actual
+
 
 # CLASE STATE TABLE
 # Objeto que guarda un stack de estados del parser
 
+
 class StateTable(object):
 
     ####################### INITS #######################
-    
+
     def __init__(self):
-        self.states = []        # Stack de estados
+        self.states = []  # Stack de estados
 
     # Reinica los valores para cuando compilan cosas consecutivamente
     def reset_states(self):
@@ -27,7 +30,7 @@ class StateTable(object):
     # Agrega un estado a la tabla de estados
     def set_state(self, state):
         self.states.append(state)
-    
+
     # Le agrega un valor al opcional de la tabla actual
     def set_curr_state_opt(self, opt):
         self.states[-1].opt = opt
