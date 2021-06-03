@@ -3,11 +3,11 @@ from execute import *
 
 level = "levels/level1.milf"
 miPrograma = "miPrograma.milf"
-test = "compilador/tests/test_1.milf"
+test = "compilador/tests/test_28.milf"
 
 Executer(test).run(
     print_running=True,
-    print_pre_quads=False,
+    print_pre_quads=True,
     print_post_quads=False,
     print_instructions=False,
     return_quads=False,
