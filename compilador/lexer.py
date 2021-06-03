@@ -132,7 +132,6 @@ def t_NL(t):
 def t_CFLT(t):
     r"\d+\.\d+"
     t.value = float(t.value)
-    print(t)
     return t
 
 
