@@ -15,7 +15,7 @@ from game_engine.item import *
 import game_engine.levels
 from game_engine.levels import *
 
-
+# Se encarga de generar el display del videojuego así como de manejar las interacciones entre personajes
 class Engine:
     __display_width = Constants.DISPLAY_WIDTH
     __display_height = Constants.DISPLAY_HEIGHT
