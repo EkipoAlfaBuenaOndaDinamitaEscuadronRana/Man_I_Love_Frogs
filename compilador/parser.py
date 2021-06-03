@@ -1079,7 +1079,7 @@ def p_return(p):
 
 ############################ READ / WRITE ############################
 
-# p_func => TERMINAL Y NO TERMINAL
+# p_escritura => TERMINAL Y NO TERMINAL
 
 # CUANDO : Write con expresión o sin expresión
 # WRITE          -> token write
